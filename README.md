@@ -1,0 +1,1 @@
+# plugins-tour-booking-manager
