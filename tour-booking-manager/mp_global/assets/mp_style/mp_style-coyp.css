@@ -43,12 +43,16 @@
 		text-decoration: none;
 	}
 	.mpStyle a:hover {
-		opacity: 0.5;
+		color: var(--color_theme) !important;
 	}
 	.mpStyle a:not(.mp_wp_editor a),
 	.mpStyle a:hover {
 		text-decoration: none;
 	}
+	.fullWidth {
+		width: 100%;
+	}
+
 	[data-collapse-target],
 	[data-target-popup],
 	[data-icon-change],
@@ -179,7 +183,7 @@
 	div.mpStyle h6 {
 		margin: 0;
 		padding: 0;
-		line-height: 1.25;
+		line-height: inherit;
 	}
 	div.mpStyle strong {
 		font-weight: var(--fw-bold);
@@ -197,17 +201,18 @@
 		font-size: var(--fs_h2);
 		font-weight: var(--fw-bold);
 	}
+	div.mpStyle .dLayout {
+		border-radius: 10px;
+		margin-bottom: 20px;
+	}
 	div.mpStyle h3,
 	div.mpStyle [class*="_fs_h3"] {
 		padding: 0;
 		color: var(--mpl-secondary);
-		margin: 30px 0 20px 0;
-		margin-bottom: 20px;
-		margin-bottom: 20px;
-		font-size: 22px;
+		margin:0;
+		font-size: 20px;
 		line-height: 26px;
 		font-family: DejaVuSansBold, sans-serif;
-		margin-bottom: 12px;
 		font-weight: 700;
 	}
 	div.mpStyle h4,
@@ -227,6 +232,9 @@
 		font-size: var(--fs_h6);
 		font-weight: var(--fw-normal);
 		text-transform: inherit;
+	}
+	div.mpStyle label {
+		display: block;
 	}
 	div.mpStyle label,
 	div.mpStyle [class*="_fs_label"] {
@@ -251,6 +259,10 @@
 	.mpStyle .mpMenu li {
 		display: -webkit-flex;
 		display: flex;
+	}
+	.mpStyle [class*="_dFlex"] {
+		align-items: baseline;
+		gap: 5px;
 	}
 	.mpStyle .groupContent,
 	.mpStyle .buttonGroup,
@@ -336,6 +348,7 @@
 		display: flex;
 		-webkit-justify-content: center;
 		justify-content: center;
+		align-items: center;
 	}
 	.mpStyle [class*="_justifyCenter"] {
 		-webkit-justify-content: center;
@@ -346,6 +359,7 @@
 		display: flex;
 		-webkit-justify-content: space-between;
 		justify-content: space-between;
+		align-items: center;
 	}
 	.mpStyle [class*="_justifyBetween"],
 	.mpStyle .inputInline .mpForm {
@@ -420,16 +434,16 @@
 		-webkit-flex-direction: column;
 		flex-direction: column;
 	}
-	.flexEqual > *,
-	.equalChild > *,
-	[class*="_equalChild"] > *,
-	[class*="listEqual"] > li,
-	.mpTabs.tabBorder > .tabLists li,
-	.inputInline .inputList {
-		-webkit-flex: 1;
-		-ms-flex: 1;
-		flex: 1;
-	}
+	/*.flexEqual > *,*/
+	/*.equalChild > *,*/
+	/*[class*="_equalChild"] > *,*/
+	/*[class*="listEqual"] > li,*/
+	/*.mpTabs.tabBorder > .tabLists li,*/
+	/*.inputInline .inputList {*/
+	/*	-webkit-flex: 1;*/
+	/*	-ms-flex: 1;*/
+	/*	flex: 1;*/
+	/*}*/
 }
 /******************************************************************** Radios Section************************************************/
 @media only screen and (min-width: 10px) {
@@ -445,8 +459,8 @@
 	.mpStyle [class*="dLayout"],
 	.mpStyle .groupContent,
 	.mpStyle [class*="_dBR"] {
-		-webkit-border-radius: var(--dbr);
-		border-radius: var(--dbr);
+		-webkit-border-radius: var(--dbr_d);
+		border-radius: var(--dbr_d);
 	}
 	.mpStyle div.mp_input_select .formControl:focus,
 	.mpStyle [class*="_dBR_T"] {
@@ -518,14 +532,14 @@
 	}
 	.mpStyle button[disabled] {
 		cursor: not-allowed;
-		opacity: 0.8;
-		background-color: #ddd;
+		background-color: var(--color_theme);
+		color: #fff;
 	}
 	.mpStyle button:hover,
 	.mpStyle button:focus {
 		text-decoration: none;
-		opacity: 0.8;
-		background-color: var(--color_theme);
+		/*opacity: 0.8;*/
+		background-color: var(--color_theme_secondary);
 		color: var(--color_white);
 	}
 	.mpStyle button:hover span,
@@ -557,12 +571,13 @@
 	}
 	/***/
 	.mpStyle [class*="dButton"] {
-		padding: 0 var(--dmp);
+		padding: 15px var(--dmp);
 		min-width: var(--button_width);
 		height: auto;
 		min-height: var(--button_height);
 		color: var(--color_button);
 		background-color: var(--color_theme);
+		line-height: 1;
 	}
 	.mpStyle [class*="dButton"] span {
 		margin: 0 var(--dmp_xs) 0 0;
@@ -670,10 +685,11 @@
 	/*********/
 	.mpStyle .navy_blueButton,
 	.mpStyle [class*="_navy_blueButton"] {
-		background-color: var(--color_navy_blue);
-		color: var(--color_theme_alter);
+		background-color: var(--color_black);
+		color: var(--color_white);
 		padding: var(--dmp_xs) var(--dmp);
-		border: 1px solid var(--color_navy_blue);
+		border: 1px solid var(--color_black);
+		font-size: var(--fs);
 	}
 	.mpStyle .navy_blueButton span,
 	.mpStyle [class*="_navy_blueButton"] span {
@@ -681,9 +697,9 @@
 	}
 	.mpStyle .navy_blueButton:hover,
 	.mpStyle [class*="_navy_blueButton"]:hover {
-		background-color: var(--color_theme_alter);
-		color: var(--color_navy_blue);
-		border-color: var(--color_navy_blue);
+		background-color: transparent;
+		color: var(--color_white);
+		border-color: #fff;
 	}
 	.mpStyle .navy_blueButton:hover span,
 	.mpStyle [class*="_navy_blueButton"]:hover span {
@@ -693,8 +709,8 @@
 	.mpStyle [class*="Button_xs"] {
 		min-width: auto;
 		min-height: var(--button_height_xs);
-		padding: 7px var(--dmp_xs);
-		font-size: var(--fs);
+		padding: 11px var(--dmp);
+		font-size: var(--fs_small);
 	}
 	/*************************/
 	.mpStyle [class*="dButton"].mpActive {
@@ -828,10 +844,10 @@
 	.mpStyle [class*="_border"] {
 		border: 1px solid var(--color_border);
 	}
-	.mpStyle .bT,
-	.mpStyle [class*="_bT"] {
-		border-top: 1px solid var(--color_border);
-	}
+	/*.mpStyle .bT,*/
+	/*.mpStyle [class*="_bT"] {*/
+	/*	border-top: 1px solid var(--color_border);*/
+	/*}*/
 	.mpStyle [class*="_bDot"] {
 		border: 1px dotted var(--color_border);
 	}
@@ -1308,9 +1324,10 @@
 		overflow: hidden;
 		position: relative;
 		height: 200px;
+		border-radius: 8px;
 	}
 	[data-bg-image] {
-		background-size: 100% 100%;
+		background-size: cover;
 		background-position: center center;
 		position: relative;
 		height: 100%;
@@ -1318,6 +1335,11 @@
 		min-height: inherit;
 		position: relative;
 	}
+
+	.ttbm_location_image [data-bg-image] {
+		min-height: 225px !important;
+	}
+
 	[data-bg-image]:before{
 		content: '';
 		position: absolute;
@@ -1383,19 +1405,23 @@
 	}
 	div.superSlider .sliderItem img {
 		width: 100%;
-		max-height: 100%;
+		height: 100%;
+		object-fit: cover;
 	}
 	div.superSlider .sliderItem {
-		position: relative;overflow: hidden;
+		position: relative;
 		float: left;
 		width: 100%;
+		height: 510px;
 		margin-right: -100%;
 		-ms-transform: translateX(100%);
 		transform: translateX(100%);
 		backface-visibility: hidden;
 		-webkit-transition: -webkit-transform 0.06s ease-in-out;
 		transition: transform 0.6s ease-in-out, -webkit-transform 0.6s ease-in-out;
-		max-height: 500px;		height: 100%;
+		overflow: hidden;
+		border-radius: 10px;
+
 	}
 	div.superSlider .sliderItem.activeSlide {
 		z-index: 1;
@@ -1457,8 +1483,10 @@
 	div.superSlider .sliderShowcase.bottom {
 		margin: var(--dmp_xs) 0 0 0;
 	}
-	div.superSlider .sliderShowcaseItem {margin: 0 0 10px 0;    position: relative;    overflow: hidden; height: 118px; }
-	div.superSlider .area_column .sliderShowcaseItem {		width: calc(25% - var(--dmp_xs));	}
+	div.superSlider .sliderShowcaseItem {margin: 0 0 10px 0;position: relative;overflow: hidden; border-radius:10px; height: 120px}
+	div.superSlider .area_column .sliderShowcaseItem {
+		width: calc(25% - var(--dmp_xs));
+	}
 	div.superSlider .sliderShowcase div.superSlider .area_column {
 		margin: 0 0 var(--dmp_xs) 0;
 		position: relative;
@@ -1512,7 +1540,7 @@
 		top: calc(50% - 15px);
 		font-size: 30px;
 		cursor: pointer;
-		color: #fff;
+		color: #222;
 	}
 	div.superSlider .iconIndicator:hover {
 		color: #fff;
@@ -1625,14 +1653,19 @@
 		color: var(--color_theme_alter);
 		margin: 0 var(--dmp) 0 0;
 	}
-	.mpStyle .circleIcon_xs,
-	.mpStyle [class*="_circleIcon_xs"] {
-		width: 25px;
-		height: 25px;
-		min-width: 25px;
-		font-size: var(--fs_small);
-		margin: 0 var(--dmp_xs) 0 0;
-	}
+
+	/*.include_service ul li {*/
+
+	/*}*/
+
+	/*.mpStyle .circleIcon_xs,*/
+	/*.mpStyle [class*="_circleIcon_xs"] {*/
+	/*	width: 25px;*/
+	/*	height: 25px;*/
+	/*	min-width: 25px;*/
+	/*	font-size: var(--fs);*/
+	/*	margin: 0 var(--dmp_xs) 0 0;*/
+	/*}*/
 	/*****Remove icon******/
 	.mpStyle .mp_remove_area {
 		position: relative;
@@ -1652,7 +1685,7 @@
 	/**************Default************************/
 	.mpStyle .dLayout,
 	.mpStyle [class*="_dLayout"] {
-		padding: var(--dmp);
+		padding: var(--dmp_xs) var(--dmp);
 		background-color: var(--color_white);
 		border: 1px solid var(--color_border);
 		margin-top: -1px;
@@ -1732,9 +1765,10 @@
 	.mpStyle .abTopRight_xs,
 	.mpStyle [class*="_abTopRight_xs"] {
 		position: absolute;
-		right: var(--dmp_xs);
-		top: var(--dmp_xs);
+		right: var(--dmp);
+		top: 11px;
 	}
+
 	.mpStyle .abTopLeft_xs,
 	.mpStyle [class*="_abTopLeft_xs"] {
 		position: absolute;
@@ -1791,7 +1825,8 @@
 		border-radius: 3px 6px 6px 0;
 		-webkit-box-shadow: 1px 2px 2px 0 rgba(0, 0, 0, 0.4);
 		box-shadow: 1px 2px 2px 0 rgba(0, 0, 0, 0.4);
-		z-index: 1;
+		z-index: 20;
+		font-size: var(--fs_small);
 	}
 	.mpStyle .ribbon::before {
 		content: "";
@@ -1827,615 +1862,535 @@
 	}
 }
 /******************************************************************** Form section ************************************************/
+@media only screen and (min-width: 10px) {
+	.mpStyle input:not[type="submit"] {
+		width: 100%;
+		max-width: inherit;
+		border: 1px solid var(--color_border);
+		font-size: var(--fs);
+		color: var(--d_color);
+		background-color: #fff;
+		padding: 10px 15px;
+		font-weight: 500;
+		height: 40px;
+		border-radius: 6px;
+	}
+	.mpStyle input,
+	.mpStyle optgroup,
+	.mpStyle select,
+	.mpStyle textarea {
+		font-family: inherit;
+		line-height: inherit;
+		margin: 0;
+		width: 100%;
+		max-width: inherit;
+		border: 1px solid var(--color_border);
+		font-size: var(--fs);
+		color: var(--d_color);
+		background-color: #fff;
+		padding: 10px 15px;
+		font-weight: 500;
+		height: 40px;
+		border-radius: 6px;
+	}
+	.mpStyle .formControl:-webkit-autofill,
+	.mpStyle .formControl:-webkit-autofill:hover,
+	.mpStyle .formControl:-webkit-autofill:focus,
+	.mpStyle .formControl:-webkit-autofill:active {
+		box-shadow: none;
+		outline: 0;
+		border-color: var(--color_theme);
+	}
 
-.mpStyle input:not[type="submit"] {
-    width: 100%;
-    max-width: inherit;
-    border: 1px solid var(--color_border);
-    font-size: var(--fs);
-    color: var(--d_color);
-    background-color: #fff;
-    padding: 10px 15px;
-    font-weight: 500;
-    height: 40px;
-    border-radius: 6px;
-}
+	.mpStyle input:focus,
+	.mpStyle optgroup:focus,
+	.mpStyle select:focus,
+	.mpStyle textarea:focus {
+		box-shadow: none;
+		outline: 0;
+		border-color: var(--color_theme);
+	}
 
-.mpStyle input:not(.checkbox),
-.mpStyle input:not([type=submit]),
-.mpStyle optgroup,
-.mpStyle select,
-.mpStyle textarea {
-    font-family: inherit;
-    line-height: initial;
-    margin: 0;
-    max-width: inherit;
-    border: 1px solid var(--color_border);
-    font-size: var(--fs);
-    color: var(--d_color);
-    background-color: #fff;
-    padding: 10px 15px;
-    font-weight: 500;
+	div.mpStyle form {
+		margin: 0;
+		padding: 0;
+		line-height: 1.25;
+	}
+	.mpStyle label {
+		position: relative;
+	}
+	.mpStyle label > span {
+		white-space: nowrap;
+	}
+	/***************************/
+	.mpStyle .formControl::placeholder {
+		color: #0005;
+	}
+	.mpStyle .formControl:disabled {
+		background-color: #ddd5;
+		color: #fff;
+	}
+	/***************************/
+	div.mpStyle .formControl {
+		width: 100%;
+		max-width: inherit;
+		border: 1px solid var(--color_border);
+		font-size: var(--fs);
+		color: var(--d_color);
+		background-color: #fff;
+		padding: 10px 15px;
+		font-weight: 500;
+		height: 40px;
+		border-radius: 6px;
+	}
 
-}
+	div.mpStyle #ttbm_select_date.formControl {
+		height: 30px;
+	}
 
-.mpStyle .formControl:-webkit-autofill,
-.mpStyle .formControl:-webkit-autofill:hover,
-.mpStyle .formControl:-webkit-autofill:focus,
-.mpStyle .formControl:-webkit-autofill:active {
-    box-shadow: none;
-    outline: 0;
-    border-color: var(--color_theme);
-}
-
-.mpStyle input:focus,
-.mpStyle optgroup:focus,
-.mpStyle select:focus,
-.mpStyle textarea:focus {
-    box-shadow: none;
-    outline: 0;
-    border-color: var(--color_theme);
-}
-
-div.mpStyle form {
-    margin: 0;
-    padding: 0;
-    line-height: 1.25;
-}
-
-.mpStyle label {
-    position: relative;
-}
-
-.mpStyle label > span {
-    white-space: nowrap;
-}
-
-/***************************/
-.mpStyle .formControl::placeholder {
-    color: #0005;
-}
-
-.mpStyle .formControl:disabled {
-    background-color: #ddd5;
-    color: #fff;
-}
-
-/***************************/
-div.mpStyle .formControl {
-    width: 100%;
-    max-width: inherit;
-    border: 1px solid var(--color_border);
-    font-size: var(--fs);
-    color: var(--d_color);
-    background-color: #fff;
-    padding: 10px 15px;
-    font-weight: 500;
-    height: 40px;
-    border-radius: 6px;
-}
-
-div.mpStyle #ttbm_select_date.formControl {
-    height: 30px;
-}
-
-.mpStyle .formControl:focus {
-    outline: 0;
-    background-color: #fff;
-    border-color: #80bdff;
-}
-
-div.mpStyle select.formControl {
-    height: 48px;
-    border-radius: 8px;
-    /* background-image: url("../images/arrow_down.png");
-background-repeat: no-repeat;
-background-position: calc(100% - var(--dmp_xs));
-background-size: auto;
--webkit-appearance: none;
-padding: var(--dmp_xs) 35px var(--dmp_xs) var(--dmp_xs); */
-}
-
-div.mpStyle select.formControl:focus {
-    border: 1px solid var(--color_theme);
-    box-shadow: none;
-}
-
-div.mpStyle .formControl.date_type_without_year,
-div.mpStyle .formControl.date_type,
-div.mpStyle .formControl[type="date"] {
-    background-image: url("../images/calendar.png");
+	.mpStyle .formControl:focus {
+		outline: 0;
+		background-color: #fff;
+		border-color: #80bdff;
+	}
+	div.mpStyle select.formControl {
+		height: 48px;
+		border-radius: 8px;
+		/* background-image: url("../images/arrow_down.png");
     background-repeat: no-repeat;
-    background-position: 8px center;
+    background-position: calc(100% - var(--dmp_xs));
     background-size: auto;
     -webkit-appearance: none;
-    font-weight: normal;
-    padding: 8px 8px 8px 40px;
+    padding: var(--dmp_xs) 35px var(--dmp_xs) var(--dmp_xs); */
+	}
+	div.mpStyle select.formControl:focus {
+		border: 1px solid var(--color_theme);
+		box-shadow: none;
+	}
+	div.mpStyle .formControl.date_type_without_year,
+	div.mpStyle .formControl.date_type,
+	div.mpStyle .formControl[type="date"] {
+		background-image: url("../images/calendar.png");
+		background-repeat: no-repeat;
+		background-position: 8px center;
+		background-size: auto;
+		-webkit-appearance: none;
+		font-weight: normal;
+		padding: 8px 8px 8px 40px;
+	}
+	div.mpStyle textarea.formControl {
+		height: auto;
+	}
+	.mpStyle .mpForm label {
+		margin: var(--dmp_xs) 0 0 0;
+		text-transform: capitalize;
+	}
+	.mpStyle .mpForm label span {
+		width: 100%;
+		margin: 0 0 var(--dmp_xs) 0;
+	}
+	.mpStyle .mpForm label span::before {
+		padding: 0 var(--dmp_xs);
+	}
+	/****************/
+	.mpStyle .inputList {
+		margin: var(--dmp) 0 0 0;
+		position: relative;
+	}
+	.mpStyle .inputList textarea.formControl {
+		height: auto;
+	}
+	/******* group form*********/
+	.mpStyle .inputGroup {
+		width: 100%;
+		padding: 0 0 var(--dmp_xs) 0;
+	}
+	.mpStyle .inputGroup label {
+		width: auto;
+		padding: 0 var(--dmp) 0 0;
+	}
+	.mpStyle .inputGroup label input[type="checkbox"] {
+		margin: 0 var(--dmp_xs);
+	}
+	/******* input as a select*********/
+	div.mpStyle div.mp_input_select .formControl:focus {
+		border-color: var(--color_border);
+	}
+	.mpStyle div.mp_input_select {
+		position: relative;
+	}
+	.mpStyle ul.mp_input_select_list {
+		display: none;
+		z-index: 111;
+		overflow: auto;
+		max-height: 250px;
+		height: auto;
+		width: 100%;
+		margin: 1px 0 0 0;
+		padding: 10px;
+		position: absolute;
+		left: 0;
+		top: 100%;
+		right: 0;
+		border: 1px solid var(--color_border);
+		background-color: var(--color_white);
+	}
+	.mpStyle ul.mp_input_select_list li {
+		padding: 10px;
+		cursor: pointer;
+		border-bottom: 1px solid var(--color_border);
+		margin: 0;
+		list-style-type: none;
+	}
+	.mpStyle ul.mp_input_select_list li:last-child {
+		border-bottom: none;
+	}
+	.mpStyle ul.mp_input_select_list li:hover {
+		background-color: #777;
+		color: #fff;
+	}
+	.mpStyle ul.mp_input_select_list li span {
+		margin: 0 var(--dmp_xs) 0 0;
+	}
+	/*****Form inline*******/
+	.mpStyle .inputInline .mpForm {
+		width: 100%;
+		max-width: 100%;
+	}
+	.mpStyle .inputInline .inputList {
+		width: 100%;
+		margin: var(--dmp_xs) var(--dmp_xs) 0 0;
+	}
+	.mpStyle .inputInline .inputList label {
+		margin: 0;
+	}
+	.mpStyle .inputInline .inputList:last-child {
+		margin-right: 0;
+	}
+	/********Form Horizontal**************/
+	.mpStyle .inputHorizontal {
+		max-width: 500px;
+		width: 100%;
+		margin: 0 auto;
+	}
+	/**********Checkbox Radio*********/
+	div.mpStyle .customRadioLabel {
+		font-size: var(--fs_h6);
+		font-weight: var(--fw-medium);
+		-webkit-flex-wrap: wrap;
+		flex-wrap: wrap;
+	}
+	div.mpStyle .customRadioLabel input[type="radio"] ~ .formControl,
+	.mpStyle .customRadioLabel input[type="radio"] {
+		display: none;
+	}
+	.mpStyle .customRadio {
+		padding: 0 var(--dmp_xs) 0 30px;
+		margin: 0 var(--dmp_xs) var(--dmp_xs) 0;
+		position: relative;
+		cursor: pointer;
+		line-height: 1;
+		white-space: nowrap;
+		min-height: 20px;
+	}
+	.mpStyle .customRadio::before {
+		content: "";
+		position: absolute;
+		left: 0;
+		top: 0;
+		height: 20px;
+		width: 20px;
+		background-color: #fff;
+		border: 2px rgba(0, 0, 0, 0.5) solid;
+		border-radius: 50%;
+	}
+	.mpStyle .customRadioLabel input[type="radio"]:checked ~ .formControl {
+		display: block;
+	}
+	.mpStyle .customRadioLabel input[type="radio"]:checked ~ .customRadio::after,
+	.mpStyle .customRadio.active::after {
+		content: "";
+		position: absolute;
+		left: 5px;
+		top: 5px;
+		height: 10px;
+		width: 10px;
+		background-color: var(--color_theme);
+		border: 1px solid rgba(0, 0, 0, 0.5);
+		border-radius: 50%;
+	}
+	.mpStyle .customRadio.button_type {
+		padding: var(--dmp_xs);
+		margin: 5px;
+		min-width: 120px;
+		text-align: center;
+		border: 1px solid var(--color_theme_alter);
+		color: var(--color_theme_alter);
+		background-color: var(--color_theme);
+	}
+	.mpStyle .customRadio.button_type.active {
+		background-color: grey;
+		color: var(--color_theme_alter);
+	}
+	.mpStyle .customRadio.button_type::before,
+	.mpStyle .customRadio.button_type::after {
+		display: none;
+	}
+	/**********Checkbox Custom*********/
+	.mpStyle .customCheckbox {
+		padding: 3px 0 0 28px;
+		position: relative;
+		line-height: 1;
+		min-width: auto;
+		white-space: wrap;
+		margin-right: 5px;
+	}
+	.mpStyle .customCheckbox::before {
+		content: "";
+		position: absolute;
+		left: 0;
+		top: 0;
+		height: 20px;
+		width: 20px;
+		background-color: var(--color_theme_alter);
+		border: 2px solid var(--color_theme_aa);
+		border-radius: 2px;
+	}
+	.mpStyle .customCheckboxLabel {
+		/*padding: 0 0 10px 0;*/
+		margin-bottom: 15px;
+		cursor: pointer;
+		font-weight: var(--fw-medium);
+	}
+	.mpStyle .customCheckboxLabel input:checked ~ .customCheckbox::before {
+		background: var(--color_theme);
+	}
+	/*******************/
+	div.mpStyle .selectCheckbox {
+		min-width: 150px;
+		padding: var(--dmp_xs);
+		width: auto;
+		border: 1px solid var(--color_border);
+		cursor: pointer;
+	}
+	div.mpStyle .customCheckboxLabel input[type="checkbox"],
+	div.mpStyle .selectCheckbox input[type="checkbox"] {
+		display: none;
+	}
+	div.mpStyle .selectCheckbox .customCheckbox::before {
+		border: none;
+		background-color: transparent;
+	}
+	div.mpStyle .customCheckboxLabel input:focus ~ .customCheckbox::before,
+	div.mpStyle .selectCheckbox input:focus ~ .customCheckbox::before {
+		outline: 0;
+	}
+	div.mpStyle .customCheckboxLabel input:checked ~ .customCheckbox::after,
+	div.mpStyle .selectCheckbox input:checked ~ .customCheckbox::after {
+		content: "";
+		position: absolute;
+		left: 2px;
+		top: 4px;
+		height: 8px;
+		width: 16px;
+		border: 2px solid var(--color_theme_alter);
+		border-top: none;
+		border-right: none;
+		z-index: 11;
+		background-color: transparent;
+		-ms-transform: rotate(-45deg);
+		transform: rotate(-45deg);
+	}
+	div.mpStyle .active_select {
+		background-color: var(--color_theme);
+		color: var(--color_theme_alter);
+	}
+	div.mpStyle .customCheckboxLabel.only_checkbox {
+		width: 20px;
+		margin: 0;
+	}
+	div.mpStyle .customCheckboxLabel.only_checkbox span {
+		padding: 0;
+	}
+	/*********Input Switch*******/
+	.mpStyle .roundSwitchLabel input[type="checkbox"] {
+		display: none;
+		line-height: 0;
+	}
+	.mpStyle .roundSwitch {
+		width: 50px;
+		height: 25px;
+		min-width: auto;
+		position: relative;
+		background-color: #ccc;
+		border-radius: 30px;
+		-webkit-transition: 0.4s;
+		transition: 0.4s;
+	}
+	.mpStyle .roundSwitch::before {
+		position: absolute;
+		content: "";
+		height: 23px;
+		width: 23px;
+		left: 1px;
+		bottom: 1px;
+		background-color: white;
+		border-radius: 50%;
+		-webkit-transition: 0.4s;
+		transition: 0.4s;
+	}
+	.mpStyle .roundSwitchLabel input:checked + .roundSwitch {
+		background-color: var(--color_theme);
+	}
+	.mpStyle .roundSwitchLabel input:focus + .roundSwitch {
+		box-shadow: 0 0 1px #2276d2;
+	}
+	.mpStyle .roundSwitchLabel input:checked + .roundSwitch:before {
+		-ms-transform: translateX(28px);
+		transform: translateX(28px);
+	}
+	/*********Group radio check*******/
+	.groupRadioCheck [data-radio-check] {
+		cursor: pointer;
+		-webkit-justify-content: flex-start;
+		justify-content: flex-start;
+	}
+	.groupRadioCheck button[data-radio-check] {
+		-webkit-justify-content: center;
+		justify-content: center;
+	}
+	.groupRadioCheck [data-radio-check]:hover {
+		border-color: var(--color_theme_88);
+	}
+	.groupRadioCheck [data-radio-check].mpActive {
+		border-color: var(--color_theme);
+	}
+	/*********Group Content*******/
+	.mpStyle .groupContent {
+		font-size: var(--fs);
+		/*border: 1px solid var(--color_border);*/
+		/*background-color: var(--color_theme);*/
+		color: var(--color_theme_alter);
+		text-align: center;
+		position: relative;
+		display: flex;
+		align-items: center;
+		gap: 5px;
+		justify-content: center;
+	}
+	div.mpStyle div.groupContent > * {
+		border: 1px solid var(--color_border);
+		margin-bottom: 0;
+		border-radius: 4px;
+
+	}
+	/*div.mpStyle div.groupContent > *:first-child {*/
+	/*	border: none;*/
+	/*}*/
+	div.mpStyle div.groupContent .formControl {
+		text-align: center;
+		border: none;
+		background-color: var(--color_white);
+		border-radius: 4px;
+		padding: 5px;
+		height: 40px;
+		margin-bottom: 0 !important;
+		width: 50px;
+		min-width: 35px;
+	}
+
+
+	.mpStyle .groupContent textarea.formControl {
+		text-align: left;
+	}
+	.mpStyle .groupContent input[type="radio"] {
+	}
+	.mpStyle .groupContent input[type="radio"]::after {
+		position: absolute;
+		content: "";
+		width: 20px;
+		height: 20px;
+		left: 0;
+		top: 0;
+		border: 1px solid var(--color_border);
+		border-radius: 50%;
+		margin: 10px;
+	}
+	div.mpStyle .groupContent input[type="radio"]:checked::after {
+		border-color: var(--color_theme);
+	}
+	.mpStyle .groupContent input[type="radio"]:checked::before {
+		position: absolute;
+		content: "";
+		width: 14px;
+		height: 14px;
+		left: 3px;
+		top: 3px;
+		border: 1px solid var(--color_theme);
+		border-radius: 50%;
+		background-color: var(--color_theme);
+		margin: 10px;
+	}
+	.mpStyle .addonGroupContent {
+		min-width: 40px;
+		cursor: pointer;
+		background-color: #fff;
+		color: var(--d_color);
+		height: 40px;
+		font-size: 13px;
+		border-radius: 4px;
+		transition: all 0.3s ease-in-out;
+	}
+	.mpStyle .addonGroupContent:hover {
+		background-color: var(--d_color);
+		border-color: var(--d_color);
+		color: #f2f2f2;
+	}
+	.mpStyle
+	.groupContent
+	.select2-container--default
+	.select2-selection--single {
+		border: none;
+		border-radius: 0;
+	}
+	/*****Form Qty inc dec*******/
+	.mpStyle .qtyIncDec {
+		max-width: 110px;
+	}
+	/**********Responsive*********/
+	@media only screen and (max-width: 1250px) {
+		.mpStyle .inputInline .inputList {
+			max-width: calc(25% - 10px);
+		}
+	}
+	@media only screen and (max-width: 1050px) {
+		.mpStyle .inputInline .mpForm {
+			-webkit-flex-wrap: wrap;
+			flex-wrap: wrap;
+		}
+		.mpStyle .inputInline .inputList {
+			max-width: calc(33.33% - 10px);
+			-webkit-flex: inherit;
+			flex: inherit;
+		}
+	}
+	@media only screen and (max-width: 850px) {
+		.mpStyle .inputInline .inputList {
+			max-width: calc(50% - 10px);
+		}
+	}
+	@media only screen and (max-width: 600px) {
+		.mpStyle .inputInline .inputList {
+			max-width: 100%;
+			min-width: 100%;
+		}
+	}
+	@media only screen and (max-width: 450px) {
+		.mpStyle .addonGroupContent {
+			min-width: 25px;
+		}
+	}
 }
-
-div.mpStyle textarea.formControl {
-    height: auto;
-}
-
-.mpStyle .mpForm label {
-    margin: var(--dmp_xs) 0 0 0;
-    text-transform: capitalize;
-}
-
-.mpStyle .mpForm label span {
-    width: 100%;
-    margin: 0 0 var(--dmp_xs) 0;
-}
-
-.mpStyle .mpForm label span::before {
-    padding: 0 var(--dmp_xs);
-}
-
-/****************/
-.mpStyle .inputList {
-    margin: var(--dmp) 0 0 0;
-    position: relative;
-}
-
-.mpStyle .inputList textarea.formControl {
-    height: auto;
-}
-
-/******* group form*********/
-.mpStyle .inputGroup {
-    width: 100%;
-    padding: 0 0 var(--dmp_xs) 0;
-}
-
-.mpStyle .inputGroup label {
-    width: auto;
-    padding: 0 var(--dmp) 0 0;
-}
-
-.mpStyle .inputGroup label input[type="checkbox"] {
-    margin: 0 var(--dmp_xs);
-}
-
-/******* input as a select*********/
-div.mpStyle div.mp_input_select .formControl:focus {
-    border-color: var(--color_border);
-}
-
-.mpStyle div.mp_input_select {
-    position: relative;
-}
-
-.mpStyle ul.mp_input_select_list {
-    display: none;
-    z-index: 111;
-    overflow: auto;
-    max-height: 250px;
-    height: auto;
-    width: 100%;
-    margin: 1px 0 0 0;
-    padding: 10px;
-    position: absolute;
-    left: 0;
-    top: 100%;
-    right: 0;
-    border: 1px solid var(--color_border);
-    background-color: var(--color_white);
-}
-
-.mpStyle ul.mp_input_select_list li {
-    padding: 10px;
-    cursor: pointer;
-    border-bottom: 1px solid var(--color_border);
-    margin: 0;
-    list-style-type: none;
-}
-
-.mpStyle ul.mp_input_select_list li:last-child {
-    border-bottom: none;
-}
-
-.mpStyle ul.mp_input_select_list li:hover {
-    background-color: #777;
-    color: #fff;
-}
-
-.mpStyle ul.mp_input_select_list li span {
-    margin: 0 var(--dmp_xs) 0 0;
-}
-
-/*****Form inline*******/
-.mpStyle .inputInline .mpForm {
-    width: 100%;
-    max-width: 100%;
-}
-
-.mpStyle .inputInline .inputList {
-    width: 100%;
-    margin: var(--dmp_xs) var(--dmp_xs) 0 0;
-}
-
-.mpStyle .inputInline .inputList label {
-    margin: 0;
-}
-
-.mpStyle .inputInline .inputList:last-child {
-    margin-right: 0;
-}
-
-/********Form Horizontal**************/
-.mpStyle .inputHorizontal {
-    max-width: 500px;
-    width: 100%;
-    margin: 0 auto;
-}
-
-/**********Checkbox Radio*********/
-div.mpStyle .customRadioLabel {
-    font-size: var(--fs_h6);
-    font-weight: var(--fw-medium);
-    -webkit-flex-wrap: wrap;
-    flex-wrap: wrap;
-}
-
-div.mpStyle .customRadioLabel input[type="radio"] ~ .formControl,
-.mpStyle .customRadioLabel input[type="radio"] {
-    display: none;
-}
-
-.mpStyle .customRadio {
-    padding: 0 var(--dmp_xs) 0 30px;
-    margin: 0 var(--dmp_xs) var(--dmp_xs) 0;
-    position: relative;
-    cursor: pointer;
-    line-height: 1;
-    white-space: nowrap;
-    min-height: 20px;
-}
-
-.mpStyle .customRadio::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 20px;
-    width: 20px;
-    background-color: #fff;
-    border: 2px rgba(0, 0, 0, 0.5) solid;
-    border-radius: 50%;
-}
-
-.mpStyle .customRadioLabel input[type="radio"]:checked ~ .formControl {
-    display: block;
-}
-
-.mpStyle .customRadioLabel input[type="radio"]:checked ~ .customRadio::after,
-.mpStyle .customRadio.active::after {
-    content: "";
-    position: absolute;
-    left: 5px;
-    top: 5px;
-    height: 10px;
-    width: 10px;
-    background-color: var(--color_theme);
-    border: 1px solid rgba(0, 0, 0, 0.5);
-    border-radius: 50%;
-}
-
-.mpStyle .customRadio.button_type {
-    padding: var(--dmp_xs);
-    margin: 5px;
-    min-width: 120px;
-    text-align: center;
-    border: 1px solid var(--color_theme_alter);
-    color: var(--color_theme_alter);
-    background-color: var(--color_theme);
-}
-
-.mpStyle .customRadio.button_type.active {
-    background-color: grey;
-    color: var(--color_theme_alter);
-}
-
-.mpStyle .customRadio.button_type::before,
-.mpStyle .customRadio.button_type::after {
-    display: none;
-}
-
-/**********Checkbox Custom*********/
-.mpStyle .customCheckbox {
-    padding: 3px 0 0 28px;
-    position: relative;
-    line-height: 1;
-    min-width: auto;
-    white-space: wrap;
-    margin-right: 5px;
-}
-
-.mpStyle .customCheckbox::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 18px;
-    width: 18px;
-    background-color: var(--color_theme_alter);
-    border: 1.5px solid var(--color_black);
-    border-radius: 2px;
-}
-
-.mpStyle .customCheckboxLabel {
-    /*padding: 0 0 10px 0;*/
-    margin-bottom: 10px;
-    cursor: pointer;
-    font-weight: var(--fw-medium);
-}
-
-.mpStyle .customCheckboxLabel input:checked ~ .customCheckbox::before {
-    background: var(--color_theme);
-    border-color: var(--color_theme);
-}
-
-/*******************/
-div.mpStyle .selectCheckbox {
-    min-width: 150px;
-    padding: var(--dmp_xs);
-    width: auto;
-    border: 1px solid var(--color_border);
-    cursor: pointer;
-}
-
-div.mpStyle .customCheckboxLabel input[type="checkbox"],
-div.mpStyle .selectCheckbox input[type="checkbox"] {
-    display: none;
-}
-
-div.mpStyle .selectCheckbox .customCheckbox::before {
-    border: none;
-    background-color: transparent;
-}
-
-div.mpStyle .customCheckboxLabel input:focus ~ .customCheckbox::before,
-div.mpStyle .selectCheckbox input:focus ~ .customCheckbox::before {
-    outline: 0;
-}
-
-div.mpStyle .customCheckboxLabel input:checked ~ .customCheckbox::after,
-div.mpStyle .selectCheckbox input:checked ~ .customCheckbox::after {
-    content: "";
-    position: absolute;
-    left: 3.5px;
-    top: 5px;
-    height: 6px;
-    width: 10px;
-    border: 2px solid var(--color_theme_alter);
-    border-top: none;
-    border-right: none;
-    z-index: 11;
-    background-color: transparent;
-    -ms-transform: rotate(-45deg);
-    transform: rotate(-45deg);
-}
-
-div.mpStyle .active_select {
-    background-color: var(--color_theme);
-    color: var(--color_theme_alter);
-}
-
-div.mpStyle .customCheckboxLabel.only_checkbox {
-    width: 20px;
-    margin: 0;
-}
-
-div.mpStyle .customCheckboxLabel.only_checkbox span {
-    padding: 0;
-}
-
-/*********Input Switch*******/
-.mpStyle .roundSwitchLabel input[type="checkbox"] {
-    display: none;
-    line-height: 0;
-}
-
-.mpStyle .roundSwitch {
-    width: 50px;
-    height: 25px;
-    min-width: auto;
-    position: relative;
-    background-color: #ccc;
-    border-radius: 30px;
-    -webkit-transition: 0.4s;
-    transition: 0.4s;
-}
-
-.mpStyle .roundSwitch::before {
-    position: absolute;
-    content: "";
-    height: 23px;
-    width: 23px;
-    left: 1px;
-    bottom: 1px;
-    background-color: white;
-    border-radius: 50%;
-    -webkit-transition: 0.4s;
-    transition: 0.4s;
-}
-
-.mpStyle .roundSwitchLabel input:checked + .roundSwitch {
-    background-color: var(--color_theme);
-}
-
-.mpStyle .roundSwitchLabel input:focus + .roundSwitch {
-    box-shadow: 0 0 1px #2276d2;
-}
-
-.mpStyle .roundSwitchLabel input:checked + .roundSwitch:before {
-    -ms-transform: translateX(28px);
-    transform: translateX(28px);
-}
-
-/*********Group radio check*******/
-.groupRadioCheck [data-radio-check] {
-    cursor: pointer;
-    -webkit-justify-content: flex-start;
-    justify-content: flex-start;
-}
-
-.groupRadioCheck button[data-radio-check] {
-    -webkit-justify-content: center;
-    justify-content: center;
-}
-
-.groupRadioCheck [data-radio-check]:hover {
-    border-color: var(--color_theme_88);
-}
-
-.groupRadioCheck [data-radio-check].mpActive {
-    border-color: var(--color_theme);
-}
-
-/*********Group Content*******/
-.mpStyle .groupContent {
-    font-size: var(--fs);
-    /*border: 1px solid var(--color_border);*/
-    /*background-color: var(--color_theme);*/
-    color: var(--color_theme_alter);
-    text-align: center;
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    justify-content: center;
-}
-
-div.mpStyle div.groupContent > * {
-    border: 1px solid var(--color_border);
-    margin-bottom: 0;
-    border-radius: 4px;
-
-}
-
-/*div.mpStyle div.groupContent > *:first-child {*/
-/*	border: none;*/
-/*}*/
-div.mpStyle div.groupContent .formControl {
-    text-align: center;
-    border: none;
-    background-color: var(--color_white);
-    border-radius: 4px;
-    padding: 5px;
-    height: 40px;
-    margin-bottom: 0 !important;
-    width: 50px;
-    min-width: 35px;
-}
-
-
-.mpStyle .groupContent textarea.formControl {
-    text-align: left;
-}
-
-.mpStyle .groupContent input[type="radio"] {
-}
-
-.mpStyle .groupContent input[type="radio"]::after {
-    position: absolute;
-    content: "";
-    width: 20px;
-    height: 20px;
-    left: 0;
-    top: 0;
-    border: 1px solid var(--color_border);
-    border-radius: 50%;
-    margin: 10px;
-}
-
-div.mpStyle .groupContent input[type="radio"]:checked::after {
-    border-color: var(--color_theme);
-}
-
-.mpStyle .groupContent input[type="radio"]:checked::before {
-    position: absolute;
-    content: "";
-    width: 14px;
-    height: 14px;
-    left: 3px;
-    top: 3px;
-    border: 1px solid var(--color_theme);
-    border-radius: 50%;
-    background-color: var(--color_theme);
-    margin: 10px;
-}
-
-.mpStyle .addonGroupContent {
-    min-width: 40px;
-    cursor: pointer;
-    background-color: #fff;
-    color: var(--d_color);
-    height: 40px;
-    font-size: 13px;
-    border-radius: 4px;
-    transition: all 0.3s ease-in-out;
-}
-
-.mpStyle .addonGroupContent:hover {
-    background-color: var(--d_color);
-    border-color: var(--d_color);
-    color: #f2f2f2;
-}
-
-.mpStyle
-.groupContent
-.select2-container--default
-.select2-selection--single {
-    border: none;
-    border-radius: 0;
-}
-
-/*****Form Qty inc dec*******/
-.mpStyle .qtyIncDec {
-    max-width: 110px;
-}
-
-/**********Responsive*********/
-@media only screen and (max-width: 1250px) {
-    .mpStyle .inputInline .inputList {
-        max-width: calc(25% - 10px);
-    }
-}
-
-@media only screen and (max-width: 1050px) {
-    .mpStyle .inputInline .mpForm {
-        -webkit-flex-wrap: wrap;
-        flex-wrap: wrap;
-    }
-
-    .mpStyle .inputInline .inputList {
-        max-width: calc(33.33% - 10px);
-        -webkit-flex: inherit;
-        flex: inherit;
-    }
-}
-
-@media only screen and (max-width: 850px) {
-    .mpStyle .inputInline .inputList {
-        max-width: calc(50% - 10px);
-    }
-}
-
-@media only screen and (max-width: 600px) {
-    .mpStyle .inputInline .inputList {
-        max-width: 100%;
-        min-width: 100%;
-    }
-}
-
-@media only screen and (max-width: 450px) {
-    .mpStyle .addonGroupContent {
-        min-width: 25px;
-    }
-}
-
-
 /******************************************************************** List section ************************************************/
 @media only screen and (min-width: 10px) {
 	.mpStyle ul:not(.mp_wp_editor ul) {
@@ -3635,6 +3590,15 @@ div.mpStyle .groupContent input[type="radio"]:checked::after {
 	div.mpStyle [class*="_bgWarning"] {
 		background-color: var(--color_warning);
 	}
+
+	.filter_item [class*="_bgWarning"] {
+		border-radius: 0 5px 0 5px;
+	}
+
+	.filter_item .fdColumn .ttbm_list_info:not(:last-child) {
+		border-radius: 0 5px 0 0;
+	}
+
 	/*****required*********/
 	div.mpStyle .textRequired,
 	div.mpStyle [class*="_textRequired"] {
@@ -3774,6 +3738,7 @@ div.mpStyle .groupContent input[type="radio"]:checked::after {
 	div.mpStyle .textColor_1,
 	div.mpStyle [class*="_textColor_1"] {
 		color: var(--color_1);
+
 	}
 	div.mpStyle .bgColor_1,
 	div.mpStyle [class*="_bgColor_1"] {
@@ -3988,22 +3953,29 @@ div.mpStyle .groupContent input[type="radio"]:checked::after {
 @media only screen and (min-width: 10px) {
 	table.ui-datepicker-calendar{
 		border-collapse: collapse;
+		margin-top: 0 !important;
+		margin-bottom: 0 !important;
 	}
 	#ui-datepicker-div {
-		padding:2px;
+		/*padding:2px;*/
 		background-color: #fff;
-		box-shadow: 0 0 5px #ddd;
+		/*box-shadow: 0 0 5px #ddd;*/
+		box-shadow: 0 10px 30px  rgba(var(--color_theme_rgb), 0.3);
+		/*border: 1px solid #f12a7140;*/
+		border: 1px solid rgba(var(--color_theme), 0.5);
+		border-radius: 10px;
+		overflow: hidden;
 	}
 	table.ui-datepicker-calendar th{
 		padding: 10px;
-		background-color:var(--mpl-secondary);
+		background-color:var(--color_theme);
 		color: var(--mpl-white);
-		border: 1px solid var(--mpl-secondary);
+		border: 1px solid rgba(255, 255,255, 0.2);
 	}
 	#ui-datepicker-div .ui-datepicker-header {
-		background-color: var(--color_theme);
+		background-color: var(--color_black);
 		background-image: none;
-		border:1px solid var(--color_theme);
+		/*border:1px solid var(--color_theme);*/
 		padding: var(--dmp_xs);
 		color: var(--color_theme_alter);
 		border-radius: 0;
@@ -4017,20 +3989,22 @@ div.mpStyle .groupContent input[type="radio"]:checked::after {
 		display: none;
 	}
 	#ui-datepicker-div .ui-datepicker-prev {
-		top: 14px;
+		top: 10px;
 		left: 10px;
 		height: 30px;
 		width: 30px;
 		position: absolute;
 		border: 1px solid var(--mpl-white);
+		cursor: pointer;
 	}
 	#ui-datepicker-div .ui-datepicker-next {
-		top: 14px;
+		top: 10px;
 		right: 10px;
 		height: 30px;
 		width: 30px;
 		position: absolute;
 		border: 1px solid var(--mpl-white);
+		cursor: pointer;
 	}
 	#ui-datepicker-div .ui-datepicker-prev:hover,
 	#ui-datepicker-div .ui-datepicker-prev:focus,
@@ -4086,7 +4060,7 @@ div.mpStyle .groupContent input[type="radio"]:checked::after {
 		background-image: none;
 	}
 	#ui-datepicker-div .ui-datepicker-title {
-		background-color: var(--color_theme);
+		/*background-color: var(--color_theme);*/
 		color: var(--color_theme_alter);
 		background-image: none;
 		font-size: var(--fs_h5);
@@ -4100,10 +4074,15 @@ div.mpStyle .groupContent input[type="radio"]:checked::after {
 		font-size: var(--fs);
 		padding: 0 var(--dmp_xs);
 		text-align: left;
+		color: var(--d_color);
+		border-radius: 6px;
+		border: 0;
+		margin: 0 3px;
 	}
 	#ui-datepicker-div.ui-datepicker td {
-		background-color: floralwhite;
-		border: 1px solid var(--color_theme);
+		background-color: rgba(var(--color_theme_rgb), 0.1);
+		color: var(--color_white);
+		border: 1px solid rgba(var(--color_theme_rgb), 0.2);
 		padding: 4px 6px;
 	}
 }
@@ -4113,9 +4092,20 @@ div.mpStyle .groupContent input[type="radio"]:checked::after {
 		border: 1px solid var(--color_border);
 		border-bottom: 0;
 	}
-	.component:last-child{
-		border: 1px solid var(--color_border);
+
+	.ttbm_attendee_form_area {
+		margin-bottom: 20px;
+		background: #fff;
 	}
+
+	.ttbm_attendee_form_area .component {
+		border: 1px solid var(--color_border);
+		padding: 10px;
+	}
+
+	/*.component:last-child{*/
+	/*	border: 1px solid var(--color_border);*/
+	/*}*/
 }
 /* ***********************location********************* */
 .ttbm_location_image{
