@@ -449,3 +449,8 @@ Bug Fixed
 Style fixing.
 Bug Fixed
 - 23 Aug 2024*
+
+
+= 1.8.6 =
+Security Issue fixed.
+- 12 Dec 2024*
