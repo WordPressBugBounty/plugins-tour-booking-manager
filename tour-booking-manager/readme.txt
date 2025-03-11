@@ -449,3 +449,10 @@ Bug Fixed
 Style fixing.
 Bug Fixed
 - 23 Aug 2024*
+
+
+= 1.8.9 =
+PHP 8.3 Warning fixed
+Security Issue Fixed
+Code Optimized
+- 11 March 2025*
