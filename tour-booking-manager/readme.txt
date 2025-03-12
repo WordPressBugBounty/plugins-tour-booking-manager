@@ -4,7 +4,7 @@ Plugin link: https://mage-people.com/
 Tags: tour-booking, tour-operator, travel, travel-booking, travel-agency
 Requires at least: 4.4.0
 Tested up to: 6.7.1
-Requires PHP: 7.0
+Requires PHP: 8.0
 Stable tag: 1.8.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -456,3 +456,8 @@ PHP 8.3 Warning fixed
 Security Issue Fixed
 Code Optimized
 - 11 March 2025*
+
+
+= 1.9.0 =
+Code Optimized
+- 12 March 2025*
