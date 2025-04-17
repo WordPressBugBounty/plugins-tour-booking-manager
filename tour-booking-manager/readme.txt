@@ -3,7 +3,7 @@ Contributors: magepeopleteam, aamahin
 Plugin link: https://mage-people.com/
 Tags: tour-booking, tour-operator, travel, travel-booking, travel-agency
 Requires at least: 4.4.0
-Tested up to: 6.7.1
+Tested up to: 6.8
 Requires PHP: 8.0
 Stable tag: 1.8.5
 License: GPLv3
