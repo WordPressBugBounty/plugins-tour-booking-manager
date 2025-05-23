@@ -10,13 +10,13 @@
 			}
 			public function hotel_settings_meta() {
 				$ttbm_label = TTBM_Function::get_name();
-				add_meta_box('mp_meta_box_panel', '<span class="fas fa-hotel"></span>' . $ttbm_label . esc_html__(' Hotel Settings : ', 'tour-booking-manager') . get_the_title(get_the_id()), array($this, 'hotel_settings'), 'ttbm_hotel', 'normal', 'high');
+				add_meta_box('ttbm_meta_box_panel', '<span class="fas fa-hotel"></span>' . $ttbm_label . esc_html__(' Hotel Settings : ', 'tour-booking-manager') . get_the_title(get_the_id()), array($this, 'hotel_settings'), 'ttbm_hotel', 'normal', 'high');
 			}
 			public function hotel_settings() {
 				$hotel_id = get_the_id();
 				?>
-				<div class="mpStyle ttbm_settings">
-					<div class="mpTabs leftTabs">
+				<div class="ttbm_style ttbm_settings">
+					<div class="ttbmTabs leftTabs">
 						<ul class="tabLists">
 							<li data-tabs-target="#ttbm_general_info">
 								<span class="fas fa-cog"></span><?php esc_html_e('General Info', 'tour-booking-manager'); ?>
@@ -26,6 +26,9 @@
 							</li>
 							<li data-tabs-target="#ttbm_settings_feature">
 								<span class="fas fa-tasks"></span><?php esc_html_e(' Features', 'tour-booking-manager'); ?>
+							</li>
+							<li data-tabs-target="#ttbm_settings_gallery">
+								<span class="fas fa-images"></span><?php esc_html_e(' Hotel Gallery', 'tour-booking-manager'); ?>
 							</li>
 						</ul>
 						<div class="tabsContent tab-content">
@@ -45,6 +48,7 @@
 				if (get_post_type($post_id) == 'ttbm_hotel') {
 					do_action('ttbm_settings_feature_save', $post_id);
 					do_action('ttbm_hotel_settings_save', $post_id);
+					do_action('ttbm_settings_gallery_save', $post_id);
 				}
 			}
 		}

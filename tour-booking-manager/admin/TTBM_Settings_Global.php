@@ -6,29 +6,41 @@
 		class TTBM_Settings_Global {
 			protected $settings_api;
 			public function __construct() {
-				$this->settings_api = new MAGE_Setting_API;
+				$this->settings_api = new TTBM_Setting_API;
 				add_action('admin_menu', array($this, 'global_settings_menu'));
+				add_filter('admin_body_class', [$this,'add_admin_body_class']);
 				add_action('admin_init', array($this, 'admin_init'));
-				add_filter('mp_settings_sec_reg', array($this, 'settings_sec_reg'), 30);
-				add_filter('mp_settings_sec_reg', array($this, 'slider_sec_reg'), 80);
-				add_filter('mp_settings_sec_fields', array($this, 'settings_sec_fields'), 30);
+				add_filter('ttbm_settings_sec_reg', array($this, 'settings_sec_reg'), 30);
+				add_filter('ttbm_settings_sec_reg', array($this, 'slider_sec_reg'), 80);
+				add_filter('ttbm_settings_sec_fields', array($this, 'settings_sec_fields'), 30);
 			}
 			public function global_settings_menu() {
 				$label = TTBM_Function::get_name();
 				add_submenu_page('edit.php?post_type=ttbm_tour', $label . esc_html__(' Settings', 'tour-booking-manager'), $label . esc_html__(' Settings', 'tour-booking-manager'), 'manage_options', 'ttbm_settings_page', array($this, 'settings_page'));
 			}
+			public function add_admin_body_class($classes) {
+				$screen = get_current_screen();
+				if ($screen->id == 'ttbm_tour_page_ttbm_settings_page') {
+					$classes .= ' ttbm_settings_page';
+				}
+				return $classes;
+			}
 			public function settings_page() {
 				?>
-                <div class="mpStyle mp_global_settings">
-                    <div class="mpPanel">
-                        <div class="mpPanelHeader"><?php echo esc_html(esc_html__(' Global Settings', 'tour-booking-manager')); ?></div>
-                        <div class="mpPanelBody mp_zero">
-                            <div class="mpTabs leftTabs">
-								<?php $this->settings_api->show_navigation(); ?>
-                                <div class="tabsContent">
+                <div class="ttbm_style ttbm_global_settings">
+                    <div class="ttbmPanel">
+                        <div class="ttbmPanelHeader"><?php echo esc_html(esc_html__(' Global Settings', 'tour-booking-manager')); ?></div>
+                        <div class="ttbmPanelBody mp_zero">
+                            <div class="ttbmTabs">
+								<div class="leftTabs">
+									<?php $this->settings_api->show_navigation(); ?>
+								</div>
+								
+								<div class="tabsContent">
 									<?php $this->settings_api->show_forms(); ?>
-                                </div>
-                            </div>
+								</div>
+								
+							</div>
                         </div>
                     </div>
                 </div>
@@ -41,11 +53,11 @@
 			}
 			public function get_settings_sections() {
 				$sections = array();
-				return apply_filters('mp_settings_sec_reg', $sections);
+				return apply_filters('ttbm_settings_sec_reg', $sections);
 			}
 			public function get_settings_fields() {
 				$settings_fields = array();
-				return apply_filters('mp_settings_sec_fields', $settings_fields);
+				return apply_filters('ttbm_settings_sec_fields', $settings_fields);
 			}
 			public function settings_sec_reg($default_sec): array {
 				$label = TTBM_Function::get_name();
@@ -69,7 +81,7 @@
 			public function slider_sec_reg($default_sec): array {
 				$sections = array(
 					array(
-						'id' => 'mp_slider_settings',
+						'id' => 'ttbm_slider_settings',
 						'title' => __('Slider Settings', 'tour-booking-manager')
 					)
 				);
@@ -342,7 +354,7 @@
 							'default' => ''
 						),
 					)),
-					'mp_slider_settings' => array(
+					'ttbm_slider_settings' => array(
 						array(
 							'name' => 'slider_type',
 							'label' => esc_html__('Slider Type', 'tour-booking-manager'),

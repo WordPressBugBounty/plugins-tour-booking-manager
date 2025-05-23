@@ -12,14 +12,14 @@
 			//************************//
 			public function settings_meta() {
 				$label = TTBM_Function::get_name();
-				add_meta_box('mp_meta_box_panel', '' . $label . esc_html__(' Information Settings : ', 'tour-booking-manager') . get_the_title(get_the_id()), array($this, 'settings'), 'ttbm_tour', 'normal', 'high');
+				add_meta_box('ttbm_meta_box_panel', '' . $label . esc_html__(' Information Settings : ', 'tour-booking-manager') . get_the_title(get_the_id()), array($this, 'settings'), 'ttbm_tour', 'normal', 'high');
 			}
 			//******************************//
 			public function settings() {
 				$tour_id = get_the_id();
 				?>
-				<div class="mpStyle ttbm_settings">
-					<div class="mpTabs leftTabs d-flex justify-content-between">
+				<div class="ttbm_style ttbm_settings">
+					<div class="ttbmTabs leftTabs d-flex justify-content-between">
 						<ul class="tabLists">
 							<li data-tabs-target="#ttbm_general_info">
 								<i class="fas fa-tools"></i><?php esc_html_e('General Info', 'tour-booking-manager'); ?>
@@ -252,7 +252,7 @@
 				$ttbm_date_config_boxs_args = ['meta_box_id' => 'ttbm_travel_date_config_meta_boxes', 
 				'meta_box_title' => '<i class="far fa-calendar-plus"></i>' . __('Date Configuration', 'tour-booking-manager'), 'screen' => [TTBM_Function::get_cpt_name()], 'context' => 'normal', 'priority' => 'high', 'callback_args' => [], 'nav_position' => 'none', 'item_name' => "MagePeople", 'item_version' => "2.0", 'panels' => ['ttbm_date_config_meta_boxs' => $ttbm_date_info_boxs]];
 				new TtbmAddMetaBox($ttbm_date_config_boxs_args);
-				$ttbm_tax_meta_boxs = ['page_nav' => $tour_label . __('Tax', 'tour-booking-manager'), 'priority' => 10, 'sections' => ['section_2' => ['title' => __('Tax Settings', 'tour-booking-manager'), 'description' => __('', 'tour-booking-manager'), 'options' => [['id' => '_tax_status', 'title' => $tour_label . __(' Tax Status', 'tour-booking-manager'), 'details' => __('Please Select Tax Status', 'tour-booking-manager'), 'type' => 'select', 'class' => 'omg', 'default' => 'taxable', 'args' => ['taxable' => __('Taxable', 'tour-booking-manager'), 'shipping' => __('Shipping only', 'tour-booking-manager'), 'none' => __('None', 'tour-booking-manager')]], ['id' => '_tax_class', 'title' => $tour_label . __(' Tax Class', 'tour-booking-manager'), 'details' => __('Please Select Tax Class', 'tour-booking-manager'), 'type' => 'select', 'class' => 'omg', 'default' => 'none', 'args' => MP_Global_Function::all_tax_list()],]],],];
+				$ttbm_tax_meta_boxs = ['page_nav' => $tour_label . __('Tax', 'tour-booking-manager'), 'priority' => 10, 'sections' => ['section_2' => ['title' => __('Tax Settings', 'tour-booking-manager'), 'description' => __('', 'tour-booking-manager'), 'options' => [['id' => '_tax_status', 'title' => $tour_label . __(' Tax Status', 'tour-booking-manager'), 'details' => __('Please Select Tax Status', 'tour-booking-manager'), 'type' => 'select', 'class' => 'omg', 'default' => 'taxable', 'args' => ['taxable' => __('Taxable', 'tour-booking-manager'), 'shipping' => __('Shipping only', 'tour-booking-manager'), 'none' => __('None', 'tour-booking-manager')]], ['id' => '_tax_class', 'title' => $tour_label . __(' Tax Class', 'tour-booking-manager'), 'details' => __('Please Select Tax Class', 'tour-booking-manager'), 'type' => 'select', 'class' => 'omg', 'default' => 'none', 'args' => TTBM_Global_Function::all_tax_list()],]],],];
 				$ttbm_tax_meta_boxs_args = [
 					'meta_box_id' => 'ttbm_tax_meta_boxes',
 					'meta_box_title' => '<i class="fas fa-money-bill-wave"></i> ' . __('Tax', 'tour-booking-manager'),
@@ -318,6 +318,7 @@
 					'ttbm_activity_description' => esc_html__('The description is not prominent by default; however, some themes may show it.', 'tour-booking-manager'),
 					'ttbm_display_related' => esc_html__('Please select a related tour from this list.', 'tour-booking-manager'),
 					'ttbm_display_slider' => esc_html__('By default slider is ON but you can keep it off by switching this option', 'tour-booking-manager'),
+					'ttbm_display_slider_hotel' => esc_html__('By default slider is ON but you can keep it off by switching this option', 'tour-booking-manager'),
 					'ttbm_section_title_style' => esc_html__('By default Section title is style one', 'tour-booking-manager'),
 					'ttbm_ticketing_system' => esc_html__('Select ticket purchase system type.', 'tour-booking-manager'),
 					'ttip_ticketing_system' => esc_html__('By default, the ticket purchase system is open. Once you check the availability, you can choose the system that best suits your needs.', 'tour-booking-manager'),
@@ -332,6 +333,7 @@
 					'ttbm_contact_text' => esc_html__('Please Enter Contact Section Text', 'tour-booking-manager'),
 					'ttbm_contact_email' => esc_html__('Please Enter contact phone email', 'tour-booking-manager'),
 					'ttbm_gallery_images' => esc_html__('Please upload images for gallery', 'tour-booking-manager'),
+					'ttbm_gallery_images_hotel' => esc_html__('Please upload images for gallery', 'tour-booking-manager'),
 					'ttbm_type' => esc_html__('By default Type is General', 'tour-booking-manager'),
 					'ttbm_display_advance' => esc_html__('By default Advance option is Off but you can keep it On by switching this option', 'tour-booking-manager'),
 					'ttbm_display_extra_advance' => esc_html__('By default Advance option is on but you can keep it off by switching this option', 'tour-booking-manager'),
@@ -394,15 +396,16 @@
 				}
 				$this->save_map($tour_id);
 				if (get_post_type($tour_id) == TTBM_Function::get_cpt_name()) {
-					$content_title_style = MP_Global_Function::get_submit_info('ttbm_section_title_style') ?: 'style_1';
-					$ticketing_system = MP_Global_Function::get_submit_info('ttbm_ticketing_system', 'availability_section');
-					$seat_info = MP_Global_Function::get_submit_info('ttbm_display_seat_details') ? 'on' : 'off';
-					$sidebar = MP_Global_Function::get_submit_info('ttbm_display_sidebar') ? 'on' : 'off';
-					$tour_type = MP_Global_Function::get_submit_info('ttbm_display_tour_type') ? 'on' : 'off';
-					$hotels = MP_Global_Function::get_submit_info('ttbm_display_hotels') ? 'on' : 'off';
-					$duration = MP_Global_Function::get_submit_info('ttbm_display_duration') ? 'on' : 'off';
-					$ttbm_display_rank = MP_Global_Function::get_submit_info('ttbm_display_order_tour') ? 'on' : 'off';
-					$ttbm_travel_rank_tour = MP_Global_Function::get_submit_info('ttbm_travel_rank_tour');
+					$content_title_style = TTBM_Global_Function::get_submit_info('ttbm_section_title_style') ?: 'style_1';
+					$ticketing_system = TTBM_Global_Function::get_submit_info('ttbm_ticketing_system', 'availability_section');
+					$seat_info = TTBM_Global_Function::get_submit_info('ttbm_display_seat_details') ? 'on' : 'off';
+					$sidebar = TTBM_Global_Function::get_submit_info('ttbm_display_sidebar') ? 'on' : 'off';
+					$tour_type = TTBM_Global_Function::get_submit_info('ttbm_display_tour_type') ? 'on' : 'off';
+					$hotels = TTBM_Global_Function::get_submit_info('ttbm_display_hotels') ? 'on' : 'off';
+					$duration = TTBM_Global_Function::get_submit_info('ttbm_display_duration') ? 'on' : 'off';
+					$ttbm_display_rank = TTBM_Global_Function::get_submit_info('ttbm_display_order_tour') ? 'on' : 'off';
+					$ttbm_travel_rank_tour = TTBM_Global_Function::get_submit_info('ttbm_travel_rank_tour');
+					$display_enquiry= TTBM_Global_Function::get_submit_info('ttbm_display_enquiry') ? 'on' : 'off';
 					$ttbm_template= isset($_POST['ttbm_theme_file']) && $_POST['ttbm_theme_file']? sanitize_file_name($_POST['ttbm_theme_file']):'default.php';
 					update_post_meta($tour_id, 'ttbm_travel_rank_tour', $ttbm_travel_rank_tour);
 					update_post_meta($tour_id, 'ttbm_display_order_tour', $ttbm_display_rank);
@@ -414,6 +417,7 @@
 					update_post_meta($tour_id, 'ttbm_display_hotels', $hotels);
 					update_post_meta($tour_id, 'ttbm_display_duration', $duration);
 					update_post_meta($tour_id, 'ttbm_theme_file', $ttbm_template);
+					update_post_meta($tour_id, 'ttbm_display_enquiry', $display_enquiry);
 				}
 				do_action('wcpp_partial_settings_saved', $tour_id);
 				do_action('ttbm_settings_save', $tour_id);
@@ -421,9 +425,9 @@
 			}
 			public function save_map($tour_id) {
 				if (get_post_type($tour_id) == 'ttbm_places') {
-					$address = MP_Global_Function::get_submit_info('ttbm_place_address');
-					$lat = MP_Global_Function::get_submit_info('ttbm_place_lat');
-					$lon = MP_Global_Function::get_submit_info('ttbm_place_lon');
+					$address = TTBM_Global_Function::get_submit_info('ttbm_place_address');
+					$lat = TTBM_Global_Function::get_submit_info('ttbm_place_lat');
+					$lon = TTBM_Global_Function::get_submit_info('ttbm_place_lon');
 					update_post_meta($tour_id, 'ttbm_place_address', $address);
 					update_post_meta($tour_id, 'ttbm_place_lat', $lat);
 					update_post_meta($tour_id, 'ttbm_place_lon', $lon);

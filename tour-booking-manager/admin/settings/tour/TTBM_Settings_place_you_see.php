@@ -24,90 +24,72 @@
 			}
 			public function place_you_see_settings($tour_id) {
 				$ttbm_label = TTBM_Function::get_name();
-				$display = MP_Global_Function::get_post_info($tour_id, 'ttbm_display_hiphop', 'on');
+				$display = TTBM_Global_Function::get_post_info($tour_id, 'ttbm_display_hiphop', 'on');
 				$active = $display == 'off' ? '' : 'mActive';
 				$checked = $display == 'off' ? '' : 'checked';
 				?>
-				<div class="tabsItem mp_settings_area ttbm_settings_place_you_see" data-tabs="#ttbm_settings_place_you_see">
+				<div class="tabsItem ttbm_settings_area ttbm_settings_place_you_see" data-tabs="#ttbm_settings_place_you_see">
 					<h2><?php esc_html_e('Places You\'ll Visit', 'tour-booking-manager'); ?></h2>
                     <p><?php TTBM_Settings::des_p('places_visit_description'); ?> </p>
-					
-					<section class="bg-light">
-                        <label for="" class="label">
-							<div>
-								<p><?php esc_html_e('Place Settings', 'tour-booking-manager'); ?></p>
-								<span class="text"><?php esc_html_e('You can set your future places here.', 'tour-booking-manager'); ?></span>  
-							</div>
-						</label>
-                    </section>
 
 					<section>
-                        <div class="label">
-							<div>
-								<p><?php esc_html_e('Places You\'ll Visit ' . $ttbm_label . ' Settings', 'tour-booking-manager'); ?></p>
-								<span class="text"><?php TTBM_Settings::des_p('ttbm_display_hiphop'); ?></span>  
-							</div>
-							<?php MP_Custom_Layout::switch_button('ttbm_display_hiphop', $checked); ?>
+						<div class="ttbm-header">
+							<h4><i class="fas fa-map-marker-alt"></i><?php esc_html_e('Places You\'ll Visit', 'tour-booking-manager'); ?></h4>
+							<?php TTBM_Custom_Layout::switch_button('ttbm_display_hiphop', $checked); ?>
+						</div>
+						<div data-collapse="#ttbm_display_hiphop" class="ttbm_place_you_see_area <?php echo esc_attr($active); ?>">
+							<?php $this->place_you_see($tour_id); ?>
 						</div>
                     </section>
-
-					<div data-collapse="#ttbm_display_hiphop" class="ttbm_place_you_see_area <?php echo esc_attr($active); ?>">
-						<?php $this->place_you_see($tour_id); ?>
-					</div>
 				</div>
 				<?php
 			}
 			public function place_you_see($tour_id) {
-				$hiphop_places = MP_Global_Function::get_post_info($tour_id, 'ttbm_hiphop_places', array());
-				$all_places = MP_Global_Function::query_post_type('ttbm_places');
+				$hiphop_places = TTBM_Global_Function::get_post_info($tour_id, 'ttbm_hiphop_places', array());
+				$all_places = TTBM_Global_Function::query_post_type('ttbm_places');
 				$places = $all_places->posts;
 				?>
 				<div class="ttbm_place_you_see_table">
-					<section>
-						<label for="" class="label">
-							<div>
-								<p><?php esc_html_e('Create new place', 'tour-booking-manager'); ?></p>  
-								<span class="text"><?php TTBM_Settings::des_p('ttbm_place_you_see'); ?></span>  
-							</div>
-							<a href="edit.php?post_type=ttbm_places" ><?php esc_html_e('Create new place', 'tour-booking-manager'); ?></a>
-						</label>
-                    </section>
 					<?php if ($all_places->post_count > 0) { ?>
-						<section>
-							<div class="w-100">
-								<table class="mb-2">
-									<thead>
-										<tr>
-											<th class="text-start"><?php esc_html_e('Place Name', 'tour-booking-manager'); ?></th>
-											<th class="text-start"><?php esc_html_e('Place', 'tour-booking-manager'); ?></th>
-											<th class="text-center"><?php esc_html_e('Action', 'tour-booking-manager'); ?></th>
-										</tr>
-										</thead>
-										<tbody class="mp_sortable_area mp_item_insert">
-										<?php
-											if (sizeof($hiphop_places)) {
-												foreach ($hiphop_places as $hiphop_place) {
-													$this->place_you_see_item($places, $hiphop_place);
-												}
-											}
-											else {
-												$this->place_you_see_item($places);
-											}
-										?>
-									</tbody>
-								</table>
-								<?php MP_Custom_Layout::add_new_button(esc_html__('Add New Place', 'tour-booking-manager')); ?>
-								
+						<div>
+							<div class="label">
+								<p>
+									<?php esc_html_e('To create new place click', 'tour-booking-manager'); ?>
+									<a href="edit.php?post_type=ttbm_places" ><?php esc_html_e('Here', 'tour-booking-manager'); ?></a>
+									<i class="fas fa-question-circle tool-tips"><span><?php TTBM_Settings::des_p('ttbm_place_you_see'); ?></span></i>
+								</p>
 							</div>
-						</section>
+							<table>
+								<thead>
+									<tr>
+										<th><?php esc_html_e('Place Name', 'tour-booking-manager'); ?></th>
+										<th><?php esc_html_e('Place', 'tour-booking-manager'); ?></th>
+										<th><?php esc_html_e('Action', 'tour-booking-manager'); ?></th>
+									</tr>
+									</thead>
+									<tbody class="ttbm_sortable_area ttbm_item_insert">
+									<?php
+										if (sizeof($hiphop_places)) {
+											foreach ($hiphop_places as $hiphop_place) {
+												$this->place_you_see_item($places, $hiphop_place);
+											}
+										}
+										else {
+											$this->place_you_see_item($places);
+										}
+									?>
+								</tbody>
+							</table>
+							<?php TTBM_Custom_Layout::add_new_button(esc_html__('Add New Place', 'tour-booking-manager')); ?>
+						</div>
 					<?php
 						
 					}
 					?>
 				</div>
-				<div class="mp_hidden_content">
+				<div class="ttbm_hidden_content">
 					<table>
-						<tbody class="mp_hidden_item">
+						<tbody class="ttbm_hidden_item">
 						<?php $this->place_you_see_item($places); ?>
 						</tbody>
 					</table>
@@ -120,15 +102,15 @@
 				$place_name = is_array($hiphop_place) && array_key_exists('ttbm_place_label', $hiphop_place) ? $hiphop_place['ttbm_place_label'] : '';
 				$place_name = $place_id && !$place_name ? get_the_title($place_id) : $place_name;
 				?>
-				<tr class="mp_remove_area">
-					<td class="text-start">
+				<tr class="ttbm_remove_area">
+					<td>
 						<label>
-							<input class="formControl mp_name_validation" name="ttbm_place_label[]" value="<?php echo esc_attr($place_name); ?>" placeholder="Place name"/>
+							<input class="ttbm_name_validation" name="ttbm_place_label[]" value="<?php echo esc_attr($place_name); ?>" placeholder="Place name"/>
 						</label>
 					</td>
-					<td class="text-start">
+					<td>
 						<label>
-							<select class="formControl <?php echo esc_attr(is_array($hiphop_place) && sizeof($hiphop_place) > 0 ? 'ttbm_select2' : 'add_ttbm_select2'); ?>" name="ttbm_city_place_id[]">
+							<select class=" <?php echo esc_attr(is_array($hiphop_place) && sizeof($hiphop_place) > 0 ? 'ttbm_select2' : 'add_ttbm_select2'); ?>" name="ttbm_city_place_id[]">
 								<option value="" selected disabled>
 									<?php esc_html_e('Please Select a Place', 'tour-booking-manager'); ?>
 								</option>
@@ -143,7 +125,7 @@
 							</select>
 						</label>
 					</td>
-					<td class="text-center"><?php MP_Custom_Layout::move_remove_button(); ?></td>
+					<td class="textRight"><?php TTBM_Custom_Layout::move_remove_button(); ?></td>
 				</tr>
 				<?php
 			}
@@ -177,17 +159,17 @@
 				die();
 			}
 			public function ttbm_reload_place_you_see_list() {
-				$ttbm_id = MP_Global_Function::data_sanitize($_POST['ttbm_id']);
+				$ttbm_id = TTBM_Global_Function::data_sanitize($_POST['ttbm_id']);
 				$this->place_you_see($ttbm_id);
 				die();
 			}
 			public function save_place_you_see($tour_id) {
 				if (get_post_type($tour_id) == TTBM_Function::get_cpt_name()) {
 					$place_info = array();
-					$hiphop = MP_Global_Function::get_submit_info('ttbm_display_hiphop') ? 'on' : 'off';
+					$hiphop = TTBM_Global_Function::get_submit_info('ttbm_display_hiphop') ? 'on' : 'off';
 					update_post_meta($tour_id, 'ttbm_display_hiphop', $hiphop);
-					$place_labels = MP_Global_Function::get_submit_info('ttbm_place_label', array());
-					$place_ids = MP_Global_Function::get_submit_info('ttbm_city_place_id', array());
+					$place_labels = TTBM_Global_Function::get_submit_info('ttbm_place_label', array());
+					$place_ids = TTBM_Global_Function::get_submit_info('ttbm_city_place_id', array());
 					if (sizeof($place_ids) > 0) {
 						foreach ($place_ids as $key => $place_id) {
 							if ($place_id && $place_id > 0) {

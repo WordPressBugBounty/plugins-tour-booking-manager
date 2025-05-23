@@ -10,9 +10,9 @@
 			/****************************/
 			public function hidden_item_table($hook_name, $data = array()) {
 				?>
-				<div class="mp_hidden_content">
+				<div class="ttbm_hidden_content">
 					<table>
-						<tbody class="mp_hidden_item">
+						<tbody class="ttbm_hidden_item">
 						<?php do_action($hook_name, $data); ?>
 						</tbody>
 					</table>
@@ -30,7 +30,7 @@
 			}
 			public static function single_image_button($name) {
 				?>
-				<div class="mp_add_single_image">
+				<div class="ttbm_add_single_image">
 					<input type="hidden" name="<?php echo esc_attr($name); ?>"/>
 					<button type="button" class="_dButton_xs">
 						<span class="fas fa-plus-square"></span>
@@ -40,19 +40,19 @@
 				<?php
 			}
 			public static function add_multi_image($name, $images) {
-				$images = is_array($images) ? MP_Global_Function::array_to_string($images) : $images;
+				$images = is_array($images) ? TTBM_Global_Function::array_to_string($images) : $images;
 				?>
-				<div class="mp_multi_image_area">
-					<input type="hidden" class="mp_multi_image_value" name="<?php echo esc_attr($name); ?>" value="<?php esc_attr_e($images); ?>"/>
-					<div class="mp_multi_image">
+				<div class="ttbm_multi_image_area">
+					<input type="hidden" class="ttbm_multi_image_value" name="<?php echo esc_attr($name); ?>" value="<?php esc_attr_e($images); ?>"/>
+					<div class="ttbm_multi_image">
 						<?php
 							$all_images = explode(',', $images);
 							if ($images && sizeof($all_images) > 0) {
 								foreach ($all_images as $image) {
 									?>
-									<div class="mp_multi_image_item" data-image-id="<?php esc_attr_e($image); ?>">
-										<span class="fas fa-times circleIcon_xs mp_remove_multi_image"></span>
-										<img class="w-100" src="<?php echo MP_Global_Function::get_image_url('', $image, 'medium'); ?>" alt="<?php esc_attr_e($image); ?>"/>
+									<div class="ttbm_multi_image_item" data-image-id="<?php esc_attr_e($image); ?>">
+										<span class="fas fa-times circleIcon_xs ttbm_remove_multi_image"></span>
+										<img class="w-100" src="<?php echo TTBM_Global_Function::get_image_url('', $image, 'medium'); ?>" alt="<?php esc_attr_e($image); ?>"/>
 									</div>
 									<?php
 								}
@@ -60,7 +60,7 @@
 						?>
 					</div>
 					<div class="">
-						<?php MP_Custom_Layout::add_new_button(esc_html__('Add Image', 'tour-booking-manager'), 'add_multi_image', 'btn'); ?>
+						<?php TTBM_Custom_Layout::add_new_button(esc_html__('Add Image', 'tour-booking-manager'), 'add_multi_image', '_themeButton_xs'); ?>
 					</div>
 				</div>
 				<?php
@@ -68,7 +68,7 @@
 			/*****************************/
 			public static function availability_button($tour_id) {
 				$travel_type = TTBM_Function::get_travel_type($tour_id);
-				$check_ability = MP_Global_Function::get_post_info($tour_id, 'ttbm_ticketing_system', 'availability_section');
+				$check_ability = TTBM_Global_Function::get_post_info($tour_id, 'ttbm_ticketing_system', 'availability_section');
 				// if ($check_ability == 'availability_section' && $travel_type != 'fixed') { 
 					?>
 					<button class="navy_blueButton ttbm_check_ability" type="button">
@@ -76,7 +76,7 @@
 					</button>
 				<?php // }
 			}
-			public static function ttbm_add_button($button_text, $class = 'ttbm_add_item', $button_class = 'btn my-2', $icon_class = 'fas fa-plus-square') {
+			public static function ttbm_add_button($button_text, $class = 'ttbm_add_item', $button_class = '_themeButton_xs ', $icon_class = 'fas fa-plus-square') {
 				?>
 				<button class="<?php echo esc_attr($button_class . ' ' . $class); ?>" type="button">
 					<span class="<?php echo esc_attr($icon_class); ?> pe-1"></span>
@@ -84,7 +84,7 @@
 				</button>
 				<?php
 			}
-			public static function add_new_button($button_text, $class = 'mp_add_item', $button_class = 'btn', $icon_class = 'fas fa-plus-square') {
+			public static function add_new_button($button_text, $class = 'ttbm_add_item', $button_class = 'btn', $icon_class = 'fas fa-plus-square') {
 				?>
 				<button class="<?php echo esc_attr($button_class . ' ' . $class); ?>" type="button">
 					<span class="<?php echo esc_attr($icon_class); ?>"></span>
@@ -96,10 +96,10 @@
 				?>
 				<div class="allCenter">
 					<div class="buttonGroup max_100">
-						<button class="_warningButton_xs mp_item_remove" type="button">
+						<button class="_warningButton_xs ttbm_item_remove" type="button">
 							<span class="fas fa-trash-alt mp_zero"></span>
 						</button>
-						<div class="_mpBtn_themeButton_xs mp_sortable_button" type="">
+						<div class="_mpBtn_themeButton_xs ttbm_sortable_button" type="">
 							<span class="fas fa-expand-arrows-alt mp_zero"></span>
 						</div>
 					</div>
@@ -108,7 +108,7 @@
 			}
 			public static function qty_input($name, $available_seat, $ticket_qty_type, $default_qty, $min_qty, $max_qty, $ticket_price_raw, $input_name,$tour_id='') {
 				$min_qty = max($default_qty, $min_qty);
-				$data_ticket_name = preg_replace('/[^A-Za-z0-9\-]/', '', $name);
+				// $data_ticket_name = preg_replace('/[^A-Za-z0-9\-]/', '', $name);
 				if ($available_seat > $min_qty) {
 					?>
 					<div data-ticket-type-name="<?php echo esc_attr($data_ticket_name); ?>">
@@ -165,12 +165,43 @@
 					<select name="ttbm_id" class="formControl ttbm_select2" id="all_tour_list" required>
 						<option value="" selected><?php echo esc_html__('Select', 'tour-booking-manager') . ' ' . esc_html($label); ?></option>
 						<?php
-							$post_query = MP_Global_Function::query_post_type(TTBM_Function::get_cpt_name());
+							$post_query = TTBM_Global_Function::query_post_type(TTBM_Function::get_cpt_name());
 							$all_posts = $post_query->posts;
 							foreach ($all_posts as $post) {
 								$ttbm_post_id = $post->ID;
 								$tour_id = TTBM_Function::post_id_multi_language($ttbm_post_id);
 								if ($ttbm_post_id == $tour_id) {
+									$recurring = TTBM_Function::recurring_check($ttbm_post_id);
+									$tour_type = TTBM_Function::get_tour_type($ttbm_post_id);
+									?>
+									<option value="<?php echo $ttbm_post_id; ?>" data-recurring="<?php echo esc_attr($recurring ? 'yes' : ''); ?>">
+										<?php echo get_the_title($ttbm_post_id); ?>
+										<?php esc_html_e($recurring ? '- Multi date' : ''); ?>
+										<?php esc_html_e($tour_type == 'hotel' ? '- Hotel' : ''); ?>
+									</option>
+									<?php
+								}
+							}
+							wp_reset_postdata();
+						?>
+					</select>
+				</label>
+				<?php
+			}
+			public static function hotel_list_in_select( $hotel_list_id ) {
+				$label = TTBM_Function::get_name();
+				?>
+				<label class="min_400 ttbm_id_select">
+					<select name="ttbm_id" class="formControl ttbm_select2" id="<?php echo esc_attr( $hotel_list_id )?>" required>
+
+						<option value="" selected><?php echo esc_html__('Select', 'tour-booking-manager') . ' ' . esc_html($label); ?></option>
+						<?php
+							$post_query = TTBM_Global_Function::query_post_type( 'ttbm_hotel' );
+							$all_posts = $post_query->posts;
+							foreach ($all_posts as $post) {
+								$ttbm_post_id = $post->ID;
+								$hotel_id = TTBM_Function::post_id_multi_language($ttbm_post_id);
+								if ($ttbm_post_id == $hotel_id) {
 									$recurring = TTBM_Function::recurring_check($ttbm_post_id);
 									$tour_type = TTBM_Function::get_tour_type($ttbm_post_id);
 									?>

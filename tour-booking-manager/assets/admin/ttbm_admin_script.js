@@ -1,20 +1,20 @@
 (function ($) {
     "use strict";
     $(document).on('click', '.ttbm_add_item', function () {
-        let parent = $(this).closest('.mp_settings_area');
-        let item = parent.find('>.mp_hidden_content').first().find('.mp_hidden_item').html();
-        load_sortable_datepicker(parent, item);
-        parent.find('.mp_item_insert').find('.add_ttbm_select2').select2({});
+        let parent = $(this).closest('.ttbm_settings_area');
+        let item = parent.find('>.ttbm_hidden_content').first().find('.ttbm_hidden_item').html();
+        ttbm_load_sortable_datepicker(parent, item);
+        parent.find('.ttbm_item_insert').find('.add_ttbm_select2').select2({});
         return true;
     });
-    $(document).on("click", ".mp_remove_icon", function (e) {
+    $(document).on("click", ".ttbm_remove_icon", function (e) {
         e.preventDefault();
         if (
             confirm(
                 "Are You Sure , Remove this row ? \n\n 1. Ok : To Remove . \n 2. Cancel : To Cancel ."
             )
         ) {
-            $(this).closest(".mp_remove_area").slideUp(250).remove();
+            $(this).closest(".ttbm_remove_area").slideUp(250).remove();
             return true;
         } else {
             return false;
@@ -36,7 +36,7 @@
         }
     });
     //*********Pricing************//
-    $(document).on('click', '.ttbm_price_config  .mp_add_item', function (e) {
+    $(document).on('click', '.ttbm_price_config  .ttbm_add_item', function (e) {
         if (e.result) {
             let parent = $(this).closest('.ttbm_price_config');
             let unique_id = new Date().getTime();
@@ -52,7 +52,7 @@
         let post_id = $('[name="post_ID"]').val();
         if (form_id) {
             $.ajax({
-                type: 'POST', url: mp_ajax_url, data: {
+                type: 'POST', url: ttbm_ajax_url, data: {
                     "action": "get_ttbm_insert_ticket_type", "form_id": form_id, "post_id": post_id
                 }, beforeSend: function () {
                     dLoader(parent);
@@ -71,7 +71,7 @@
         let dt = new Date();
         let time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
         $.ajax({
-            type: 'POST', url: mp_ajax_url, data: {"action": "get_ttbm_add_day_wise_details", "id": time}, beforeSend: function () {
+            type: 'POST', url: ttbm_ajax_url, data: {"action": "get_ttbm_add_day_wise_details", "id": time}, beforeSend: function () {
                 dLoader(parent);
             }, success: function (data) {
                 $this.before(data);
@@ -87,7 +87,7 @@
     $(document).on('click', '.ttbm_settings_general [data-target-popup]', function () {
         let target = $(this).closest('.ttbm_settings_general').find('.ttbm_location_form_area');
         $.ajax({
-            type: 'POST', url: mp_ajax_url, data: {
+            type: 'POST', url: ttbm_ajax_url, data: {
                 "action": "load_ttbm_location_form"
             }, beforeSend: function () {
                 simpleSpinner(target);
@@ -126,7 +126,7 @@
         }
         if (name && image) {
             $.ajax({
-                type: 'POST', url: mp_ajax_url, data: {
+                type: 'POST', url: ttbm_ajax_url, data: {
                     "action": "ttbm_new_location_save", "name": name, "description": description, "address": address, "country": country, "image": image, "_wp_nonce": parent.find('[name="ttbm_add_new_location_popup"]').val(),
                 }, beforeSend: function () {
                     dLoader(parent);
@@ -136,7 +136,7 @@
                     parent.find('[name="ttbm_location_address"]').val('');
                     parent.find('[name="ttbm_location_country"]').val('');
                     parent.find('[name="ttbm_location_image"]').val('');
-                    $this.closest('.popupMainArea').find('.mp_remove_single_image').trigger('click');
+                    $this.closest('.popupMainArea').find('.ttbm_remove_single_image').trigger('click');
                     parent.find('.ttbm_success_info').slideDown('fast');
                     ttbm_reload_location();
                     dLoaderRemove(parent);
@@ -155,7 +155,7 @@
         let ttbm_id = $('[name="post_id"]').val();
         let parent = $('.ttbm_location_select_area');
         $.ajax({
-            type: 'POST', url: mp_ajax_url, data: {
+            type: 'POST', url: ttbm_ajax_url, data: {
                 "action": "ttbm_reload_location_list", "ttbm_id": ttbm_id
             }, beforeSend: function () {
                 dLoader(parent);
@@ -173,7 +173,7 @@
     $(document).on('click', '.ttbm_settings_feature [data-target-popup="add_new_feature_popup"]', function () {
         let target = $(this).closest('.ttbm_settings_feature').find('.ttbm_feature_form_area');
         $.ajax({
-            type: 'POST', url: mp_ajax_url, data: {
+            type: 'POST', url: ttbm_ajax_url, data: {
                 "action": "load_ttbm_feature_form"
             }, beforeSend: function () {
                 simpleSpinner(target);
@@ -215,7 +215,7 @@
         if (feature_name && feature_icon) {
             $.ajax({
                 type: 'POST',
-                url: mp_ajax_url,
+                url: ttbm_ajax_url,
                 data: {
                     "action": "ttbm_new_feature_save",
                     "feature_name": feature_name,
@@ -254,7 +254,7 @@
         let parent = $('.ttbm_features_table');
         $.ajax({
             type: 'POST',
-            url: mp_ajax_url,
+            url: ttbm_ajax_url,
             data: {
                 "action": "ttbm_reload_feature_list",
                 "ttbm_id": ttbm_id
@@ -285,7 +285,7 @@
         let parent = $('.ttbm_features_table');
         $.ajax({
             type: 'POST',
-            url: mp_ajax_url,
+            url: ttbm_ajax_url,
             data: {
                 "action": "ttbm_reload_feature_list",
                 "ttbm_id": ttbm_id
@@ -324,7 +324,7 @@
     $(document).on('click', '.ttbm_settings_activities [data-target-popup]', function () {
         let target = $(this).closest('.ttbm_settings_activities').find('.ttbm_activity_form_area');
         $.ajax({
-            type: 'POST', url: mp_ajax_url, data: {
+            type: 'POST', url: ttbm_ajax_url, data: {
                 "action": "load_ttbm_activity_form"
             }, beforeSend: function () {
                 simpleSpinner(target);
@@ -361,7 +361,7 @@
         }
         if (activity_name && activity_icon) {
             $.ajax({
-                type: 'POST', url: mp_ajax_url, data: {
+                type: 'POST', url: ttbm_ajax_url, data: {
                     "action": "ttbm_new_activity_save", "activity_name": activity_name, "activity_description": activity_description, "activity_icon": activity_icon,"_wp_nonce": parent.find('[name="ttbm_add_new_activity_popup"]').val(),
                 }, beforeSend: function () {
                     dLoader(parent);
@@ -388,7 +388,7 @@
         let ttbm_id = $('[name="post_id"]').val();
         let parent = $('.ttbm_activities_table');
         $.ajax({
-            type: 'POST', url: mp_ajax_url, data: {
+            type: 'POST', url: ttbm_ajax_url, data: {
                 "action": "ttbm_reload_activity_list", "ttbm_id": ttbm_id
             }, beforeSend: function () {
                 dLoader(parent);
@@ -406,7 +406,7 @@
     $(document).on('click', '.ttbm_settings_place_you_see [data-target-popup]', function () {
         let target = $(this).closest('.ttbm_settings_place_you_see').find('.ttbm_place_you_see_form_area');
         $.ajax({
-            type: 'POST', url: mp_ajax_url, data: {
+            type: 'POST', url: ttbm_ajax_url, data: {
                 "action": "load_ttbm_place_you_see_form"
             }, beforeSend: function () {
                 dLoader(target);
@@ -426,7 +426,7 @@
         let ttbm_id = $('[name="post_id"]').val();
         let parent = $('.ttbm_place_you_see_table');
         $.ajax({
-            type: 'POST', url: mp_ajax_url, data: {
+            type: 'POST', url: ttbm_ajax_url, data: {
                 "action": "ttbm_reload_place_you_see_list", "ttbm_id": ttbm_id
             }, beforeSend: function () {
                 dLoader(parent);
@@ -816,6 +816,77 @@
         });
     });
 
+   //=================== tour lists load more===========================
+   $(document).on('click','#ttbm-load-more', function(e) {
+        e.preventDefault();
+        const button = $(this);
+        const paged = parseInt(button.attr('data-paged'));
+        const postPerPage = button.data('posts-per-page');
+        const nonce = button.data('nonce');
+
+        let load_more_count = $(this).children('.ttbm_load_more_remaining_travel').text().trim();
+
+        $.ajax({
+            url: ttbm_admin_ajax.ajax_url,
+            type: 'POST',
+            data: {
+                action: 'ttbm_load_more',
+                paged: paged,
+                post_per_page: postPerPage,
+                nonce: nonce,
+            },
+            beforeSend: function() {
+                button.text('Loading...');
+            },
+            success: function(response) {
+                if (response.success && response.data.html) {
+                    $('.ttbm-tour-list').append(response.data.html);
+                    if (paged >= response.data.max_pages) {
+                        button.remove();
+                    } else {
+                        let remainig_travel = load_more_count - response.data.count_travels;
+                        button.attr('data-paged', paged + 1).text('Load More');
+                        let remaining_span = '(<span class="ttbm_load_more_remaining_travel">'+remainig_travel+'</span>)';
+                        button.append(remaining_span);
+                    }
+                } else {
+                    button.remove();
+                }
+            }
+        });
+    });
+
+    //=================== tour lists search===========================
+    $(document).on('input','#ttbm-tour-search', function() {
+        var search = $(this).val();
+        var nonce =  $(this).data('nonce');
+        $.ajax({
+            url: ttbm_admin_ajax.ajax_url,
+            type: 'POST',
+            data: {
+                action: 'ttbm_search_tours',
+                search_term: search,
+                wpnonce: nonce,
+            },
+            beforeSend: function() {
+                $('.ttbm-tour-list').text('Loading...');
+            },
+            success: function(response) {
+                if (response.success && response.data.html) {
+                    $('.ttbm-tour-list').html('');
+                    $('.ttbm-tour-list').append(response.data.html);
+                    if (paged >= response.data.max_pages) {
+                        button.remove();
+                    } else {
+                        button.attr('data-paged', paged + 1).text('Load More');
+                    }
+                } else {
+                    button.remove();
+                }
+            }
+        });
+    });
+
 }(jQuery));
 //==========search tour list page=================//
 (function ($) {
@@ -849,25 +920,25 @@
                 value = value.split(",");
                 let active = (value.indexOf(current_value) !== -1) ? 1 : 0;
                 if (active > 0) {
-                    $(this).addClass('mp_search_on').removeClass('mp_search_off');
+                    $(this).addClass('ttbm_search_on').removeClass('ttbm_search_off');
                 } else {
-                    $(this).addClass('mp_search_off').removeClass('mp_search_on');
+                    $(this).addClass('ttbm_search_off').removeClass('ttbm_search_on');
                 }
             } else {
-                $(this).addClass('mp_search_on').removeClass('mp_search_off');
+                $(this).addClass('ttbm_search_on').removeClass('ttbm_search_off');
             }
         });
     }
-    $(document).on('click', '#ttbm_list_page .ttbm_trash_post', function () {
+    $(document).on('click', '.ttbm-tour-card .ttbm_trash_post', function () {
         let alert_text = $(this).data('alert');
         if (confirm(alert_text + '\n\n 1. Ok : To Remove . \n 2. Cancel : To Cancel .')) {
-            let target = $(this).closest('#ttbm_list_page');
+            let target = $(this).closest('.ttbm-tour-card');
             let post_id = $(this).data('post-id');
             $.ajax({
-                type: 'POST', url: mp_ajax_url, data: {
+                type: 'POST', url: ttbm_ajax_url, data: {
                     "action": "ttbm_trash_post",
                     "post_id": post_id,
-                    "nonce": $(this).closest('.buttonGroup').find('#edd_sample_nonce').val(),
+                    "nonce": $(this).closest('.ttbm-tour-card').find('#edd_sample_nonce').val(),
                 }, beforeSend: function () {
                     dLoader(target);
                 }, success: function (data) {
@@ -878,6 +949,118 @@
             return true;
         }
         return false;
+    });
+
+    // ================Get Enquiry=================//
+    $(document).ready(function ($) {
+        const tabs = $('.nav-tab');
+        const contents = $('.tab-content');
+
+        tabs.on('click', function (e) {
+            e.preventDefault();
+            tabs.removeClass('nav-tab-active');
+            contents.hide();
+
+            $(this).addClass('nav-tab-active');
+            const target = $(this).attr('href');
+            $(target).show();
+        });
+    });
+    $(document).on('click', '.ttbm-delete-enquiry', function (e) {
+        e.preventDefault();
+        let isConfirmed = confirm('Are you sure you want to delete this row?');
+        if (isConfirmed) {
+            let row = $(this).closest('tr');
+            let enquiryId = $(this).data('id');
+            $.ajax({
+                url: ttbm_admin_ajax.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'ttbm_delete_enquiry',
+                    enquiry_id: enquiryId,
+                    nonce: ttbm_admin_ajax.nonce
+                },
+                success: function (response) {
+                    if (response.success) {
+                        row.remove();
+                    } else {
+                        alert('Failed to delete the enquiry. Please try again.');
+                    }
+                },
+                error: function (error) {
+                    console.log('Error:', error);
+                    alert('An error occurred while deleting the enquiry.');
+                }
+            });
+        }
+    });
+    $(document).on('click', '.ttbm-reply-enquiry', function (e) {
+        e.preventDefault();
+        let enquiryId = $(this).data('id');
+        var row = $(this).closest('.ttbm-enquiry-list');
+        var subject = row.find('td:eq(0)').text().trim();
+        var name = row.find('td:eq(1)').text().trim();
+        var email = row.find('td:eq(2)').text().trim();
+        $('#ttbm-post-id').val(enquiryId);
+        $('#ttbm-reply-to').val(email);
+        $('#ttbm-reply-subject').val(subject);
+    });
+    $('#ttbm-reply-enquiry-form').on('submit', function (e) {
+        e.preventDefault();
+        if (typeof tinyMCE !== 'undefined' && tinyMCE.get('ttbm-reply-message')) {
+            tinyMCE.get('ttbm-reply-message').save();
+        }
+        var formData = $(this).serialize();
+        $.ajax({
+            type: "POST",
+            url: ttbm_admin_ajax.ajax_url, 
+            data: {
+                action: 'ttbm_reply_enquiry',
+                nonce: ttbm_admin_ajax.nonce,
+                data:formData
+            },
+            success: function (response) {
+                console.log(response);
+                if (response.success) {
+                    $('.reply-ajax-response').html(response.data.message).css('color', 'green');
+                } else {
+                    $('.reply-ajax-response').html(response.data.message).css('color', 'red');
+                }
+            },
+            error: function (error) {
+                console.log('Error:', error);
+                alert('An error occurred while loading the enquiry details.');
+            }
+        });
+    });
+    // ==========view enquiry=============
+    $(document).on('click', '.ttbm-view-enquiry', function (e) {
+        e.preventDefault();
+        let enquiryId = $(this).data('id');
+        $.ajax({
+            url: ttbm_admin_ajax.ajax_url,
+            type: 'POST',
+            data: {
+                action: 'ttbm_view_enquiry',
+                enquiry_id: enquiryId,
+                nonce: ttbm_admin_ajax.nonce
+            },
+            success: function (response) {
+                if (response.success) {
+                    $('.ttbm-view-enquiry-response').html(response.data.html);
+                } else {
+                    alert('Failed to load the enquiry details. Please try again.');
+                }
+            },
+            error: function (error) {
+                console.log('Error:', error);
+                alert('An error occurred while loading the enquiry details.');
+            }
+        });
+    });
+
+    $(document).on('click', '#ttbm-enquiry-modal .modal-close', function () {
+        $('#ttbm-enquiry-modal').removeClass('open');
     });
 }(jQuery));
 

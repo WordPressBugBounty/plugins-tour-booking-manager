@@ -22,14 +22,14 @@
 				add_action('admin_menu', array($this, 'quick_setup_menu'));
 			}
 			public function add_admin_scripts() {
-				//wp_enqueue_style('mp_plugin_global', TTBM_PLUGIN_URL . '/assets/helper/mp_style/mp_style.css', array(), time());
-				//wp_enqueue_script('mp_plugin_global', TTBM_PLUGIN_URL . '/assets/helper/mp_style/mp_script.js', array('jquery'), time(), true);
-				//wp_enqueue_script('mp_admin_settings', TTBM_PLUGIN_URL . '/assets/admin/mp_admin_settings.js', array('jquery'), time(), true);
-				//wp_enqueue_style('mp_admin_settings', TTBM_PLUGIN_URL . '/assets/admin/mp_admin_settings.css', array(), time());
+				//wp_enqueue_style('mp_plugin_global', TTBM_PLUGIN_URL . '/assets/helper/mp_style/ttbm_plugin_global.css', array(), time());
+				//wp_enqueue_script('mp_plugin_global', TTBM_PLUGIN_URL . '/assets/helper/mp_style/ttbm_plugin_global.js', array('jquery'), time(), true);
+				//wp_enqueue_script('mp_admin_settings', TTBM_PLUGIN_URL . '/assets/admin/ttbm_admin_settings.js', array('jquery'), time(), true);
+				//wp_enqueue_style('mp_admin_settings', TTBM_PLUGIN_URL . '/assets/admin/ttbm_admin_settings.css', array(), time());
 				//wp_enqueue_style('mp_font_awesome', '//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css', array(), '5.15.4');
 			}
 			public function quick_setup_menu() {
-				$status = MP_Global_Function::check_woocommerce();
+				$status = TTBM_Global_Function::check_woocommerce();
 				if ($status == 1) {
 					add_submenu_page('edit.php?post_type=ttbm_tour', __('Quick Setup', 'tour-booking-manager'), '<span style="color:#10dd10">' . esc_html__('Quick Setup', 'tour-booking-manager') . '</span>', 'manage_options', 'ttbm_quick_setup', array($this, 'quick_setup'));
 					add_submenu_page('ttbm_tour', esc_html__('Quick Setup', 'tour-booking-manager'), '<span style="color:#10dd10">' . esc_html__('Quick Setup', 'tour-booking-manager') . '</span>', 'manage_options', 'ttbm_quick_setup', array($this, 'quick_setup'));
@@ -41,7 +41,7 @@
 			}
 			public function quick_setup() {
 			
-				$status = MP_Global_Function::check_woocommerce();
+				$status = TTBM_Global_Function::check_woocommerce();
 				if (isset($_POST['ttbm_quick_setup']) && wp_verify_nonce($_POST['ttbm_quick_setup'], 'ttbm_quick_setup_nonce'))
 				{
 					if (isset($_POST['active_woo_btn'])) {
@@ -128,36 +128,36 @@
 
                         update_option('ttbm_basic_gen_settings', $new_general_settings_data);
 						update_option('ttbm_quick_setup_done', 'yes');
-						wp_redirect(admin_url('edit.php?post_type=ttbm_tour'));
+						wp_redirect(admin_url('edit.php?post_type=ttbm_tour&page=ttbm_list'));
 					}					
 				}
 				?>
-				<div class="mpStyle">
+				<div class="ttbm_style ttbm-quick-setup">
 					<div class=_dShadow_6_adminLayout">
 						<form method="post" action="">
 							<?php wp_nonce_field('ttbm_quick_setup_nonce', 'ttbm_quick_setup'); ?>
-							<div class="mpTabsNext">
+							<div class="ttbmTabsNext">
 								<div class="tabListsNext _max_700_mAuto">
 									<div data-tabs-target-next="#ttbm_qs_welcome" class="tabItemNext" data-open-text="1" data-close-text=" " data-open-icon="" data-close-icon="fas fa-check" data-add-class="success">
 										<h4 class="circleIcon" data-class>
 											<span class="mp_zero" data-icon></span>
 											<span class="mp_zero" data-text>1</span>
 										</h4>
-										<h6 class="circleTitle" data-class><?php esc_html_e('Welcome', 'tour-booking-manager'); ?></h6>
+										<h2 class="circleTitle" data-class><?php esc_html_e('Welcome', 'tour-booking-manager'); ?></h2>
 									</div>
 									<div data-tabs-target-next="#ttbm_qs_general" class="tabItemNext" data-open-text="2" data-close-text="" data-open-icon="" data-close-icon="fas fa-check" data-add-class="success">
 										<h4 class="circleIcon" data-class>
 											<span class="mp_zero" data-icon></span>
 											<span class="mp_zero" data-text>2</span>
 										</h4>
-										<h6 class="circleTitle" data-class><?php esc_html_e('General', 'tour-booking-manager'); ?></h6>
+										<h2 class="circleTitle" data-class><?php esc_html_e('General', 'tour-booking-manager'); ?></h2>
 									</div>
 									<div data-tabs-target-next="#ttbm_qs_done" class="tabItemNext" data-open-text="3" data-close-text="" data-open-icon="" data-close-icon="fas fa-check" data-add-class="success">
 										<h4 class="circleIcon" data-class>
 											<span class="mp_zero" data-icon></span>
 											<span class="mp_zero" data-text>3</span>
 										</h4>
-										<h6 class="circleTitle" data-class><?php esc_html_e('Done', 'tour-booking-manager'); ?></h6>
+										<h2 class="circleTitle" data-class><?php esc_html_e('Done', 'tour-booking-manager'); ?></h2>
 									</div>
 								</div>
 								<div class="tabsContentNext _infoLayout_mT">
@@ -185,13 +185,13 @@
 				<?php
 			}
 			public function setup_welcome_content() {
-				$status = MP_Global_Function::check_woocommerce();
+				$status = TTBM_Global_Function::check_woocommerce();
 				?>
 				<div data-tabs-next="#ttbm_qs_welcome">
 					<h2><?php esc_html_e('Tour Booking Manager For Woocommerce Plugin', 'tour-booking-manager'); ?></h2>
-					<p class="mTB_xs"><?php esc_html_e('Thanks for choosing Tour Booking Manager Plugin for WooCommerce for your site, Please go step by step and choose some options to get started.', 'tour-booking-manager'); ?></p>
+					<p><?php esc_html_e('Thanks for choosing Tour Booking Manager Plugin for WooCommerce for your site, Please go step by step and choose some options to get started.', 'tour-booking-manager'); ?></p>
 					<div class="_dLayout_mT_alignCenter justifyBetween">
-						<h5>
+						<h4>
 							<?php if ($status == 1) {
 								esc_html_e('Woocommerce already installed and activated', 'tour-booking-manager');
 							}
@@ -201,11 +201,11 @@
 							else {
 								esc_html_e('Woocommerce already install , please activate it', 'tour-booking-manager');
 							} ?>
-						</h5>
+						</h4>
 						<?php if ($status == 1) { ?>
-							<h5>
+							<h4>
 								<span class="fas fa-check-circle textSuccess"></span>
-							</h5>
+							</h4>
 						<?php } elseif ($status == 0) { ?>
 							<button class="warningButton" type="submit" name="install_and_active_woo_btn"><?php esc_html_e('Install & Active Now', 'tour-booking-manager'); ?></button>
 						<?php } else { ?>
@@ -221,8 +221,8 @@
 				<?php
 			}
 			public function setup_general_content() {
-				$label = MP_Global_Function::get_settings('ttbm_basic_gen_settings', 'ttbm_travel_label', 'Travel');
-				$slug = MP_Global_Function::get_settings('ttbm_basic_gen_settings', 'ttbm_travel_slug', 'travel');
+				$label = TTBM_Global_Function::get_settings('ttbm_basic_gen_settings', 'ttbm_travel_label', 'Travel');
+				$slug = TTBM_Global_Function::get_settings('ttbm_basic_gen_settings', 'ttbm_travel_slug', 'travel');
 				?>
 				<div data-tabs-next="#ttbm_qs_general">
 					<div class="section">
@@ -230,7 +230,7 @@
 						<p class="mTB_xs"><?php esc_html_e('Choose some general option.', 'tour-booking-manager'); ?></p>
 						<div class="_dLayout_mT">
 							<label class="fullWidth">
-								<span class="min_200"><?php esc_html_e('Tour Label:', 'tour-booking-manager'); ?></span>
+								<p class="min_200"><?php esc_html_e('Tour Label:', 'tour-booking-manager'); ?></p>
 								<input type="text" class="formControl" name="ttbm_travel_label" value='<?php echo esc_attr($label); ?>'/>
 							</label>
 							<i class="info_text">
@@ -239,7 +239,7 @@
 							</i>
 							<div class="divider"></div>
 							<label class="fullWidth">
-								<span class="min_200"><?php esc_html_e('Tour Slug:', 'tour-booking-manager'); ?></span>
+								<p class="min_200"><?php esc_html_e('Tour Slug:', 'tour-booking-manager'); ?></p>
 								<input type="text" class="formControl" name="ttbm_travel_slug" value='<?php echo esc_attr($slug); ?>'/>
 							</label>
 							<i class="info_text">

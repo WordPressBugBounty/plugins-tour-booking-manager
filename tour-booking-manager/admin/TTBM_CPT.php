@@ -59,19 +59,23 @@
 					'capability_type' => 'post',
 				);
 				register_post_type( 'ttbm_ticket_types', $args );
+			
 				$args = [
 					'public' => true,
 					'label' => esc_html__('Hotel', 'tour-booking-manager'),
 					'supports' => ['title', 'thumbnail', 'editor'],
-					'show_in_menu' => 'edit.php?post_type=ttbm_tour',
+					// 'show_in_menu' => 'edit.php?post_type=ttbm_tour',
+					'show_in_menu' => false,
 					'capability_type' => 'post',
 				];
 				register_post_type('ttbm_hotel', $args);
+				
 				$args = [
 					'public' => true,
 					'label' => esc_html__('Places', 'tour-booking-manager'),
 					'supports' => ['title', 'thumbnail', 'editor'],
-					'show_in_menu' => 'edit.php?post_type=ttbm_tour',
+					// 'show_in_menu' => 'edit.php?post_type=ttbm_tour',
+					'show_in_menu' => false,
 					'capability_type' => 'post',
 				];
 				register_post_type('ttbm_places', $args);
@@ -83,6 +87,18 @@
 					'capability_type' => 'post',
 				];
 				register_post_type('ttbm_guide', $args);
+
+                register_post_type('ttbm_hotel_booking', array(
+                    'labels' => array(
+                        'name' => __('Hotel Bookings'),
+                        'singular_name' => __('Hotel Booking'),
+                    ),
+                    'public' => true,
+                    'has_archive' => true,
+                    'show_ui' => false,
+                    'show_in_menu' => true, // Ensure it's visible in the admin menu
+                    'supports' => array('title', 'editor', 'custom-fields'),
+                ));
 
 			}
 			public function set_custom_columns($columns) {
@@ -98,7 +114,7 @@
 			}
 			public function custom_column_data($column, $post_id) {
 				TTBM_Function::update_upcoming_date_month($post_id);
-				$ttbm_travel_type = MP_Global_Function::get_post_info($post_id, 'ttbm_travel_type');
+				$ttbm_travel_type = TTBM_Global_Function::get_post_info($post_id, 'ttbm_travel_type');
 				switch ($column) {
 					case 'ttbm_location' :
 						echo TTBM_Function::get_full_location($post_id);
@@ -107,10 +123,10 @@
 						echo 'status';
 						break;
 					case 'ttbm_start_date' :
-						$upcoming_date = MP_Global_Function::get_post_info($post_id, 'ttbm_upcoming_date');
+						$upcoming_date = TTBM_Global_Function::get_post_info($post_id, 'ttbm_upcoming_date');
 						if ($upcoming_date) {
 							?>
-                            <span class="textSuccess"><?php echo esc_html(MP_Global_Function::date_format($upcoming_date)); ?></span>
+                            <span class="textSuccess"><?php echo esc_html(TTBM_Global_Function::date_format($upcoming_date)); ?></span>
 							<?php
 						} else {
 							?>
@@ -120,7 +136,7 @@
 						break;
 					case 'ttbm_end_date' :
 						if ($ttbm_travel_type == 'fixed') {
-							echo MP_Global_Function::date_format(TTBM_Function::get_reg_end_date($post_id));
+							echo TTBM_Global_Function::date_format(TTBM_Function::get_reg_end_date($post_id));
 						}
 						break;
 				}

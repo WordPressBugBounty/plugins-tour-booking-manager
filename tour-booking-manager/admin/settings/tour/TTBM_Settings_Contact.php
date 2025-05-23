@@ -12,82 +12,63 @@
 			public function add_tab() {
 				?>
 				<li data-tabs-target="#ttbm_settings_extras">
-					<i class="fas fa-file-alt"></i><?php esc_html_e('Contact ', 'tour-booking-manager'); ?>
+					<i class="fab fa-telegram-plane"></i><?php esc_html_e('Contact ', 'tour-booking-manager'); ?>
 				</li>
 				<?php
 			}
 			public function extras_settings($tour_id) {
-				$contact_text = MP_Global_Function::get_post_info($tour_id, 'ttbm_contact_text');
-				$contact_phone = MP_Global_Function::get_post_info($tour_id, 'ttbm_contact_phone');
-				$contact_email = MP_Global_Function::get_post_info($tour_id, 'ttbm_contact_email');
-				$display_gaq = MP_Global_Function::get_post_info($tour_id, 'ttbm_display_get_question', 'on');
+				$contact_text = TTBM_Global_Function::get_post_info($tour_id, 'ttbm_contact_text');
+				$contact_phone = TTBM_Global_Function::get_post_info($tour_id, 'ttbm_contact_phone');
+				$contact_email = TTBM_Global_Function::get_post_info($tour_id, 'ttbm_contact_email');
+				$display_gaq = TTBM_Global_Function::get_post_info($tour_id, 'ttbm_display_get_question', 'on');
 				$active_gaq = $display_gaq == 'off' ? '' : 'mActive';
 				$checked_gaq = $display_gaq == 'off' ? '' : 'checked';
 				?>
 				<div class="tabsItem ttbm_settings_extras" data-tabs="#ttbm_settings_extras">
 					<h2><?php esc_html_e('Contact Settings', 'tour-booking-manager'); ?></h2>
 					<p><?php TTBM_Settings::des_p('contact_settings_description'); ?></p>
-
-
-					<section class="bg-light">
-                        <label for="" class="label">
-							<div>
-								<p><?php esc_html_e('Contact Settings', 'tour-booking-manager'); ?></p>
-								<span class="text"><?php esc_html_e('Here you can set contact information.', 'tour-booking-manager'); ?></span>
-							</div>
-						</label>
-                    </section>
-
 					<section>
-                        <div class="label">
-							<div>
-								<p><?php esc_html_e('Enable Contact', 'tour-booking-manager'); ?> </p>
-								<span class="text"><?php TTBM_Settings::des_p('ttbm_display_get_question'); ?></span>
+						<div class="ttbm-header">
+							<h4><i class="fab fa-telegram-plane"></i><?php esc_html_e('Contact Settings', 'tour-booking-manager'); ?></h4>
+							<?php TTBM_Custom_Layout::switch_button('ttbm_display_get_question', $checked_gaq); ?>
+						</div>
+						<div data-collapse="#ttbm_display_get_question" class=" <?php echo esc_attr($active_gaq); ?>">
+							<div class="dFlex">
+								<div class="col-left">
+									<label class="label">
+										<div>
+											<p><?php esc_html_e('Contact E-Mail', 'tour-booking-manager'); ?><i class="fas fa-question-circle tool-tips"><span><?php TTBM_Settings::des_p('ttbm_contact_email'); ?></span></i></p>
+										</div>
+										<input class="formControl" name="ttbm_contact_email" value="<?php echo esc_attr($contact_email); ?>" placeholder="<?php esc_html_e('Please enter Contact Email', 'tour-booking-manager'); ?>"/>
+									</label>
+								</div>
+								<div class="col-right">
+									<label class="label">
+										<div>
+											<p><?php esc_html_e('Contact Phone', 'tour-booking-manager'); ?> <i class="fas fa-question-circle tool-tips"><span><?php TTBM_Settings::des_p('ttbm_contact_phone'); ?></span></i></p>
+										</div>
+										<input class="formControl" name="ttbm_contact_phone" value="<?php echo esc_attr($contact_phone); ?>" placeholder="<?php esc_html_e('Please enter Contact Phone', 'tour-booking-manager'); ?>"/>
+									</label>
+								</div>
 							</div>
-							<?php MP_Custom_Layout::switch_button('ttbm_display_get_question', $checked_gaq); ?>
+							<label class="label">
+								<p><?php esc_html_e('Short Description', 'tour-booking-manager'); ?><i class="fas fa-question-circle tool-tips"><span><?php TTBM_Settings::des_p('ttbm_contact_text'); ?></span></i></p>
+							</label>
+							<textarea name="ttbm_contact_text" rows="4" placeholder="<?php esc_html_e('Please Enter Contact Section Text', 'tour-booking-manager'); ?>"><?php echo esc_attr($contact_text); ?></textarea>
 						</div>
                     </section>
 
-					<div data-collapse="#ttbm_display_get_question" class=" <?php echo esc_attr($active_gaq); ?>">
-						<section>
-							<label class="label">
-								<div>
-									<p><?php esc_html_e('Contact E-Mail', 'tour-booking-manager'); ?></p>
-									<span class="text"><?php TTBM_Settings::des_p('ttbm_contact_email'); ?></span>
-								</div>
-								<input class="formControl" name="ttbm_contact_email" value="<?php echo esc_attr($contact_email); ?>" placeholder="<?php esc_html_e('Please enter Contact Email', 'tour-booking-manager'); ?>"/>
-							</label>
-						</section>
-						<section>
-							<label class="label">
-								<div>
-									<p><?php esc_html_e('Contact Phone', 'tour-booking-manager'); ?> </p>
-									<span class="text"><?php TTBM_Settings::des_p('ttbm_contact_phone'); ?></span>
-								</div>
-								<input class="formControl" name="ttbm_contact_phone" value="<?php echo esc_attr($contact_phone); ?>" placeholder="<?php esc_html_e('Please enter Contact Phone', 'tour-booking-manager'); ?>"/>
-							</label>
-						</section>
-
-						<section>
-							<label class="label">
-								<div>
-									<p><?php esc_html_e('Short Description', 'tour-booking-manager'); ?></p>
-									<span class="text"><?php TTBM_Settings::des_p('ttbm_contact_text'); ?></span>
-								</div>
-								<textarea class="w-50" name="ttbm_contact_text" rows="4" placeholder="<?php esc_html_e('Please Enter Contact Section Text', 'tour-booking-manager'); ?>"><?php echo esc_attr($contact_text); ?></textarea>
-							</label>
-						</section>
-					</div>
+					
 				</div>
 				<?php
 			}
 			public function save_extras($tour_id) {
 				if (get_post_type($tour_id) == TTBM_Function::get_cpt_name()) {
-					$get_question = MP_Global_Function::get_submit_info('ttbm_display_get_question') ? 'on' : 'off';
+					$get_question = TTBM_Global_Function::get_submit_info('ttbm_display_get_question') ? 'on' : 'off';
 					update_post_meta($tour_id, 'ttbm_display_get_question', $get_question);
-					$email = MP_Global_Function::get_submit_info('ttbm_contact_email');
-					$phone = MP_Global_Function::get_submit_info('ttbm_contact_phone');
-					$des = MP_Global_Function::get_submit_info('ttbm_contact_text');
+					$email = TTBM_Global_Function::get_submit_info('ttbm_contact_email');
+					$phone = TTBM_Global_Function::get_submit_info('ttbm_contact_phone');
+					$des = TTBM_Global_Function::get_submit_info('ttbm_contact_text');
 					update_post_meta($tour_id, 'ttbm_contact_email', $email);
 					update_post_meta($tour_id, 'ttbm_contact_phone', $phone);
 					update_post_meta($tour_id, 'ttbm_contact_text', $des);
