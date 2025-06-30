@@ -1383,8 +1383,8 @@
 		transform: translateX(100%);
 		backface-visibility: hidden;
 		-webkit-transition: -webkit-transform 0.06s ease-in-out;
-		transition: transform 0.6s ease-in-out, -webkit-transform 0.6s ease-in-out;
-		max-height: 500px;		height: 100%;
+		transition: transform 0.6s ease-in-out, -webkit-transform 0.6s ease-in-out;		
+		height: 100%;
 	}
 	div.superSlider .sliderItem.activeSlide {
 		z-index: 1;
@@ -1915,8 +1915,8 @@ div.ttbm_style #ttbm_select_date.formControl {
 }
 
 div.ttbm_style select.formControl {
-    height: 48px;
-    border-radius: 8px;
+    height: 42px !important;
+    border-radius: 8px !important;
     /* background-image: url("../images/arrow_down.png");
 background-repeat: no-repeat;
 background-position: calc(100% - var(--ttbm_mp_xs));

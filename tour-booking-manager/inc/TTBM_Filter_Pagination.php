@@ -134,7 +134,7 @@
 					$categories = is_array($categories) ? $categories : TTBM_Global_Function::get_taxonomy('ttbm_tour_cat');
 					if (is_array($categories) && sizeof($categories) > 0) {
 						$url = $_GET['category_filter'] ?? '';
-						$current = $url ? get_term_by('id', $url, 'ttbm_tour_cat')->term_id : '';
+						$current = $url ? ( ($term = get_term_by('id', $url, 'ttbm_tour_cat')) ? $term->term_id : '' ) : '';
 						?>
                         <label data-placeholder>
                             <select class="formControl" name="category_filter">
@@ -171,7 +171,7 @@
 					$organizers = sizeof($organizers) > 0 ? $organizers : TTBM_Global_Function::get_taxonomy('ttbm_tour_org', 'ttbm_tour');
 					if (sizeof($organizers) > 0) {
 						$url = $_GET['organizer_filter'] ?? '';
-						$current = $url ? get_term_by('id', $url, 'ttbm_tour_org')->term_id : '';
+						$current = $url ? ( ($term = get_term_by('id', $url, 'ttbm_tour_org')) ? $term->term_id : '' ) : '';
 						?>
                         <label data-placeholder>
                             <select class="formControl" name="organizer_filter">
@@ -225,7 +225,7 @@
                                     <option value="<?php echo esc_attr($location->term_id); ?>" <?php echo esc_attr($url && $location->term_id == $url ? 'selected' : ''); ?>>
 										<?php echo esc_html($location->name); ?>
 										<?php
-											if (is_array($name) && sizeof($name) > 0) {
+											if (is_array($name) && isset($name[0]) && $name[0] !== '') {
 												echo esc_html(' - ' . $name[0]);
 											}
 										?>
@@ -240,17 +240,18 @@
 			public function location_filter_multiple($params) {
 				if ($params['location-filter'] == 'yes') {
 					$upcomming_date = $this->upcomming_date;
+
 					$locations = TTBM_Function::get_meta_values('ttbm_location_name', 'ttbm_tour');
 					$exist_locations = [];
 					for ($i = 0; $i < count($locations); $i++) {
-						if (is_array($upcomming_date) && $upcomming_date[$i] && $locations[$i]) {
+						if ( is_array( $upcomming_date) && !empty( $upcomming_date ) && $upcomming_date[$i] && $locations[$i]) {
 							$exist_locations[$i] = $locations[$i];
 						}
 					}
 					$exist_locations = array_unique($exist_locations);
 					if (sizeof($exist_locations) > 0) {
 						$url_location = $_GET['location_filter'] ?? '';
-						$current_location = $url_location ? get_term_by('id', $url_location, 'ttbm_tour_location')->term_id : '';
+						$current_location = $url_location ? ( ($term = get_term_by('id', $url_location, 'ttbm_tour_location')) ? $term->term_id : '' ) : '';
 						?>
                         <h5 class="justifyBetween _alignCenter" data-open-icon="fa-chevron-down" data-close-icon="fa-chevron-right" data-collapse-target="#ttbm_location_filter_multiple" data-placeholder>
 							<?php esc_html_e('Filters By Location', 'tour-booking-manager'); ?>
@@ -261,8 +262,10 @@
                             <div class="groupCheckBox _dFlex flexColumn" >
                                 <input type="hidden" name="location_filter_multiple" value="<?php echo esc_attr($current_location); ?>"/>
 								<?php foreach ($exist_locations as $location) { ?>
-									<?php $term_id = get_term_by('name', $location, 'ttbm_tour_location')->term_id; ?>
-									<?php $checked = $current_location == $term_id ? 'checked' : ''; ?>
+									<?php
+									$term = get_term_by('name', $location, 'ttbm_tour_location');
+									$term_id = $term ? $term->term_id : 0;
+									$checked = $current_location == $term_id ? 'checked' : ''; ?>
                                     <label class="customCheckboxLabel">
                                         <input type="checkbox" class="formControl" data-checked="<?php echo esc_attr($term_id); ?>" <?php echo esc_attr($checked); ?> />
                                         <span class="customCheckbox"><?php echo esc_html($location); ?></span>
@@ -386,7 +389,7 @@
 					$upcomming_date = $this->upcomming_date;
 					$exist_feature = [];
 					for ($i = 0; $i < count($features); $i++) {
-						if ($upcomming_date[$i]) {
+                        if ( is_array( $upcomming_date) && !empty( $upcomming_date ) && $upcomming_date[$i] && $features[$i]) {
 							$exist_feature = array_unique(array_merge($exist_feature, unserialize($features[$i])));
 						}
 					}
@@ -403,8 +406,9 @@
                                 <input type="hidden" name="feature_filter_multiple" value="<?php echo esc_attr($url); ?>"/>
 								<?php foreach ($exist_feature as $feature_item) { ?>
 									<?php
-									$term_id = get_term_by('name', $feature_item, 'ttbm_tour_features_list')->term_id;
-									$icon = get_term_meta($term_id, 'ttbm_feature_icon', true) ? get_term_meta($term_id, 'ttbm_feature_icon', true) : 'fas fa-forward'; ?>
+									$term = get_term_by('name', $feature_item, 'ttbm_tour_features_list');
+									$term_id = $term ? $term->term_id : 0;
+									$icon = $term_id ? (get_term_meta($term_id, 'ttbm_feature_icon', true) ? get_term_meta($term_id, 'ttbm_feature_icon', true) : 'fas fa-forward') : 'fas fa-forward'; ?>
                                     <label class="customCheckboxLabel">
                                         <input type="checkbox" class="formControl" data-checked="<?php echo esc_attr($term_id); ?>"/>
                                         <span class="customCheckbox"><span class="mR_xs <?php echo esc_attr($icon); ?>"></span><?php esc_html_e($feature_item); ?></span>
@@ -422,7 +426,7 @@
 					$activities = TTBM_Global_Function::get_taxonomy('ttbm_tour_activities');
 					if (sizeof($activities) > 0) {
 						$url_activity = $_GET['activity_filter'] ?? '';
-						$current_activity = $url_activity ? get_term_by('id', $url_activity, 'ttbm_tour_activities')->term_id : '';
+						$current_activity = $url_activity ? ( ($term = get_term_by('id', $url_activity, 'ttbm_tour_activities')) ? $term->term_id : '' ) : '';
 						?>
                         <label data-placeholder>
                             <select class="formControl" name="activity_filter">
@@ -443,13 +447,14 @@
 					$upcomming_date = $this->upcomming_date;
 					$exist_activities = [];
 					for ($i = 0; $i < count($activities); $i++) {
-						if ($upcomming_date[$i] && is_array($activities[$i])) {
+                        if ( is_array( $upcomming_date) && !empty( $upcomming_date ) && $upcomming_date[$i] && $activities[$i]) {
+//						if ($upcomming_date[$i] && is_array($activities[$i])) {
 							$exist_activities = array_unique(array_merge($exist_activities, unserialize($activities[$i])));
 						}
 					}
 					if (sizeof($exist_activities) > 0) {
 						$url_activity = $_GET['activity_filter'] ?? '';
-						$current_activity = $url_activity ? get_term_by('id', $url_activity, 'ttbm_tour_activities')->term_id : '';
+						$current_activity = $url_activity ? ( ($term = get_term_by('id', $url_activity, 'ttbm_tour_activities')) ? $term->term_id : '' ) : '';
 						?>
                         <h5 class="mT justifyBetween _alignCenter" data-open-icon="fa-chevron-down" data-close-icon="fa-chevron-right" data-collapse-target="#activity_filter_multiple" data-placeholder>
 							<?php esc_html_e('Filter By Activity', 'tour-booking-manager'); ?>
@@ -460,8 +465,11 @@
                             <div class="groupCheckBox _dFlex flexColumn">
                                 <input type="hidden" name="activity_filter_multiple" value="<?php echo esc_attr($current_activity); ?>"/>
 								<?php foreach ($exist_activities as $activity) { ?>
-									<?php $term_id = get_term_by('name', $activity, 'ttbm_tour_activities')->term_id; ?>
-									<?php $checked = $current_activity == $term_id ? 'checked' : ''; ?>
+									<?php
+									$term = get_term_by('name', $activity, 'ttbm_tour_activities');
+									$term_id = $term ? $term->term_id : 0;
+									$checked = $current_activity == $term_id ? 'checked' : '';
+									?>
                                     <label class="customCheckboxLabel">
                                         <input type="checkbox" class="formControl" data-checked="<?php echo esc_attr($term_id); ?>" <?php echo esc_attr($checked); ?>/>
                                         <span class="customCheckbox"><?php esc_html_e($activity); ?></span>
