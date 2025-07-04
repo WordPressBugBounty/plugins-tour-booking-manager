@@ -281,6 +281,13 @@
 							'default' => ''
 						),
 						array(
+							'name' => 'ttbm_string_overview',
+							'label' => esc_html__('Overview', 'tour-booking-manager'),
+							'desc' => esc_html__('Enter the translated text of:', 'tour-booking-manager') . '<strong>' . esc_html__('Overview', 'tour-booking-manager') . '</stong>',
+							'type' => 'text',
+							'default' => ''
+						),
+						array(
 							'name' => 'ttbm_string_faq',
 							'label' => esc_html__('F.A.Q', 'tour-booking-manager'),
 							'desc' => esc_html__('Enter the translated text of:', 'tour-booking-manager') . '<strong>' . esc_html__('F.A.Q', 'tour-booking-manager') . '</stong>',
@@ -447,6 +454,18 @@
 							'options' => array(
 								'on' => esc_html__('ON', 'tour-booking-manager'),
 								'off' => esc_html__('Off', 'tour-booking-manager')
+							)
+						),
+						array(
+							'name' => 'slider_height',
+							'label' => esc_html__('Slider height', 'tour-booking-manager'),
+							'desc' => esc_html__('Please Select Slider Height', 'tour-booking-manager'),
+							'type' => 'select',
+							'default' => 'avg',
+							'options' => array(
+								'min' => esc_html__('Minimum', 'tour-booking-manager'),
+								'avg' => esc_html__('Average', 'tour-booking-manager'),
+								'max' => esc_html__('Maximum', 'tour-booking-manager')
 							)
 						)
 					),
