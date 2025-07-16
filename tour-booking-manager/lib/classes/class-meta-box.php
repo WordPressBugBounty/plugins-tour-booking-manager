@@ -28,7 +28,7 @@ if ( ! class_exists( 'TtbmAddMetaBox' ) ) {
 		public function save_post( $post_id ) {
 			if (
 				!isset($_POST['ttbm_ticket_type_nonce']) ||
-				!wp_verify_nonce($_POST['ttbm_ticket_type_nonce'], 'ttbm_ticket_type_nonce')
+				!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['ttbm_ticket_type_nonce'])), 'ttbm_ticket_type_nonce')
 			) {
 				return;
 			}	
@@ -42,13 +42,13 @@ if ( ! class_exists( 'TtbmAddMetaBox' ) ) {
 			$get_option_name = $this->get_option_name();
 			$post_id         = $this->get_post_id();
 			if ( ! empty( $get_option_name ) ):
-				$option_value = maybe_serialize( stripslashes_deep(ttbm_array_strip($_POST[ $get_option_name ])) );
+				$option_value = isset( $_POST[ $get_option_name ]) ? maybe_serialize( sanitize_text_field(wp_unslash($_POST[ $get_option_name ])) ):'';
 				update_post_meta( $post_id, $get_option_name, $option_value );
 			else:
 				foreach ( $this->get_panels() as $panelsIndex => $panel ):
 					foreach ( $panel['sections'] as $sectionIndex => $section ):
 						foreach ( $section['options'] as $option ):
-							$option_value = isset( $_POST[ $option['id'] ] ) ? stripslashes_deep(ttbm_array_strip($_POST[ $option['id'] ])) : '';
+							$option_value = isset( $_POST[ $option['id'] ] ) ? sanitize_text_field(wp_unslash($_POST[ $option['id'] ])) : '';
 							if ( is_array( $option_value ) ) {
 								$option_value = maybe_serialize( $option_value );
 							}
@@ -65,7 +65,9 @@ if ( ! class_exists( 'TtbmAddMetaBox' ) ) {
 		public function mp_event_all_in_tab_menu_list() {
 			?>
             <li data-tabs-target="#<?php echo esc_html($this->get_meta_box_id()); ?>">
-				<?php echo mep_esc_html($this->get_meta_box_title()); ?>
+				<?php 
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo mep_esc_html($this->get_meta_box_title()); ?>
             </li>
 			<?php
 		}
@@ -112,7 +114,9 @@ if ( ! class_exists( 'TtbmAddMetaBox' ) ) {
                                             <li>
                                                 <a sectionId="<?php echo esc_html($section_id); ?>" dataid="<?php echo esc_html($page_id); ?>" href='#<?php echo esc_html($section_id); ?>' class='nav-item <?php if ( $current_page == $page_id ) {
 													echo 'active';
-												} ?>'><?php echo mep_esc_html($nav_sections_title); ?>
+												} ?>'><?php 
+												// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
+												echo mep_esc_html($nav_sections_title); ?>
                                                 </a>
                                             </li>
 										<?php
@@ -154,7 +158,7 @@ if ( ! class_exists( 'TtbmAddMetaBox' ) ) {
 				$current_page = 1;
 				foreach ( $this->get_panels() as $panelsIndex => $panel ):
 					?>
-					<div class="tab-content <?php echo $current_page == 1 ? 'active':'';  ?>  tab-content-<?php echo esc_html($panelsIndex); ?>" id="<?php echo esc_html($panelsIndex); ?>">
+					<div class="tab-content <?php echo esc_attr($current_page == 1 ? 'active':'');  ?>  tab-content-<?php echo esc_html($panelsIndex); ?>" id="<?php echo esc_html($panelsIndex); ?>">
 						<?php
 						wp_nonce_field('ttbm_ticket_type_nonce', 'ttbm_ticket_type_nonce');
 						foreach ( $panel['sections'] as $sectionIndex => $section ):
@@ -173,8 +177,8 @@ if ( ! class_exists( 'TtbmAddMetaBox' ) ) {
 											?>
 											<tr id='mage_row_<?php echo esc_html($option['id']); ?>' class='mage_row_<?php echo esc_html($option['id']); ?>'>
 												<th scope="row">
-													<label><?php echo $option['title']; ?><?php if(!empty($details)){ ?><?php } ?></label>
-													<span class="span-row"><?php echo $details;?></span>
+													<label><?php echo esc_html($option['title']); ?><?php if(!empty($details)){ ?><?php } ?></label>
+													<span class="span-row"><?php echo esc_html($details);?></span>
 												</th>
 												<td>
 													<?php
@@ -240,6 +244,7 @@ if ( ! class_exists( 'TtbmAddMetaBox' ) ) {
 
 			endif;
 			if (sizeof($option) > 0 && isset($option['type'])) {
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
 				echo mep_field_generator($option['type'], $option);
 				do_action("wp_theme_settings_field_$type", $option);
 			}

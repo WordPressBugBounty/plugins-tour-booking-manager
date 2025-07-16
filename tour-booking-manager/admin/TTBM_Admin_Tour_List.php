@@ -25,10 +25,13 @@
             }
 
             public function search_tours_callback(){
-                           
-                $paged = isset($_POST['paged']) ? intval($_POST['paged']) : 1;
-                $post_per_page = isset($_POST['post_per_page']) ? intval($_POST['post_per_page']) : 10;
-                $search = isset($_POST['search_term']) ? sanitize_text_field($_POST['search_term']) : ''; 
+	            if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field(wp_unslash($_POST['nonce'] )), 'ttbm_admin_nonce' ) ) {
+		            wp_send_json_error( [ 'message' => 'Invalid nonce' ] );
+		            die;
+	            }
+                $paged = isset($_POST['paged']) ? intval(wp_unslash($_POST['paged'])) : 1;
+                $post_per_page = isset($_POST['post_per_page']) ? intval(wp_unslash($_POST['post_per_page'])) : 10;
+                $search = isset($_POST['search_term']) ? sanitize_text_field(wp_unslash($_POST['search_term'])) : '';
                 $args = array(
                     'post_type'      => 'ttbm_tour',
 //                    'post_status'    => 'publish',
@@ -139,7 +142,7 @@
                                 <button id="ttbm-load-more" class="button"
                                         data-paged="<?php echo esc_attr($paged + 1); ?>"
                                         data-posts-per-page="<?php echo esc_attr($post_per_page); ?>"
-                                        data-nonce="<?php echo wp_create_nonce('ttbm_load_more'); ?>">
+                                        data-nonce="<?php echo esc_attr(wp_create_nonce('ttbm_load_more')); ?>">
                                     <i class="fas fa-sync-alt"></i> <?php esc_html_e('Load More', 'tour-booking-manager'); ?> (<span class="ttbm_load_more_remaining_travel"><?php echo esc_attr( $remaining_travel );?></span>)
                                 </button>
                             </div>
@@ -207,22 +210,22 @@
                             </div>
                             <div class="ttbm-tour-card-content">
                                 <div>
-                                    <h3><a href="<?php echo get_edit_post_link($post_id); ?>"><?php echo get_the_title($post_id); ?></a></h3>
+                                    <h3><a href="<?php echo esc_url(get_edit_post_link($post_id)); ?>"><?php echo esc_html(get_the_title($post_id)); ?></a></h3>
                                     <?php if($location): ?>
                                     <div class="location"><i class="fas fa-map-marker-alt"></i> <?php echo esc_html($location); ?></div>
                                     <?php endif; ?>
                                     <div class="meta-action">
                                         <div class="action-links">
                                             <?php wp_nonce_field('edd_sample_nonce', 'edd_sample_nonce');  ?>
-                                            <a title="<?php echo esc_attr__('View ', 'tour-booking-manager') . ' : ' . get_the_title($post_id); ?>" class="ttbm_view_post" href="<?php echo the_permalink($post_id); ?>" target="_blank"><i class="fa fa-eye"></i></a>
-                                            <a title="<?php echo esc_attr__('Edit ', 'tour-booking-manager') . ' : ' . get_the_title($post_id); ?>" class="ttbm_edit_post" href="<?php echo get_edit_post_link($post_id); ?>"><i class="fa fa-edit"></i></a>
-                                            <a title="<?php echo esc_attr__('Duplicate Post ', 'tour-booking-manager') . ' : ' . get_the_title($post_id); ?>" class="ttbm_duplicate_post" href="<?php echo wp_nonce_url(
+                                            <a title="<?php echo esc_attr__('View ', 'tour-booking-manager') . ' : ' . esc_attr(get_the_title($post_id)); ?>" class="ttbm_view_post" href="<?php  the_permalink($post_id); ?>" target="_blank"><i class="fa fa-eye"></i></a>
+                                            <a title="<?php echo esc_attr__('Edit ', 'tour-booking-manager') . ' : ' . esc_attr(get_the_title($post_id)); ?>" class="ttbm_edit_post" href="<?php echo esc_url(get_edit_post_link($post_id)); ?>"><i class="fa fa-edit"></i></a>
+                                            <a title="<?php echo esc_attr__('Duplicate Post ', 'tour-booking-manager') . ' : ' . esc_url(get_the_title($post_id)); ?>" class="ttbm_duplicate_post" href="<?php echo esc_url(wp_nonce_url(
                                                 admin_url('admin.php?action=ttbm_duplicate_post&post_id=' . $post_id),
                                                 'ttbm_duplicate_post_' . $post_id
-                                            ); ?>">
+                                            )); ?>">
                                                 <i class="fa fa-clone"></i>
                                             </a>
-                                            <a class="ttbm_trash_post" data-alert="<?php echo esc_attr__('Are you sure ? To trash : ', 'tour-booking-manager') . ' ' . get_the_title($post_id); ?>" data-post-id="<?php echo esc_attr($post_id); ?>" title="<?php echo esc_attr__('Trash ', 'tour-booking-manager') . ' : ' . get_the_title($post_id); ?>">
+                                            <a class="ttbm_trash_post" data-alert="<?php echo esc_attr__('Are you sure ? To trash : ', 'tour-booking-manager') . ' ' . esc_attr(get_the_title($post_id)); ?>" data-post-id="<?php echo esc_attr($post_id); ?>" title="<?php echo esc_attr__('Trash ', 'tour-booking-manager') . ' : ' . esc_attr(get_the_title($post_id)); ?>">
                                                 <i class="fa fa-trash"></i> 
                                             </a>
                                         </div>
@@ -280,17 +283,17 @@
                     }
                     wp_reset_postdata();
                 } else {
-                    echo '<p>' . esc_html__('No tours found.', 'your-textdomain') . '</p>';
+                    echo '<p>' . esc_html__('No tours found.', 'tour-booking-manager') . '</p>';
                 }
             }
 
 			public function ttbm_trash_post() {
-				if ( ! isset( $_REQUEST['nonce'] ) || ! wp_verify_nonce( $_REQUEST['nonce'], 'edd_sample_nonce' ) ) {
+				if ( ! isset( $_REQUEST['nonce'] ) || ! wp_verify_nonce(sanitize_text_field(wp_unslash( $_REQUEST['nonce'])), 'edd_sample_nonce' ) ) {
 					die();
 				}
 				if (current_user_can('administrator')) {
-					if (get_post_type($_REQUEST['post_id']) == TTBM_Function::get_cpt_name()) {
-						$post_id = isset($_REQUEST['post_id']) ? TTBM_Global_Function::data_sanitize($_REQUEST['post_id']) : '';
+					$post_id = isset($_POST['ttbm_id']) ? sanitize_text_field(wp_unslash($_POST['ttbm_id'])) : 0;
+					if (get_post_type($post_id) == TTBM_Function::get_cpt_name()) {
 						if ($post_id > 0) {
 							$args = array('post_type' => array('ttbm_tour'), 'posts_per_page' => -1, 'p' => $post_id, 'post_status' => 'publish');
 							$loop = new WP_Query($args);

@@ -244,7 +244,7 @@ if (!class_exists('TTBM_Hotel_Booking_Lists')) {
 
                                 <div class="ttbm_hotel_search_addHolder">
                                     <div class="ttbm_add_new_hotel_header">
-                                        <a href="<?php echo admin_url('post-new.php?post_type=ttbm_hotel'); ?>" class="ttbm_add_new_hotel_text">
+                                        <a href="<?php echo esc_url(admin_url('post-new.php?post_type=ttbm_hotel')); ?>" class="ttbm_add_new_hotel_text">
                                             <i class="fas fa-plus"></i> <?php echo esc_attr__( 'Add New', 'tour-booking-manager' )?></a>
                                     </div>
                                     <div class="ttbm_hotel_titleSearchContainer">
@@ -278,8 +278,8 @@ if (!class_exists('TTBM_Hotel_Booking_Lists')) {
                                     </div>
 
                                     <input type="text" name="ttbm_booking_date_filter" id="ttbm_booking_date_filter" class="ttbm_booking_date_filter" placeholder="Select date">
-                                    <button class="ttbm_total_booking_filter_btn"><?php echo __( 'Filter', 'tour-booking-manager' )?></button>
-                                    <button class="ttbm_total_booking_reset_btn"><?php echo __( 'Reset', 'tour-booking-manager' )?></button>
+                                    <button class="ttbm_total_booking_filter_btn"><?php  esc_html_e( 'Filter', 'tour-booking-manager' )?></button>
+                                    <button class="ttbm_total_booking_reset_btn"><?php  esc_html_e( 'Reset', 'tour-booking-manager' )?></button>
                                 </div>
                             </div>
 
@@ -342,9 +342,9 @@ if (!class_exists('TTBM_Hotel_Booking_Lists')) {
                     $booking_days   = get_post_meta(get_the_ID(), '_ttbm_hotel_booking_days', true);
                     $hotel_infos    = get_post_meta(get_the_ID(), '_ttbm_hotel_booking_room_info', true);
                     $check_in       = get_post_meta(get_the_ID(), '_ttbm_hotel_booking_checkin_date', true);
-                    $check_in       = date('F j, Y', strtotime($check_in));
+                    $check_in       = gmdate('F j, Y', strtotime($check_in));
                     $check_out      = get_post_meta(get_the_ID(), '_ttbm_hotel_booking_checkout_date', true);
-                    $check_out      = date('F j, Y', strtotime($check_out));
+                    $check_out      = gmdate('F j, Y', strtotime($check_out));
                     $order_date     = get_the_date('F j, Y');
                     $order_status   = get_post_meta(get_the_ID(), '_ttbm_hotel_booking_status', true);
                     $paid_amount    = get_post_meta(get_the_ID(), '_ttbm_hotel_booking_price', true);
@@ -470,7 +470,7 @@ if (!class_exists('TTBM_Hotel_Booking_Lists')) {
                                         if( $count < 3){
                                         ?>
                                         <span class="ttbm-hotel-list-feature-tag <?php echo esc_attr( $tag_color[$count] );?>">
-                                            <i class=" <?php esc_attr_e( $icon )?>"></i>
+                                            <i class=" <?php echo esc_attr( $icon )?>"></i>
                                             <?php echo esc_html( $service ); ?>
                                         </span>
                                     <?php }
@@ -490,22 +490,22 @@ if (!class_exists('TTBM_Hotel_Booking_Lists')) {
                         </td>
                         <td class="ttbm-hotel-list-column-actions">
                             <div class="ttbm-hotel-list-action-buttons">
-                                <a href="<?php echo get_permalink( $post_id ); ?>"
+                                <a href="<?php echo esc_url(get_permalink( $post_id )); ?>"
                                    class="ttbm-hotel-list-action-btn ttbm-hotel-list-view-btn"
                                    title="View" target="_blank">
                                     <i class="fas fa-eye"></i>
                                 </a>
 
-                                <a href="<?php echo get_edit_post_link( $post_id ); ?>"
+                                <a href="<?php echo esc_url( get_edit_post_link( $post_id )); ?>"
                                    class="ttbm-hotel-list-action-btn ttbm-hotel-list-edit-btn"
                                    title="Edit" target="_blank">
                                     <i class="fas fa-edit"></i>
                                 </a>
 
-                                <a title="<?php echo esc_attr__('Duplicate Hotel ', 'tour-booking-manager') . ' : ' . get_the_title($post_id); ?>"  class="ttbm-hotel-list-action-btn ttbm_hotel_duplicate_post" href="<?php echo wp_nonce_url(
+                                <a title="<?php echo esc_attr__('Duplicate Hotel ', 'tour-booking-manager') . ' : ' . esc_attr(get_the_title($post_id)); ?>"  class="ttbm-hotel-list-action-btn ttbm_hotel_duplicate_post" href="<?php echo esc_attr(wp_nonce_url(
                                     admin_url('admin.php?action=ttbm_duplicate_post&post_id=' . $post_id),
                                     'ttbm_duplicate_post_' . $post_id
-                                ); ?>">
+                                )); ?>">
                                     <i class="fa fa-clone"></i>
                                 </a>
 

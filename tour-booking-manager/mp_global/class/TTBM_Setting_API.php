@@ -39,7 +39,7 @@
 					if (isset($section['desc']) && !empty($section['desc'])) {
 						$section['desc'] = '<div class="inside">' . $section['desc'] . '</div>';
 						$callback = function () use ($section) {
-							echo str_replace('"', '\"', $section['desc']);
+							echo esc_html( str_replace( '"', '\"', $section['desc'] ) );
 						};
 					}
 					else if (isset($section['callback'])) {
@@ -104,10 +104,10 @@
 			}
 			function callback_datepicker($args) {
 				$date_format = TTBM_Global_Function::date_picker_format();
-				$now = date_i18n($date_format, strtotime(current_time('Y-m-d')));
+				$now = gmdate($date_format, strtotime(current_time('Y-m-d')));
 				$date = TTBM_Global_Function::get_settings($args['section'], $args['id'], $args['std']);
-				$hidden_date = $date ? date('Y-m-d', strtotime($date)) : '';
-				$visible_date = $date ? date_i18n($date_format, strtotime($date)) : '';
+				$hidden_date = $date ? gmdate('Y-m-d', strtotime($date)) : '';
+				$visible_date = $date ? gmdate($date_format, strtotime($date)) : '';
 				$name = $args['section'] . '[' . $args['id'] . ']';
 				?>
                 <label>
@@ -279,7 +279,9 @@
 				$value = TTBM_Global_Function::get_settings($args['section'], $args['id'], $args['std']);
 				$name = $args['section'] . '[' . $args['id'] . ']';
 				$placeholder = empty($args['placeholder']) ? '' : $args['placeholder'];
-				$label = $args['options']['button_label'] ?? esc_html__('Choose File');
+
+				$label = $args['options']['button_label'] ?? esc_html__('Choose File','tour-booking-manager');
+
 				do_action('ttbm_add_single_image',$name,$value);
 			}
 			function callback_password($args) {
@@ -308,7 +310,9 @@
 					'id' => $args['section'] . '[' . $args['id'] . ']',
 					'echo' => 0
 				);
-				echo wp_dropdown_pages($dropdown_args);
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped  
+				$dropdown = wp_dropdown_pages( $dropdown_args );
+				echo wp_kses_post( $dropdown );
 			}
 			function sanitize_options($options) {
 				if (!$options) {
@@ -398,7 +402,7 @@
 					}
 			
 					if ( $section['title'] ) {
-						echo "<h3>{$section['title']}</h3>\n";
+						echo esc_html("<h3>{$section['title']}</h3>\n");
 					}
 			
 					if ( $section['callback'] ) {
@@ -429,8 +433,8 @@
 					
 					<div class="ttbm-setting-field">
 						<div class="label">
-							<?php echo $data['title']; ?>
-							<span class="tooltips" data-tooltip="<?php echo $data['args']['desc']; ?>"><i class="fa fa-info-circle"></i></span>
+							<?php echo esc_html($data['title']); ?>
+							<span class="tooltips" data-tooltip="<?php echo esc_attr($data['args']['desc']); ?>"><i class="fa fa-info-circle"></i></span>
 						</div>
 						<?php call_user_func( $data['callback'], $data['args'] ); ?>
 					</div>
