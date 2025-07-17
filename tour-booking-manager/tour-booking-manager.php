@@ -3,7 +3,7 @@
 	 * Plugin Name: Travel Booking Manager - WPTravelly | Tour & Hotel Booking Solution For WooCommerce
 	 * Plugin URI: https://wordpress.org/plugins/tour-booking-manager/
 	 * Description: A Complete Tour and Travel Solution for WordPress by MagePeople.
-	 * Version: 2.0.1
+	 * Version: 2.0.2
 	 * Requires at least: 5.2
 	 * Requires PHP: 7.0
 	 * Author: MagePeople Team

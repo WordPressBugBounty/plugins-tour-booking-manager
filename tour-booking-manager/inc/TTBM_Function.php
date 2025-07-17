@@ -358,7 +358,6 @@
 			}
 			//************************************//
 			public static function get_submit_info($key, $default = '') {
-				// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.Missing
 				return self::data_sanitize($_POST[$key] ?? $default);
 			}
 			//***********Duration*************************//
