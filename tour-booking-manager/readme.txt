@@ -1,11 +1,11 @@
-=== Travel Booking Manager - WPTravelly | Tour & Hotel Booking Solution For WooCommerce ===
+=== WpTravelly – Tour & Travel Booking Manager for WooCommerce | Tour & Hotel Booking Solution ===
 Contributors: magepeopleteam, aamahin
 Plugin link: https://wordpress.org/plugins/tour-booking-manager/
 Tags: tour-booking, tour-operator, travel, travel-booking, travel-agency
-Requires at least: 5.2
+Requires at least: 4.4.0
 Tested up to: 6.8
 Requires PHP: 7.0
-Stable tag: 2.0.2
+Stable tag: 2.0.3
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 

@@ -604,7 +604,7 @@
 				return $tags;
 			}
 			//*******************************//
-			public static function get_taxonomy_name_to_id_string($tour_id, $key, $taxonomy) {
+			public static function get_taxonomy_name_to_id_string_old($tour_id, $key, $taxonomy) {
 				$infos = TTBM_Global_Function::get_post_info($tour_id, $key, array());
 				$id = '';
 				if ($infos && sizeof($infos) > 0) {
@@ -614,6 +614,17 @@
 							$id = $id ? $id . ',' . $term->term_id : $term->term_id;
 						}
 					}
+				}
+				return $id;
+			}
+			public static function get_taxonomy_name_to_id_string($tour_id, $key, $taxonomy) {
+				$infos = TTBM_Global_Function::get_post_info($tour_id, $key, array());
+				$id = '';
+				if ($infos && sizeof($infos) > 0) {
+					foreach ($infos as $info) {
+                        $id = $id . ',' . $info;
+					}
+                    $id = ltrim( $id, ',' );
 				}
 				return $id;
 			}
@@ -880,7 +891,7 @@
 						}
 					}
 					// Return only unique values
-					$meta_values = array_unique($meta_values);
+//					$meta_values = array_unique($meta_values);
 				}
 
 				// Cache the results
@@ -899,6 +910,9 @@
 				);
 				$all_travel_query = new WP_Query($travel_args);
 				$active_tour = $expired_tour = $total_price = $price_count = $average_price = 0;
+				$location_counts = array();
+				$top_destination = '';
+				
 				if ($all_travel_query->have_posts()) {
 					while ($all_travel_query->have_posts()) {
 						$all_travel_query->the_post();
@@ -914,19 +928,39 @@
 							$price_count++;
 							$total_price = $total_price + $get_price;
 						}
+						
+						// Count locations for top destination
+						$location = get_post_meta($travel_post_id, 'ttbm_location_name', true);
+						if (!empty($location)) {
+							if (isset($location_counts[$location])) {
+								$location_counts[$location]++;
+							} else {
+								$location_counts[$location] = 1;
+							}
+						}
 					}
 				}
+				
 				if ($price_count > 0 && $total_price > 0) {
 					$average_price = $total_price / $price_count;
 				}
+				
+				// Find top destination
+				if (!empty($location_counts)) {
+					arsort($location_counts);
+					$top_destination = array_key_first($location_counts);
+				}
+				
 				$all_location = TTBM_Function::get_all_location();
 				unset($all_location['']);
 				$location_count = count($all_location);
+				
 				return array(
 					'location_count' => $location_count,
 					'average_price' => $average_price,
 					'active_tour' => $active_tour,
 					'expired_tour' => $expired_tour,
+					'top_destination' => $top_destination,
 				);
 			}
 		}

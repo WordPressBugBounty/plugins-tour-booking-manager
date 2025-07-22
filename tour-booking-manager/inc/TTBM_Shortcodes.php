@@ -60,23 +60,33 @@
 				<?php
 				return ob_get_clean();
 			}
-			public function list_with_left_filter_for_search( $attribute, $date_filter=[] ) {
+			public function list_with_left_filter_for_search( $attribute, $date_filter='') {
 				$defaults = $this->default_attribute('modern', 12, 'no', 'yes', 'yes', 'yes', $month_filter = 'yes', $tour_type = '');
 				$params = shortcode_atts($defaults, $attribute);
 				$show = $params['show'];
 				$pagination = $params['pagination'];
 				$search = $params['sidebar-filter'];
-				$organizer_filter = $params['organizer-filter'];
-				$location_filter = $params['location-filter'];
-				$activity_filter = $params['activity-filter'];
+				
+				// Extract search parameters from GET request
+				$organizer_filter = '';
+				$location_filter = '';
+				$activity_filter = '';
+				
+				if (isset($_GET['ttbm_search_nonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['ttbm_search_nonce'])), 'ttbm_search_nonce')) {
+					$organizer_filter = isset($_GET['organizer_filter']) ? sanitize_text_field(wp_unslash($_GET['organizer_filter'])) : '';
+					$location_filter = isset($_GET['location_filter']) ? sanitize_text_field(wp_unslash($_GET['location_filter'])) : '';
+					$activity_filter = isset($_GET['activity_filter']) ? sanitize_text_field(wp_unslash($_GET['activity_filter'])) : '';
+				}
+				
 				$show = ($search == 'yes' || $pagination == 'yes') ? -1 : $show;
 
 				$loop = TTBM_Query::ttbm_query_for_top_Search($show, $params['sort'], $params['sort_by'], $params['status'], $organizer_filter, $location_filter, $activity_filter, $date_filter );
-                ob_start();
+//echo '<pre>';print_r($loop->post_count);echo '</pre>';
 				?>
 				<div class="ttbm_style ttbm_wraper placeholderLoader ttbm_filter_area">
 					<div class="mpContainer">
 					<?php
+						include( TTBM_Function::template_path( 'layout/filter_hidden.php' ) );
 						if ($params['sidebar-filter'] == 'yes') {
 							?>
 							<div class="left_filter">
@@ -92,7 +102,7 @@
 							</div>
 							<?php
 						} else {
-							include( TTBM_Function::template_path( 'layout/filter_hidden.php' ) );
+
 							do_action('ttbm_all_list_item', $loop, $params);
 							do_action('ttbm_sort_result', $loop, $params);
 							do_action('ttbm_pagination', $params, $loop->post_count);
@@ -101,7 +111,7 @@
 					</div>
 				</div>
 				<?php
-				return ob_get_clean();
+
 			}
 			public function list_with_top_filter($attribute) {
 				$defaults = $this->default_attribute();
@@ -189,7 +199,19 @@
 			}
 			public function search_result($attribute) {
 				ob_start();
-				 $this->list_with_left_filter_for_search( $attribute );
+				
+				// Process search parameters from GET request
+				$date_filter = array();
+				if (isset($_GET['ttbm_search_nonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['ttbm_search_nonce'])), 'ttbm_search_nonce')) {
+					if (isset($_GET['date_filter_start']) && !empty($_GET['date_filter_start'])) {
+						$date_filter['start_date'] = sanitize_text_field(wp_unslash($_GET['date_filter_start']));
+					}
+					if (isset($_GET['date_filter_end']) && !empty($_GET['date_filter_end'])) {
+						$date_filter['end_date'] = sanitize_text_field(wp_unslash($_GET['date_filter_end']));
+					}
+				}
+				
+				echo $this->list_with_left_filter_for_search( $attribute, $date_filter );
 				return ob_get_clean();
 			}
 			public function hotel_list($attribute) {

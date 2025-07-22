@@ -1,16 +1,14 @@
 <?php
 	/**
-	 * Plugin Name: Travel Booking Manager - WPTravelly | Tour & Hotel Booking Solution For WooCommerce
+	 * Plugin Name: WpTravelly – Tour & Travel Booking Manager for WooCommerce | Tour & Hotel Booking Solution
 	 * Plugin URI: https://wordpress.org/plugins/tour-booking-manager/
 	 * Description: A Complete Tour and Travel Solution for WordPress by MagePeople.
-	 * Version: 2.0.2
-	 * Requires at least: 5.2
-	 * Requires PHP: 7.0
+	 * Version: 2.0.3
 	 * Author: MagePeople Team
 	 * Author URI: http://www.mage-people.com/
-	 * License: GPL v2 or later
-	 * License URI: https://www.gnu.org/licenses/gpl-2.0.html* 
 	 * Text Domain: tour-booking-manager
+	 * License: GPL v2 or later
+	 * License URI: https://www.gnu.org/licenses/gpl-2.0.html
 	 * Domain Path: /languages/
 	 */
 	if (!defined('ABSPATH')) {
@@ -23,22 +21,29 @@
 				add_action('init', array($this, 'load_blocks'));
 			}
 			private function load_ttbm_plugin() {
-				include_once(ABSPATH . 'wp-admin/includes/plugin.php');
-				if (!defined('TTBM_PLUGIN_DIR')) {
-					define('TTBM_PLUGIN_DIR', dirname(__FILE__));
-				}
-				if (!defined('TTBM_PLUGIN_URL')) {
-					define('TTBM_PLUGIN_URL', plugins_url() . '/' . plugin_basename(dirname(__FILE__)));
-				}
-				require_once TTBM_PLUGIN_DIR . '/mp_global/TTBM_Global_File_Load.php';
-				$this->load_global_file();
-				if (TTBM_Global_Function::check_woocommerce() == 1) {
-					require_once TTBM_PLUGIN_DIR . '/inc/TTBM_Dependencies.php';
-				} else {
-					require_once TTBM_PLUGIN_DIR . '/admin/TTBM_Quick_Setup.php';
-				}
-				add_action('admin_init', array($this, 'activation_redirect_setup'), 90);
+			include_once(ABSPATH . 'wp-admin/includes/plugin.php');
+			if (!defined('TTBM_PLUGIN_DIR')) {
+				define('TTBM_PLUGIN_DIR', dirname(__FILE__));
 			}
+			if (!defined('TTBM_PLUGIN_URL')) {
+				define('TTBM_PLUGIN_URL', plugins_url() . '/' . plugin_basename(dirname(__FILE__)));
+			}
+			require_once TTBM_PLUGIN_DIR . '/mp_global/TTBM_Global_File_Load.php';
+			$this->load_global_file();
+			
+			// Always load Quick Setup for admin menu registration
+			require_once TTBM_PLUGIN_DIR . '/admin/TTBM_Quick_Setup.php';
+			
+			// Always load CPT for post type registration (needed for Quick Setup menu)
+			require_once TTBM_PLUGIN_DIR . '/admin/TTBM_CPT.php';
+			
+			// Load dependencies if WooCommerce is active
+			if (TTBM_Global_Function::check_woocommerce() == 1) {
+				require_once TTBM_PLUGIN_DIR . '/inc/TTBM_Dependencies.php';
+			}
+			
+			add_action('admin_init', array($this, 'activation_redirect_setup'), 90);
+		}
 			public function load_global_file() {
 				require_once TTBM_PLUGIN_DIR . '/inc/TTBM_Style.php';
 			}
@@ -58,10 +63,21 @@
 					self::on_activation_page_create();
 				}
 				$ttbm_quick_setup_done = get_option('ttbm_quick_setup_done') ? get_option('ttbm_quick_setup_done') : 'no';
-				if ($ttbm_quick_setup_done == 'no') {
-					wp_redirect(admin_url('admin.php?post_type=ttbm_tour&page=ttbm_quick_setup'));
-					exit();
+				
+				// Only redirect if not already on the quick setup page and setup is not done
+				if ($ttbm_quick_setup_done == 'no' && 
+					(!isset($_GET['page']) || $_GET['page'] !== 'ttbm_quick_setup')) {
 					
+					// Check WooCommerce status to determine correct redirect URL
+					$woo_status = TTBM_Global_Function::check_woocommerce();
+					if ($woo_status == 1) {
+						// WooCommerce is active - redirect to submenu under ttbm_tour post type
+						wp_redirect(admin_url('edit.php?post_type=ttbm_tour&page=ttbm_quick_setup'));
+					} else {
+						// WooCommerce is not active - redirect to main menu
+						wp_redirect(admin_url('admin.php?page=ttbm_quick_setup'));
+					}
+					exit();
 				}
 			}
 			public static function on_activation_page_create() {
