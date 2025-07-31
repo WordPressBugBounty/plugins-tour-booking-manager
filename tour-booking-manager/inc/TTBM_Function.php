@@ -888,7 +888,9 @@
 						}
 					}
 					// Return only unique values
-				$meta_values = array_unique($meta_values);
+
+				// $meta_values = array_unique($meta_values);
+          
 				}
 				return $meta_values;
 			}
@@ -950,7 +952,266 @@
 					'top_destination' => $top_destination,
 				);
 			}
-		}
+
+            public static function get_top_deals_post_ids($type) {
+                $allowed_types = array('popular', 'trending', 'feature', 'deal-discount' );
+
+                if (!in_array($type, $allowed_types)) {
+                    return array();
+                }
+
+                $args = array(
+                    'post_type'      => 'ttbm_tour', // Change to your post type if needed
+                    'posts_per_page' => -1,
+                    'fields'         => 'ids', // Only return post IDs
+                    'meta_query'     => array(
+                        array(
+                            'key'     => 'ttbm_top_picks_deals',
+                            'value'   => $type,
+                            'compare' => 'LIKE',
+                        ),
+                    ),
+                );
+
+                $query = new WP_Query($args);
+
+                return $query->posts;
+            }
+
+            public static function get_city_place_ids_with_post_ids( $num_of_places = 0 ) {
+                $args = [
+                    'post_type'      => 'ttbm_tour',
+                    'posts_per_page' => -1,
+                    'meta_query'     => [
+                        [
+                            'key'     => 'ttbm_hiphop_places',
+                            'compare' => 'EXISTS',
+                        ],
+                    ],
+                    'fields' => 'ids',
+                ];
+
+                $query = new WP_Query( $args );
+
+                $city_place_map = [];
+
+                if ( $query->have_posts() ) {
+                    foreach ( $query->posts as $post_id ) {
+                        $places = get_post_meta( $post_id, 'ttbm_hiphop_places', true );
+                        $places = maybe_unserialize( $places );
+
+                        if ( is_array( $places ) ) {
+                            foreach ( $places as $place ) {
+                                if ( isset( $place['ttbm_city_place_id'] ) ) {
+                                    $place_id = $place['ttbm_city_place_id'];
+
+                                    if ( ! isset( $city_place_map[ $place_id ] ) ) {
+                                        $city_place_map[ $place_id ] = [];
+                                    }
+
+                                    if ( ! in_array( $post_id, $city_place_map[ $place_id ] ) ) {
+                                        $city_place_map[ $place_id ][] = $post_id;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                uasort( $city_place_map, function( $a, $b ) {
+                    return count( $b ) - count( $a );
+                });
+
+                /*if ( $num_of_places > 0 ) {
+                    $city_place_map = array_slice( $city_place_map, 0, $num_of_places, true );
+                }*/
+
+                return $city_place_map;
+            }
+
+            public static function get_all_activity_ids_from_posts_old( $num_of_ids = 0 ) {
+                $query = new WP_Query(array(
+                    'post_type'      => 'ttbm_tour', // আপনার CPT
+                    'post_status'    => 'publish',
+                    'posts_per_page' => -1,
+                    'meta_key'       => 'ttbm_tour_activities',
+                    'fields'         => 'ids',
+                ));
+
+                $activity_ids = [];
+
+                foreach ($query->posts as $post_id) {
+                    $meta_value = get_post_meta($post_id, 'ttbm_tour_activities', true);
+
+                    if (!empty($meta_value)) {
+                        // unserialize the value
+                        $unserialized = maybe_unserialize($meta_value);
+
+                        if (is_array($unserialized)) {
+                            foreach ($unserialized as $activity_id) {
+                                $activity_ids[] = $activity_id;
+                            }
+                        }
+                    }
+                }
+
+                $activity_ids = array_unique($activity_ids);
+
+
+                if ( $num_of_ids > 0 ) {
+                    $activity_ids = array_slice( $activity_ids, 0, $num_of_ids, true );
+                }
+
+
+                return $activity_ids;
+            }
+            public static function get_all_category_with_assign_post( $taxonomy ) {
+
+                $terms = get_terms([
+                    'taxonomy'   => $taxonomy,
+                    'hide_empty' => true,
+                ]);
+
+                $result = [];
+
+                if ( !is_wp_error( $terms) && !empty( $terms ) ) {
+                    foreach ( $terms as $term ) {
+
+                        // Get post IDs for each term
+                        $query = new WP_Query([
+                            'post_type'      => 'ttbm_tour',
+                            'post_status'    => 'publish',
+                            'posts_per_page' => -1,
+                            'fields'         => 'ids',
+                            'tax_query'      => [
+                                [
+                                    'taxonomy' => $taxonomy,
+                                    'field'    => 'term_id',
+                                    'terms'    => $term->term_id,
+                                ],
+                            ],
+                        ]);
+
+                        if (!empty($query->posts)) {
+                            $result[] = [
+                                'term_id'   => $term->term_id,
+                                'term_name' => $term->name,
+                                'term_slug' => $term->slug,
+                                'term_description' => $term->description,
+                                'post_ids'  => $query->posts,
+                            ];
+                        }
+
+                        wp_reset_postdata();
+                    }
+                }
+
+                return $result;
+
+            }
+            public static function get_all_activity_ids_from_posts( $num_of_ids = 0 ) {
+                $query = new WP_Query(array(
+                    'post_type'      => 'ttbm_tour', // CPT ঠিক দিন
+                    'post_status'    => 'publish',
+                    'posts_per_page' => -1,
+                    'meta_key'       => 'ttbm_tour_activities',
+                    'fields'         => 'ids',
+                ));
+
+                $activity_posts = [];
+
+                foreach ($query->posts as $post_id) {
+
+                    $meta_value = get_post_meta($post_id, 'ttbm_tour_activities', true);
+
+                    if (!empty($meta_value)) {
+                        $unserialized = maybe_unserialize($meta_value);
+
+                        if (is_array($unserialized)) {
+                            foreach ($unserialized as $activity_id) {
+                                if (!isset($activity_posts[$activity_id])) {
+                                    $activity_posts[$activity_id] = [];
+                                }
+                                $activity_posts[$activity_id][] = $post_id;
+                            }
+                        }
+                    }
+                }
+
+                // Optional: Limit number of activity IDs returned
+                /*if ($num_of_ids > 0) {
+                    $activity_posts = array_slice($activity_posts, 0, $num_of_ids, true);
+                }*/
+
+                return $activity_posts;
+            }
+            public static function get_location_feature( $taxonomy, $num_of_ids = 0 ) {
+                $query = new WP_Query(array(
+                    'post_type'      => 'ttbm_tour', // CPT ঠিক দিন
+                    'post_status'    => 'publish',
+                    'posts_per_page' => -1,
+                    'meta_key'       => $taxonomy,
+                    'fields'         => 'ids',
+                ));
+
+                $activity_posts = [];
+
+
+                foreach ($query->posts as $post_id) {
+
+                    $meta_value = get_post_meta( $post_id, $taxonomy, true);
+
+                    if (!empty($meta_value)) {
+                        $unserialized = maybe_unserialize($meta_value);
+
+                        if (is_array($unserialized)) {
+                            foreach ($unserialized as $activity_id) {
+                                if (!isset($activity_posts[$activity_id])) {
+                                    $activity_posts[$activity_id] = [];
+                                }
+                                $activity_posts[$activity_id][] = $post_id;
+                            }
+                        }
+                    }
+                }
+
+                $terms_data = [];
+                $taxonomy_name = 'ttbm_tour_features_list';
+
+                if( is_array( $activity_posts ) && !empty( $activity_posts ) ) {
+                    foreach ( $activity_posts  as $term_name => $post_ids ) {
+                        $term = get_term_by('name', $term_name, $taxonomy_name );
+                        if ($term && !is_wp_error($term)) {
+                            $terms_data[] = [
+                                'term_id' => $term->term_id,
+                                'term_name' => $term->name,
+                                'term_slug' => $term->slug,
+                                'term_description' => $term->description,
+                                'post_ids' => $post_ids,
+                            ];
+                        }
+                    }
+                }
+
+                return $terms_data;
+            }
+
+
+            public static function ttbm_get_term_data( $term_type, $term_ids = [] ) {
+                $args = [
+                    'taxonomy'   => $term_type,
+                    'hide_empty' => false,
+                ];
+
+                if ( ! empty( $term_ids ) ) {
+                    $args['include'] = $term_ids;
+                }
+
+                return get_terms( $args );
+            }
+
+
+        }
 		new TTBM_Function();
 	}
 	if (!function_exists('mep_esc_html')) {
@@ -1333,3 +1594,4 @@
 		}
 		return $arr;
 	}
+

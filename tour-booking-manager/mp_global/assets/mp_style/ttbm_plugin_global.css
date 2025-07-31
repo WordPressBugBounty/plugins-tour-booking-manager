@@ -986,39 +986,6 @@
 		height: auto;
 		max-width: 100%;
 	}
-	/*******Click slider***************/
-	.ttbm_style [class*="clickSlide"] {
-		background-color: var(--color_white);
-		padding: var(--dmp);
-	}
-	.ttbm_style [class*="slideItem"] {
-		display: none;
-	}
-	.ttbm_style [class*="slideItem"].active {
-		display: block;
-	}
-	.ttbm_style [class*="slideItem"] img {
-		width: 100%;
-	}
-	.ttbm_style [class*="slideIndicator"] {
-		margin: var(--dmp) 0 0 0;
-	}
-	.ttbm_style [class*="slideIndicatorItem"] {
-		border: 3px solid var(--color_border);
-		margin: 0 5px;
-		background-color: var(--color_border);
-	}
-	.ttbm_style [class*="slideIndicatorItem"].active {
-		border-color: var(--color_active);
-		background-color: var(--color_active);
-	}
-	.ttbm_style [class*="slideIndicatorItem"] img {
-		height: 30px;
-		width: auto;
-	}
-	.ttbm_style [class*="slideIndicatorItem"].active img {
-		height: 35px;
-	}
 	/***********Bg Image****************/
 	div.bg_image_area {
 		width: 100%;
@@ -1033,7 +1000,6 @@
 		height: 100%;
 		width: 100%;
 		min-height: inherit;
-		position: relative;
 	}
 	[data-bg-image]:before {
 		content: "";
@@ -1346,12 +1312,11 @@
 	}
 	.ttbm_style .circleIcon_xs,
 	.ttbm_style [class*="_circleIcon_xs"] {
-		width: 25px;
-		height: 25px;
-		min-width: 25px;
+		width: 30px;
+		height: 30px;
+		min-width: 30px;
+		font-size: 22px;
 		margin: 0 var(--ttbm_mp_xs) 0 0;
-		border: 1px solid rgba(var(--color_theme_rbg), 0.1);
-		color: var(--color_theme);
 	}
 	/*****Remove icon******/
 	.ttbm_style .ttbm_remove_area {
