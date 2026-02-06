@@ -118,6 +118,37 @@ function ttbm_load_date_picker(parent = jQuery('.ttbm_style')) {
             }
         });
     });
+    // Clear hidden field when visible date field is cleared - using event delegation for better reliability
+    parent.off('input.ttbm_clear_date change.ttbm_clear_date blur.ttbm_clear_date', '.date_type, .date_type_without_year');
+    parent.on('input.ttbm_clear_date change.ttbm_clear_date blur.ttbm_clear_date', '.date_type, .date_type_without_year', function() {
+        let $this = jQuery(this);
+        let currentValue = $this.val();
+        if (!currentValue || currentValue.trim() === '') {
+            let $hiddenField = $this.closest('label').find('input[type="hidden"]');
+            if ($hiddenField.length) {
+                $hiddenField.val('').trigger('change');
+            }
+        }
+    });
+    // Ensure cleared dates are saved before form submission
+    let $form = parent.closest('form');
+    if ($form.length === 0) {
+        $form = jQuery('#post, #post-form, form[name="post"]');
+    }
+    if ($form.length > 0) {
+        $form.off('submit.ttbm_clear_dates').on('submit.ttbm_clear_dates', function() {
+            parent.find('.date_type, .date_type_without_year').each(function() {
+                let $this = jQuery(this);
+                let currentValue = $this.val();
+                if (!currentValue || currentValue.trim() === '') {
+                    let $hiddenField = $this.closest('label').find('input[type="hidden"]');
+                    if ($hiddenField.length && $hiddenField.val()) {
+                        $hiddenField.val('');
+                    }
+                }
+            });
+        });
+    }
 }
 //========================================================Alert==============//
 function ttbm_alert($this, attr = 'alert') {
@@ -127,8 +158,30 @@ function ttbm_alert($this, attr = 'alert') {
 (function ($) {
     "use strict";
     $(document).ready(function () {
+        $(".ttbm_style .date_type,.ttbm_style .date_type_without_year").on("keydown", function(e) {
+            e.preventDefault();
+        });
         ttbm_load_date_picker();
         $('.ttbm_select2').select2({});
+        
+        // Clear hidden date fields when visible fields are cleared - global handler for WordPress admin
+        function clearEmptyDateFields() {
+            $('.date_type, .date_type_without_year').each(function() {
+                let $this = $(this);
+                let currentValue = $this.val();
+                if (!currentValue || currentValue.trim() === '') {
+                    let $hiddenField = $this.closest('label').find('input[type="hidden"]');
+                    if ($hiddenField.length && $hiddenField.val()) {
+                        $hiddenField.val('');
+                    }
+                }
+            });
+        }
+        
+        // Clear dates before WordPress save/update
+        $(document).on('click', '#publish, #save-post, input[name="save"], input[name="publish"]', function() {
+            clearEmptyDateFields();
+        });
     });
 }(jQuery));
 //====================================================================Load Bg Image=================//
@@ -154,6 +207,34 @@ function ttbm_loadBgImage() {
     jQuery('body').find('div.ttbm_style .sliderAllItem').each(function () {
         let target = jQuery(this);
         ttbm_slider_resize(target)
+    });
+    return true;
+}
+//====================================================================Load Cart Bg Image=================//
+function ttbm_loadCartBgImage() {
+    jQuery('body').find('.bg_image_area [data-bg-image]:visible').each(function () {
+        let target = jQuery(this);
+        // Skip if already inside ttbm_style (handled by ttbm_loadBgImage)
+        if (target.closest('.ttbm_style').length > 0) {
+            return;
+        }
+        // Skip if inside slider
+        if (target.closest('.sliderAllItem').length === 0) {
+            let width = target.outerWidth();
+            let height = target.outerHeight();
+            if (!target.css('background-image') || target.css('background-image') === 'none' || target.css('background-image') === 'rgba(0, 0, 0, 0)' || width === 0 || height === 0) {
+                let bg_url = target.data('bg-image');
+                if (!bg_url || bg_url === '' || bg_url === 'undefined') {
+                    bg_url = typeof ttbm_empty_image_url !== 'undefined' ? ttbm_empty_image_url : '';
+                }
+                if (bg_url) {
+                    ttbm_resize_bg_image_area(target, bg_url);
+                    target.css('background-image', 'url("' + bg_url + '")').promise().done(function () {
+                        dLoaderRemove(target);
+                    });
+                }
+            }
+        }
     });
     return true;
 }
@@ -205,6 +286,8 @@ function ttbm_resize_bg_image_area(target, bg_url) {
             let target = jQuery(this);
             ttbm_slider_resize(target)
         });
+        // Load cart images
+        ttbm_loadCartBgImage();
     });
     function load_initial() {
         if (!bg_image_load) {
@@ -213,7 +296,34 @@ function ttbm_resize_bg_image_area(target, bg_url) {
                 placeholderLoaderRemove($('.ttbm_style.placeholderLoader'))
             }
         }
+        // Always load cart images
+        ttbm_loadCartBgImage();
     }
+    // Load cart images on document ready
+    $(document).ready(function () {
+        setTimeout(function() {
+            ttbm_loadCartBgImage();
+        }, 100);
+    });
+    // Load cart images when WooCommerce cart is updated
+    $(document.body).on('updated_cart_totals updated_wc_div', function() {
+        setTimeout(function() {
+            ttbm_loadCartBgImage();
+        }, 100);
+    });
+    // Load cart images when mini cart is updated
+    $(document.body).on('wc_fragment_refresh wc_fragments_refreshed', function() {
+        setTimeout(function() {
+            ttbm_loadCartBgImage();
+        }, 100);
+    });
+    // Handle click events for cart bg_image_area
+    $(document).on('click', '.bg_image_area[data-href]:not(.ttbm_style .bg_image_area)', function () {
+        let href = $(this).data('href');
+        if (href) {
+            window.location.href = href;
+        }
+    });
 }(jQuery));
 //=============================================================================Change icon and text=================//
 function ttbm_content_icon_change(currentTarget) {
@@ -309,9 +419,11 @@ function ttbm_all_content_change($this) {
 }(jQuery));
 //==============================================================================Qty inc dec================//
 (function ($) {
-    function ttbm_calculateTotalQtyPrice() {
+    function ttbm_calculateTotalQtyPrice( current ) {
         let totalQty = 0;
         let totalPrice = 0;
+        let terget = current.closest('.qtyIncDec').find('.ttbm_hotel_room_incDec')
+
         $('.ttbm_hotel_room_incDec').each(function () {
             const $input = $(this).find('.inputIncDec');
             const qty = parseInt($input.val()) || 0;
@@ -322,6 +434,29 @@ function ttbm_all_content_change($this) {
             $(".tour_price").text(totalPrice);
         });
     }
+
+    function ttbm_calculateTotalQtyPrice_new(current) {
+        let totalQty = 0;
+        let totalPrice = 0;
+
+        // Find the parent table (mp_tour_ticket_type)
+        let table = current.closest('.ttbm_hotel_lists_content');
+
+        // Loop only inside that table
+        table.find('.ttbm_hotel_room_incDec').each(function () {
+            const $input = $(this).find('.inputIncDec');
+            const qty = parseInt($input.val()) || 0;
+            const price = parseFloat($input.data('price')) || 0;
+
+            totalQty += qty;
+            totalPrice += qty * price;
+        });
+
+        // Update only inside this table
+        table.find(".tour_qty").text(totalQty);
+        table.find(".tour_price").text(totalPrice);
+    }
+
     "use strict";
     $(document).on("click", "div.ttbm_style .decQty ,div.ttbm_style .incQty", function () {
         let current = $(this);
@@ -340,7 +475,7 @@ function ttbm_all_content_change($this) {
             target.parents('.qtyIncDec').find('.incQty').addClass('mpDisabled');
         }
         target.val(value).trigger('change').trigger('input');
-        ttbm_calculateTotalQtyPrice();
+        ttbm_calculateTotalQtyPrice_new( current );
     });
 }(jQuery));
 //==============================================================================Input use as select================//

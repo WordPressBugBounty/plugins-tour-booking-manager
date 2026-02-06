@@ -22,7 +22,7 @@
                                 <span class="mi mi-settings"></span><?php esc_html_e('General Info', 'tour-booking-manager'); ?>
                             </li>
 							<li data-tabs-target="#ttbm_settings_hotel_location" class="ttbm_hotel_map_location">
-                                <span class="mi mi-marker"></span><?php esc_html_e('Location', 'tour-booking-manager'); ?>
+                                <span class="mi mi-marker"></span><?php esc_html_e('Map Location', 'tour-booking-manager'); ?>
                             </li>
                             <li data-tabs-target="#ttbm_settings_pricing">
                                 <span class="mi mi-coins"></span><?php esc_html_e(' Pricing', 'tour-booking-manager'); ?>
@@ -74,6 +74,12 @@
 					$ttbm_hotel_review_title = isset($_POST['ttbm_hotel_review_title']) ? sanitize_text_field(wp_unslash($_POST['ttbm_hotel_review_title'])) : '';
 					$ttbm_hotel_review_rating = isset($_POST['ttbm_hotel_review_rating']) ? sanitize_text_field(wp_unslash($_POST['ttbm_hotel_review_rating'])) : '';
 					
+					$ttbm_display_hotel_popular = isset($_POST['ttbm_display_hotel_popular']) && sanitize_text_field(wp_unslash($_POST['ttbm_display_hotel_popular'])) ? 'on' : 'off';
+					$ttbm_display_hotel_popular_text = isset($_POST['ttbm_display_hotel_popular_text']) ? sanitize_text_field(wp_unslash($_POST['ttbm_display_hotel_popular_text'])) : 'Popular';
+
+					$ttbm_display_hotel_feature = isset($_POST['ttbm_display_hotel_feature']) && sanitize_text_field(wp_unslash($_POST['ttbm_display_hotel_feature'])) ? 'on' : 'off';
+					$ttbm_display_hotel_feature_text = isset($_POST['ttbm_display_hotel_feature_text']) ? sanitize_text_field(wp_unslash($_POST['ttbm_display_hotel_feature_text'])) : 'Feature';
+
 					$ttbm_display_hotel_testimonial = isset($_POST['ttbm_display_hotel_testimonial']) && sanitize_text_field(wp_unslash($_POST['ttbm_display_hotel_testimonial'])) ? 'on' : 'off';
 					$ttbm_hotel_testimonial_title = isset($_POST['ttbm_hotel_testimonial_title']) ? sanitize_text_field(wp_unslash($_POST['ttbm_hotel_testimonial_title'])) : '';
 					$ttbm_hotel_testimonial_text = isset($_POST['ttbm_hotel_testimonial_text']) ? sanitize_text_field(wp_unslash($_POST['ttbm_hotel_testimonial_text'])) : '';
@@ -84,6 +90,13 @@
 					$ttbm_map_longitude 	= isset($_POST['ttbm_map_longitude']) ? sanitize_text_field(wp_unslash($_POST['ttbm_map_longitude'])) : '';
 					
 					update_post_meta($post_id, 'ttbm_display_hotel_testimonial', $ttbm_display_hotel_testimonial);
+
+					update_post_meta($post_id, 'ttbm_display_hotel_feature_text', $ttbm_display_hotel_feature_text);
+					update_post_meta($post_id, 'ttbm_display_hotel_feature', $ttbm_display_hotel_feature);
+
+                    update_post_meta($post_id, 'ttbm_display_hotel_popular', $ttbm_display_hotel_popular);
+					update_post_meta($post_id, 'ttbm_display_hotel_popular_text', $ttbm_display_hotel_popular_text);
+
 					update_post_meta($post_id, 'ttbm_hotel_testimonial_title', $ttbm_hotel_testimonial_title);
 					update_post_meta($post_id, 'ttbm_hotel_testimonial_text', $ttbm_hotel_testimonial_text);
 					
@@ -109,6 +122,8 @@
 					$ttbm_hotel_breakfast = isset($_POST['ttbm_hotel_breakfast']) ? sanitize_text_field(wp_unslash($_POST['ttbm_hotel_breakfast'])) : '';
 					$ttbm_display_hotel_breakfast = isset($_POST['ttbm_display_hotel_breakfast']) && sanitize_text_field(wp_unslash($_POST['ttbm_display_hotel_breakfast'])) ? 'on' : 'off';
 					$ttbm_location_name = isset($_POST['ttbm_hotel_location']) ? sanitize_text_field(wp_unslash($_POST['ttbm_hotel_location'])) : '';
+					$ttbm_hotel_rating = isset($_POST['ttbm_hotel_rating']) ? sanitize_text_field(wp_unslash($_POST['ttbm_hotel_rating'])) : '';
+					update_post_meta($post_id, 'ttbm_hotel_rating', $ttbm_hotel_rating);
 					update_post_meta($post_id, 'ttbm_display_property_highlights', $ttbm_display_property_highlights);
 					update_post_meta($post_id, 'ttbm_hotel_property_highlights', $ttbm_hotel_property_highlights);
 					update_post_meta($post_id, 'ttbm_display_hotel_location', $ttbm_display_location);

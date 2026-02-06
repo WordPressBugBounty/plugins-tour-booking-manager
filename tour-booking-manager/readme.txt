@@ -1,11 +1,11 @@
-=== WpTravelly – Tour & Travel Booking Manager for WooCommerce | Tour & Hotel Booking Solution ===
+=== Tour & Travel Booking Manager for WooCommerce | Tour & Hotel Booking Solution ===
 Contributors: magepeopleteam, aamahin
 Plugin link: https://mage-people.com/
 Tags: tour-booking, tour-operator, travel, travel-booking, travel-agency
 Requires at least: 4.4.0
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.0
-Stable tag: 2.0.0
+Stable tag: 2.1.4
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,14 +13,14 @@ Enhance and manage travel bookings effortlessly with WPTravelly—your complete 
 
 == Description ==
 
-**WPTravelly** is the ultimate [tour and travel booking solution](https://mage-people.com/product/woocommerce-tour-and-travel-booking-manager-pro/) for WordPress websites. Ideal for travel agencies and tour operators, this plugin enables you to create and manage customized packages effortlessly.
+**Tour & Travel Booking Manager** is the ultimate [tour and travel booking solution](https://mage-people.com/product/woocommerce-tour-and-travel-booking-manager-pro/) for WordPress websites. Ideal for travel agencies and tour operators, this plugin enables you to create and manage customized packages effortlessly.
 
 Launch your travel booking site in under five minutes using the most feature-rich booking plugin available.
 
 === Explore the Demo: ===  
 🌐 [Live Demo](https://wptravelly.com/)  
 📘 [Online Documentation](https://docs.mage-people.com/tour-travel-booking-manager/)  
-🛍️ [Install WPTravelly](https://downloads.wordpress.org/plugin/tour-booking-manager.zip)  
+🛍️ [Install Travelly](https://downloads.wordpress.org/plugin/tour-booking-manager.zip)  
 
 ### 🏆 The #1 WordPress Booking Plugin With 1000+ Installations
 
@@ -66,7 +66,7 @@ Sell travel packages independently from other WooCommerce products.
 = Ready to upgrade your tour booking experience? View our live PRO Version Demo now. =
 Let's go ahead and install the Plugin and find out what is waiting for you.
 
-###  [Try WpTravelly Pro Plugin](https://mage-people.com/product/woocommerce-tour-and-travel-booking-manager-pro/)
+###  [Try Travelly Pro Plugin](https://mage-people.com/product/woocommerce-tour-and-travel-booking-manager-pro/)
 
 ### Shortcodes included with Tour & Travel Booking  Manager
 
@@ -118,7 +118,7 @@ To Show the Tour grid Style Orchid you need to use the shortcode below. example 
 
 ### Tour Location grid view
 To show the Tour location grid view you need to use the shortcode below. example 👉 [Tour Location list Demo ](https://wptravelly.com/travel-location-list-display-shortcode/) 👈:
-`
+`Tour & Travel
 [travel-location-list column=4 show=4]
 `
 
@@ -167,8 +167,21 @@ To Show the deal-discount Tour list only, we  use the shortcode below. example �
 `
 [wptravelly-tour-list type='deal-discount' column=2 show=2 carousel='no']
 `
-
-
+### Display Hotel Search form 
+To display search form of hotel use this shortcode
+`
+[wptravelly-hotel-search] 
+`
+### Display Hotel Search Result 
+if you did not create hotel search result page then create page wth slug hotel-search-result and use this shortcode 
+`
+[wptravelly-hotel-search-list]
+`
+### Display Hotel list with left sidebar 
+To disply hotel list with sidebar use this shortcode. 
+`
+[wptravelly-hotel-list sidebar-filter='yes' price-filter = 'yes'] 
+`
 
 
 == Tour Page Templates ==

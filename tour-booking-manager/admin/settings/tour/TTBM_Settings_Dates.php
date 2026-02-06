@@ -174,7 +174,7 @@
                                 <div class="groupRadioBox">
                                     <input type="hidden" value="<?php echo esc_attr($repeat_type); ?>" name="ttbm_repeat_type"/>
                                     <div class="_dFlex_mT_xs">
-                                        <button class="_mpBtn_mR  <?php echo esc_attr('continue' == $repeat_type ? 'active' : ''); ?>" type="button" data-group-radio="fixed"><?php esc_html_e('Never', 'tour-booking-manager'); ?></button>
+                                        <button class="_mpBtn_mR  <?php echo esc_attr('continue' == $repeat_type ? 'active' : ''); ?>" type="button" data-group-radio="continue"><?php esc_html_e('Never', 'tour-booking-manager'); ?></button>
                                         <button class="_mpBtn_mR input_active <?php echo esc_attr('occurrence' == $repeat_type ? 'active' : ''); ?>" type="button" data-group-radio="occurrence">
                                             <label class="allCenter">
                                                 <span class="_mR_xs"><?php esc_html_e('After occurrence', 'tour-booking-manager'); ?></span>
@@ -206,7 +206,7 @@
                         <div class="ttbm-header">
                             <h4><i class="fas fa-calendar-days"></i><?php esc_html_e('Optional Tour Configuration', 'tour-booking-manager'); ?></h4>
                         </div>
-                        <div class="gptLayout">
+                        <div class="gptLayout ttbm-ticket-time">
                             <h6><?php esc_html_e('Tour Time Slots Configuration', 'tour-booking-manager'); ?><?php TTBM_Custom_Layout::switch_button('mep_disable_ticket_time', $checked_time); ?></h6>
                             <div data-collapse="#mep_disable_ticket_time" class="_mT <?php echo esc_attr($active_time); ?>">
 								<?php

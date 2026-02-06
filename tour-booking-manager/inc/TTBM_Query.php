@@ -15,7 +15,6 @@
 				return new WP_Query($args);
 			}
 			public static function ttbm_query($show, $sort = '', $cat = '', $org = '', $city = '', $country = '', $status = '', $tour_type = '', $activity = '', $sort_by = '', $attraction = '', $feature = '' ): WP_Query {
-                error_log( print_r( [ '$feature' => $feature ], true ) );
 				TTBM_Function::update_all_upcoming_date_month();
 				$sort_by = $sort_by ?: 'meta_value';
 				if (get_query_var('paged')) {
@@ -125,20 +124,22 @@
 					return new WP_Query($args);
 				}
 			}
-			public static function ttbm_query_for_top_Search($show, $sort, $sort_by, $status, $organizer_filter, $location, $activity, $date_filter = ''): WP_Query {
-				if (is_array($date_filter)) {
+			public static function ttbm_query_for_top_search($show, $sort, $sort_by, $status, $organizer_filter, $location, $activity, $date_filter = ''): WP_Query {
+
+                if (is_array($date_filter)) {
 					if (!empty($date_filter['start_date'])) {
-						$start_date = DateTime::createFromFormat('F d, Y', $date_filter['start_date']);
-						$start_date = $start_date->format('Y-m-d');
+						$start_date_obj = DateTime::createFromFormat('F d, Y', $date_filter['start_date']);
+						$start_date = ($start_date_obj !== false) ? $start_date_obj->format('Y-m-d') : '';
 					} else {
 						$start_date = '';
 					}
 					if (!empty($date_filter['end_date'])) {
-						$end_date = DateTime::createFromFormat('F d, Y', $date_filter['end_date']);
-						$end_date = $end_date->format('Y-m-d');
+						$end_date_obj = DateTime::createFromFormat('F d, Y', $date_filter['end_date']);
+						$end_date = ($end_date_obj !== false) ? $end_date_obj->format('Y-m-d') : '';
 					} else {
 						$end_date = '';
 					}
+
 					if ($end_date === '' && $start_date === '') {
 						$date = '';
 						$compare = '';
@@ -193,12 +194,19 @@
 					'field' => 'term_id',
 					'terms' => $organizer_filter
 				) : '';
-				$activity = $activity ? get_term_by('id', $activity, 'ttbm_tour_activities')->name : '';
-				$activity_filter = !empty($activity) ? array(
-					'key' => 'ttbm_tour_activities',
-					'value' => $activity,
-					'compare' => 'LIKE'
-				) : '';
+
+               /* $activity_filter = !empty($activity) ? array(
+                    'key' => 'ttbm_tour_activities',
+                    'value' => array($activity),
+                    'compare' => 'IN'
+                ) : '';*/
+
+                $activity_filter = !empty($activity) ? array(
+                    'key'     => 'ttbm_tour_activities',
+                    'value'   => '"' . $activity . '"',
+                    'compare' => 'LIKE'
+                ) : '';
+
 				$location = $location ? get_term_by('id', $location, 'ttbm_tour_location')->name : '';
 				$city_filter = !empty($location) ? array(
 					'key' => 'ttbm_location_name',

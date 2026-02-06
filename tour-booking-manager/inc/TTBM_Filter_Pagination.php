@@ -112,7 +112,7 @@
 					}
 					?>
                     <label data-placeholder>
-                        <select class="formControl" name="type_filter">
+                        <select class="formControl ttbm_filter_input_radius" name="type_filter">
                             <option selected value=""><?php esc_html_e('All Type', 'tour-booking-manager'); ?></option>
                             <option value="general" <?php echo esc_attr($url == 'general' ? 'selected' : ''); ?>><?php esc_html_e('Tour', 'tour-booking-manager'); ?></option>
                             <option value="hotel" <?php echo esc_attr($url == 'hotel' ? 'selected' : ''); ?>><?php esc_html_e('Hotel', 'tour-booking-manager'); ?></option>
@@ -237,7 +237,7 @@
 						$url = $location_filter;
 						?>
                         <label data-placeholder>
-                            <select class="formControl" name="location_filter">
+                            <select class="formControl ttbm_filter_input_radius" name="location_filter">
                                 <option selected value=""><?php esc_html_e('All Location', 'tour-booking-manager'); ?></option>
 								<?php foreach ($locations as $location) { ?>
 									<?php $name = get_term_meta($location->term_id, 'ttbm_country_location'); ?>
@@ -473,7 +473,7 @@
 						$current_activity = $url_activity ? (($term = get_term_by('id', $url_activity, 'ttbm_tour_activities')) ? $term->term_id : '') : '';
 						?>
                         <label data-placeholder>
-                            <select class="formControl" name="activity_filter">
+                            <select class="formControl ttbm_filter_input_radius" name="activity_filter">
                                 <option selected value=""><?php esc_html_e('All Activity', 'tour-booking-manager'); ?></option>
 								<?php foreach ($activities as $activity) { ?>
 									<?php $selected = $current_activity == $activity->term_id ? 'selected' : ''; ?>
@@ -663,16 +663,23 @@
 			public function select_month_filter($params) {
 				if ($params['month-filter'] == 'yes') {
 					?>
-                    <label data-placeholder>
+                    <!--<label data-placeholder>
                         <div class="ttbm_date-picker-container">
-                            <input name="date_filter_start" type="text" id="ttbm_date-input_from" class="ttbm_date-picker-input" placeholder="<?php esc_html_e('From Date', 'tour-booking-manager'); ?>">
+                            <input name="date_filter_start" type="text" id="ttbm_date-input_from" class="ttbm_date-picker-input" placeholder="<?php /*esc_html_e('From Date', 'tour-booking-manager'); */?>">
                             <div id="ttbm_calendar-icon" class="ttbm_calendar-icon"></div>
                         </div>
                     </label>
                     <label data-placeholder>
                         <div class="ttbm_date-picker-container">
-                            <input name="date_filter_end" type="text" id="ttbm_date-input_to" class="ttbm_date-picker-input" placeholder="<?php esc_html_e('To Date', 'tour-booking-manager'); ?>">
+                            <input name="date_filter_end" type="text" id="ttbm_date-input_to" class="ttbm_date-picker-input" placeholder="<?php /*esc_html_e('To Date', 'tour-booking-manager'); */?>">
                             <div id="ttbm_calendar-icon" class="ttbm_calendar-icon"></div>
+                        </div>
+                    </label>-->
+
+                    <label data-placeholder>
+                        <div class="ttbm_date-picker-container">
+                            <input name="ttbm_date_start_end_input" type="text" id="ttbm_date_start_end_input" class="ttbm_date-picker-input" placeholder="<?php esc_html_e('Check-in date  —  Check-out date', 'tour-booking-manager'); ?>">
+                            <div id="ttbm_start_end_calendar_icon" class="ttbm_calendar-icon"></div>
                         </div>
                     </label>
 					<?php

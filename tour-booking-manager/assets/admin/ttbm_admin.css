@@ -16,6 +16,8 @@
 	--mpl-red-light: #F6DADA;
 	--mpl-gradient: linear-gradient(135deg, #F12971, #C4185B);
 }
+
+
 /********************************************************************  ************************************************/
 @media only screen and (min-width: 10px) {
 	#ttbm_content .formControl {font-weight: normal; border: 1px solid var(--mpl-gray); color: var(--mpl-secondary); font-size: 14px; min-width: 80px;}
@@ -72,7 +74,7 @@
 	#ttbm_meta_box_panel table tr:nth-child(even) {background-color: var(--color_light);}
 	#ttbm_meta_box_panel table tr:nth-child(odd) {background-color: #FFF;}
 	#ttbm_meta_box_panel table th,
-	#ttbm_meta_box_panel table td {border: 0;vertical-align: top;padding: 10px 3px; border-right: 1px solid #E5D4D4; }
+	#ttbm_meta_box_panel table td {border: 0;vertical-align: top;padding: 10px 3px;}
 	#ttbm_meta_box_panel table th {text-align: left; font-weight: 500;padding: 15px 10px;}
 	#ttbm_meta_box_panel table th.mActive,
 	#ttbm_meta_box_panel table td.mActive {display: table-cell;}
@@ -91,8 +93,8 @@
 	#ttbm_meta_box_panel .wp-editor-wrap {width: 100%;}
 	#ttbm_meta_box_panel textarea { background-color: #F5F8FF; font-weight: normal; line-height: 1.5rem;}
 	#ttbm_meta_box_panel input[type=search] { border: 0px solid var(--mpl-dark); background-color: #F5F8FF;}
-	#ttbm_meta_box_panel .tool-tips { color: var(--mpl-gray); position: relative; padding-left: 0.25em;}
-	#ttbm_meta_box_panel .tool-tips span { position: absolute; z-index: 1; bottom: 130%; left: 50%; transform: translate(-50%); visibility: hidden; font-size: 0.9rem; text-align: center; background-color: var(--mpl-black); color: var(--mpl-white); border-radius: 0.25rem; padding: 0.5em 0.75em; width: max-content; max-width: 350px; font-weight: normal; }
+	#ttbm_meta_box_panel .tool-tips { color:#999; position: relative; padding-left: 0.25em;}
+	#ttbm_meta_box_panel .tool-tips span {text-wrap: wrap; position: absolute; z-index: 1; bottom: 130%; left: 50%; transform: translate(-50%); visibility: hidden; font-size: 0.9rem; text-align: center; background-color: var(--mpl-black); color: var(--mpl-white); border-radius: 0.25rem; padding: 0.5em 0.75em; width: max-content; max-width: 350px; font-weight: normal; font-family: sans-serif;}
 	#ttbm_meta_box_panel .tool-tips span:after { content: " "; position: absolute; top: 100%; left: 50%; transform: translate(-50%); border: 5px solid var(--mpl-black); border-color: var(--mpl-black) transparent transparent transparent; margin-left: 0.18em; }
 	#ttbm_meta_box_panel .tool-tips:hover { color: var(--mpl-primary); }
 	#ttbm_meta_box_panel .tool-tips:hover span { visibility: visible; }
@@ -106,35 +108,73 @@
 	#ttbm_meta_box_panel .postbox-header .handle-actions .handle-order-higher,
 	#ttbm_meta_box_panel .postbox-header .handle-actions .handle-order-lower,
 	#ttbm_meta_box_panel .postbox-header .handle-actions .toggle-indicator { color: var(--mpl-white);}
-	#ttbm_meta_box_panel .ttbm_settings .tabLists li i { margin: 0 var(--ttbm_mp) 0 0; color: #757575;}
-	#ttbm_meta_box_panel .ttbm_settings .tabLists li::after { content: ""; position: absolute; left: 0; bottom: -1px; width: 0;}
-	#ttbm_meta_box_panel .ttbm_settings .tabLists li.active { background-color: var(--mpl-primary-rgba); color: var(--mpl-primary); font-weight: normal; border-left: 2px solid var(--mpl-primary);}
-	#ttbm_meta_box_panel .ttbm_settings .tabLists li.active i { color: var(--mpl-primary);}
-	#ttbm_meta_box_panel .ttbm_settings .tabLists li:hover { background-color: var(--mpl-light); color: var(--mpl-primary);}
-	#ttbm_meta_box_panel .ttbm_settings .tabsContent .tabsItem > h2 { padding: 0; color: var(--mpl-secondary); margin-bottom: 10px; font-size: 22px; font-weight: bold;}
-	#ttbm_meta_box_panel .ttbm_settings .tabsContent .tabsItem > p { color: var(--mpl-secondary); margin: 0; font-weight: normal; line-height: 24px; margin-bottom: 30px;}
-	#ttbm_meta_box_panel .ttbm_settings .tabsContent .tabsItem section { border-radius: 8px; background-color: #FFF; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1019607843); padding: 24px; margin-bottom: 24px; transition: transform 0.2s, box-shadow 0.2s; width: 100%;}
-	#ttbm_meta_box_panel .ttbm_settings .tabsContent .tabsItem section:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);}
-	#ttbm_meta_box_panel .ttbm_settings .tabsContent .tabsItem section .ttbm-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--mpl-gray);}
-	#ttbm_meta_box_panel .ttbm_settings .tabsContent .tabsItem section .ttbm-header h4 { margin: 0; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;}
-	#ttbm_meta_box_panel .ttbm_settings .tabsContent .tabsItem section .label { display: flex; justify-content: space-between; align-items: center; flex-direction: row; cursor: pointer; margin: 10px 0; padding: 10px;}
-	#ttbm_meta_box_panel .ttbm_settings .tabsContent .tabsItem section .label p { font-size: 14px; font-weight: 500; margin-bottom: 5px; color: var(--mpl-secondary);}
-	#ttbm_meta_box_panel .ttbm_settings .tabsContent .tabsItem section .label .text { font-weight: normal; line-height: 20px; font-size: 13px;}
-	#ttbm_meta_box_panel .ttbm_settings .tabsContent .tabsItem section textarea { width: 100%;}
-	#ttbm_meta_box_panel .ttbm_settings .tabsContent .tabsItem section .roundSwitchLabel { margin: 0 10px;}
-	#ttbm_meta_box_panel .ttbm_settings .tabsContent .tabsItem section .roundSwitchLabel input:checked + .roundSwitch { background-color: var(--mpl-primary);}
-	#ttbm_meta_box_panel .ttbm_settings .tabsContent .tabsItem section .customCheckboxLabel input:checked ~ .customCheckbox::before { background: var(--mpl-primary); border-color: var(--mpl-primary);}
-	#ttbm_meta_box_panel .ttbm_settings .tabsContent .tabsItem .col-left { width: 50%;}
-	#ttbm_meta_box_panel .ttbm_settings .tabsContent .tabsItem .col-right { width: 50%;}
-	#ttbm_meta_box_panel .ttbm_settings .tabsContent th[scope=row] label { display: block; margin-bottom: 5px;}
-	#ttbm_meta_box_panel .ttbm_settings .tabsContent th[scope=row] label h6 { margin-top: 10px;}
-	#ttbm_meta_box_panel .ttbm_settings .tabsContent .span-row { color: #6B7280; font-size: 13px; font-weight: normal;}
-	#ttbm_meta_box_panel .ttbm_settings .tabsContent .long-input { width: 80%;}
-	#ttbm_meta_box_panel .ttbm_settings .tabsContent .wp-switch-editor { height: auto;}
-	#ttbm_meta_box_panel .ttbm_settings .tabsContent .wp-editor-area { width: 100%; border: 0;}
+	#ttbm_meta_box_panel .ttbm_settings .tabLists li i { margin: 0 10px 0 0; color: var(--color_theme);}
+	
+	#ttbm_meta_box_panel .tabLists.meta-sidebar li  span{
+		color: #333;
+	}
+
+	#ttbm_meta_box_panel .tabLists.meta-sidebar li.active::after {
+		content: '';
+		position: absolute;
+		top: 50%;
+		right: -8px;
+		transform: translateY(-50%);
+		width: 0;
+		height: 0;
+		border-top: 10px solid transparent;
+		border-bottom: 10px solid transparent;
+		border-left: 8px solid var(--color_theme);
+	}
+	#ttbm_meta_box_panel .ttbm_settings .tabLists li.active{
+		background-color: var(--color_theme); 
+		color: #fff; 
+		font-weight: normal;
+	}
+	#ttbm_meta_box_panel .ttbm_settings .tabLists li.active span, 
+	#ttbm_meta_box_panel .ttbm_settings .tabLists li.active i { 
+	color:#fff;
+	}
+	
+	
+	#ttbm_meta_box_panel .ttbm_settings .tabLists li.active:hover  { background-color: var(--color_theme);color:#fff;}
+	#ttbm_meta_box_panel .ttbm_settings .tabLists li.active:hover i { color:#fff;}
+	#ttbm_meta_box_panel .ttbm_settings .tabLists li:hover { 
+		background-color: #EAF6FF;
+    color: var(--color_theme);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 119, 204, 0.15);
+	}
+	#ttbm_meta_box_panel  .tabsItem > h2 { padding: 0; color: var(--mpl-secondary); margin-bottom: 10px; font-size: 22px; font-weight: bold;}
+	#ttbm_meta_box_panel  .tabsItem > p { color: var(--mpl-secondary); margin: 0; font-weight: normal; line-height: 24px; margin-bottom: 30px;}
+	#ttbm_meta_box_panel  .tabsItem section { border-radius: 8px; background-color: #FFF; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1019607843); padding: 24px; margin-bottom: 24px; transition: transform 0.2s, box-shadow 0.2s; width: 100%;}
+	#ttbm_meta_box_panel  .tabsItem section:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);}
+	#ttbm_meta_box_panel  .tabsItem section .ttbm-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 16px; border-bottom: 1px solid var(--mpl-gray);}
+	#ttbm_meta_box_panel  .tabsItem section .ttbm-header h4 { margin: 0; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;}
+	#ttbm_meta_box_panel  .tabsItem section .label { display: flex; justify-content: space-between; align-items: center; flex-direction: row; cursor: pointer; margin: 10px 0; padding: 10px;background: #f1f1f1;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+	height: 55px;
+}
+	#ttbm_meta_box_panel  .tabsItem section .dFlex{
+		gap: 10px;
+	}
+	#ttbm_meta_box_panel  .tabsItem section .label p { font-size: 14px; font-weight: normal; margin-bottom: 5px; color: var(--mpl-secondary);}
+	#ttbm_meta_box_panel  .tabsItem section .label .text { font-weight: normal; line-height: 20px; font-size: 13px;}
+	#ttbm_meta_box_panel  .tabsItem section textarea { width: 100%;}
+	#ttbm_meta_box_panel  .tabsItem section .roundSwitchLabel input:checked + .roundSwitch { background-color: var(--mpl-primary);}
+	#ttbm_meta_box_panel  .tabsItem section .customCheckboxLabel input:checked ~ .customCheckbox::before { background: var(--mpl-primary); border-color: var(--mpl-primary);}
+	#ttbm_meta_box_panel  .tabsItem .col-left { width: 50%;}
+	#ttbm_meta_box_panel  .tabsItem .col-right { width: 50%;}
+	#ttbm_meta_box_panel  .tabsContent th[scope=row] label { display: block; margin-bottom: 5px;}
+	#ttbm_meta_box_panel  .tabsContent th[scope=row] label h6 { margin-top: 10px;}
+	#ttbm_meta_box_panel  .tabsContent .span-row { color: #6B7280; font-size: 13px; font-weight: normal;}
+	#ttbm_meta_box_panel  .tabsContent .long-input { width: 80%;}
+	#ttbm_meta_box_panel  .tabsContent .wp-switch-editor { height: auto;}
+	#ttbm_meta_box_panel  .tabsContent .wp-editor-area { width: 100%; border: 0;}
 	#ttbm_meta_box_panel .fullscreen-icon { background-size: 22px 30px; background-position: 4px 0px;}
 	#ttbm_meta_box_panel .leaflet-touch .fullscreen-icon.leaflet-fullscreen-on { background-position: 4px 0px;}
-	#ttbm_meta_box_panel .tabLists { border-right: 0; }
+	#ttbm_meta_box_panel .tabLists { border-right: 0;padding:10px; }
 	#ttbm_meta_box_panel .tab-content-ttbm_tax_meta_boxs table { border-collapse: collapse; border-spacing: 0; border: 0; margin: 0;}
 	#ttbm_meta_box_panel .tab-content-ttbm_tax_meta_boxs table.form-table tr th { text-align: left;}
 	#ttbm_meta_box_panel .tab-content-ttbm_tax_meta_boxs table.form-table tr th,
@@ -153,7 +193,7 @@
 	#ttbm_meta_box_panel .form-wrap.form-builder .frmb li .field-actions .del-button { background-color: var(--mpl-red); color: var(--mpl-white);}
 	#ttbm_meta_box_panel .form-wrap.form-builder .frmb li .field-actions .toggle-form { background-color: var(--mpl-yellow);}
 	#ttbm_meta_box_panel .form-wrap.form-builder .frmb li .field-actions .copy-button { background-color: var(--mpl-primary); color: var(--mpl-white);}
-	#ttbm_meta_box_panel .ttbm_settings .tabsContent{background-color: var(--mpl-light);}
+	#ttbm_meta_box_panel  .tabsContent{background-color: var(--mpl-light);}
 }
 /********************************************************************Icon  Image upload  ************************************************/
 @media only screen and (min-width: 10px) {
@@ -218,19 +258,7 @@
 	.ttbm_style .buttonOutline:hover {background-color: #FF555D;color: #FFF;}
 }
 /* =====================quick setup=============== */
-@media only screen and (min-width: 10px) {
-	.ttbm-quick-setup .ttbmTabsNext .tabsContentNext p { margin-bottom: 5px;}
-	.ttbm_promotional_shortcode_holder { display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-around; margin: 30px 0;}
-	.ttbm_shortcode_box {background: #FFFFFF; border: 1px solid #DDD; margin-bottom: 20px;box-shadow: 0 0px 5px rgba(0, 0, 0, 0.05); border-radius: 8px; padding:5px; width: auto; position: relative; transition: box-shadow 0.3s ease;}
-	.ttbm_shortcode_box:hover { box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);}
-	.ttbm_shortcode_text { font-size: 14px; color: #333; background: #fff9d5; padding: 12px; border-radius: 5px; word-break: break-word;}
-	.ttbm_copy_btn {position:absolute;top:10px;right:10px;background-color: #0073AA; color: white; border: none; padding: 8px 14px; font-size: 14px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s ease;}
-	.ttbm_copy_btn:hover { background-color: #005177;}
-	.ttbm_shortcode_section { margin: 40px 0; padding: 0 15px;}
-	.ttbm_shortcode_title { font-size: 24px; font-weight: 600; margin-bottom: 20px; color: #222; text-align: center; position: relative;}
-	.ttbm_shortcode_title::after { content: ""; display: block; width: 60px; height: 3px; background-color: #0073AA; margin: 10px auto 0; border-radius: 2px;}
-	.ttbm_shortcode_item_title { font-size: 18px; font-weight: 600; margin: 0 0 10px 0; color: #333;}
-}
+
 /********************************************************************Welcome Page  ************************************************/
 @media only screen and (min-width: 10px) {
 	div.ttbm_welcome_page { margin: 20px 20px 20px 0;}
@@ -384,7 +412,7 @@
 	.ttbm-hotel-list-table td { padding: 12px 10px; vertical-align: top; border-bottom: 1px solid #F0F0F1;}
 	.ttbm-hotel-list-table .ttbm-hotel-list-column-image { width: 120px; text-align: center;}
 	.ttbm-tour-card .ttbm-hotel-list-column-image{height: 100px;}
-	.ttbm-hotel-list-image-placeholder { width: 100%; height:100%; object-fit: cover; border-radius: 4px; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);}
+	.ttbm-hotel-list-image-placeholder { width:120px; height:120px; object-fit: cover; object-position: center; border-radius: 4px; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);}
 	.ttbm-hotel-list-hotel-title { font-size: 15px; font-weight: 600; margin-bottom: 5px; color: #0073AA; transition: color 0.2s ease;}
 	.ttbm-hotel-list-hotel-location { font-size: 13px; color: #666; margin-bottom: 8px; display: flex; align-items: center; gap: 5px;}
 	.ttbm-hotel-list-hotel-location .fas { color: rgb(255, 109, 0);}
@@ -687,7 +715,7 @@
 	.ttbm-tour-list-page .ttbm-load-more-wrap .button { background-color: var(--mpl-primary); color: #FFF; border: var(--mpl-primary) solid 1px; font-weight: bold; }
 	.ttbm-faq-section .ttbm-faq-item { background-color: #FFF; cursor: grabbing; }
 	.ttbm-faq-section .ttbm-faq-item.ui-sortable-helper { background: var(--mpl-light); visibility: visible; cursor: grabbing; }
-	.ttbm-faq-section .faq-header { position: relative; z-index: 0; background-color: var(--mpl-light); border: 1px solid #DDD; border-radius: 10px; margin-top: 20px; }
+	.ttbm-faq-section .faq-header { position: relative; z-index: 0; background-color: #f8f8f8; border: 1px solid #ddd; border-radius: 10px; margin-top: 20px; box-shadow: 0 0px 5px rgba(0,0,0,0.1);padding:10px}
 	.ttbm-faq-section .faq-header.mActive { border-radius: 15px 15px 0 0; }
 	.ttbm-faq-section .faq-header .faq-action { position: absolute; top: 50%; right: 15px; transform: translateY(-50%); z-index: 1; }
 	.ttbm-faq-section .faq-header .faq-action span { padding: 5px 10px; background-color: var(--mpl-light); color: var(--mpl-primary); border-radius: 2px; }
@@ -695,7 +723,7 @@
 	.ttbm-faq-section .faq-content.mActive { border-radius: 0 0 15px 15px; }
 	.ttbm-daywise-section .ttbm-daywise-item { background-color: #FFF; cursor: grabbing; }
 	.ttbm-daywise-section .ttbm-daywise-item.ui-sortable-helper { background: var(--mpl-light); visibility: visible; cursor: grabbing; }
-	.ttbm-daywise-section .daywise-header { position: relative; z-index: 0; background-color: var(--mpl-light); border: 1px solid #DDD; margin-top: 20px; border-radius: 10px; }
+	.ttbm-daywise-section .daywise-header { position: relative; z-index: 0; background-color: var(--mpl-light); border: 1px solid #DDD; margin-top: 20px; border-radius: 10px;padding: 10px; }
 	.ttbm-daywise-section .daywise-header.mActive { border-radius: 15px 15px 0 0; }
 	.ttbm-daywise-section .daywise-header .daywise-action { position: absolute; top: 50%; right: 15px; transform: translateY(-50%); z-index: 1; }
 	.ttbm-daywise-section .daywise-header .daywise-action span { padding: 5px 10px; background-color: var(--mpl-light); color: var(--mpl-primary); border-radius: 2px; }
@@ -722,13 +750,13 @@
 	div.ttbm_style .ttbmPanelBody { background-color: #FFF;}
 	.ttbm_style button:hover span,
 	.ttbm_style button:focus span { color: var(--mpl-dark);}
-	.ttbm_style [data-tabs-target].active { border-left: 2px solid var(--mpl-primary);}
-	.ttbm_style [data-tabs-target]:hover { border-left: 2px solid var(--mpl-primary);}
+	.ttbm_style [data-tabs-target].active {}
+	.ttbm_style [data-tabs-target]:hover { }
 	.auto-search-wrapper.loupe::before { margin: 10px 0;}
 	.auto-search-wrapper.loupe button { display: none;}
 	.ttbm-avg-review-header { align-items: center !important;}
-	.ttbm_style [data-tabs-target].active { background-color: var(--mpl-white); color: var(--d_color); border-left: 2px solid var(--mpl-primary);}
-	.ttbm_style [data-tabs-target]:hover { border-left: 2px solid var(--mpl-primary); background-color: var(--mpl-white);}
+	.ttbm_style [data-tabs-target].active { background-color: var(--mpl-white); color: var(--d_color);}
+	.ttbm_style [data-tabs-target]:hover { background-color: var(--mpl-white);}
 	.ttbm_style .themeButton, .ttbm_style [class*=_themeButton] { background-color: var(--mpl-primary); color: var(--mpl-white); padding: 10px; border: 1px solid var(--mpl-primary);}
 	.ttbm_style .themeButton i, .ttbm_style [class*=_themeButton] i { color: #FFF;}
 	.leftTabs [data-tabs-target] { border-bottom: 0; }
@@ -784,6 +812,23 @@
 	.ttbm-enquiry-list .new { color: green;}
 	.ttbm-enquiry-list .viewed { color: skyblue;}
 	.ttbm-enquiry-list .replied { color: rgb(255, 162, 162);}
+	/* Top Picks & Deals Promotional Shortcode Styles */
+	.ttbm_promotional_shortcode { margin-bottom: 20px; padding: 15px; background-color: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 5px;}
+	.ttbm_promotional_shortcode .ttbm_shortcode_item_title { margin: 0 0 10px 0; font-size: 16px; font-weight: 600; color: var(--mpl-secondary);}
+	.ttbm_promotional_shortcode .ttbm_shortcode_box { display: flex; align-items: center; gap: 10px; background-color: #fff; padding: 10px; border: 1px solid #ddd; border-radius: 4px;}
+	.ttbm_promotional_shortcode .ttbm_shortcode_text { flex: 1; font-family: monospace; font-size: 13px; color: #333; padding: 8px; background-color: #f5f5f5; border-radius: 3px; word-break: break-all;}
+	.ttbm_promotional_shortcode .ttbm_copy_btn { padding: 8px 15px; background-color: var(--mpl-primary); color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500; transition: background-color 0.3s ease; position: relative; z-index: 10;}
+	.ttbm_promotional_shortcode .ttbm_copy_btn:hover { background-color: #d91e5e; opacity: 0.9;}
+	.ttbm_promotional_shortcode .ttbm_copy_btn:active { transform: scale(0.98);}
+	/* Ensure Top Picks & Deals checkboxes and toggle are clickable */
+	.ttbm_settings_activities .customCheckboxLabel,
+	.ttbm_settings_activities .groupCheckBox,
+	.ttbm_settings_activities .ttbm_activities_area { position: relative; z-index: 10; pointer-events: auto;}
+	.ttbm_settings_activities input[type="checkbox"] { position: relative; z-index: 11; pointer-events: auto; cursor: pointer;}
+	.ttbm_settings_activities .roundSwitchLabel,
+	.ttbm_settings_activities .roundSwitch,
+	.ttbm_settings_activities [data-collapse-target] { position: relative; z-index: 10; pointer-events: auto; cursor: pointer;}
+	.ttbm_settings_activities .ttbm-header { position: relative; z-index: 10;}
 }
 /* =====================Responsive=============== */
 @media only screen and (max-width: 1100px) {
@@ -1047,6 +1092,79 @@
 	}
 
 }
+.auto-search-wrapper input{
+	border-radius: 5px;
+}
+#map-desc{
+	margin:10px 0; 
+}
+/* title style settings */
+.ttbm-title-styles{
+	display: flex;
+	gap:10px;
+	flex-wrap: wrap;
+}
+.title-style{
+	width: calc(33.33% - 10px);
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	background-color: #fff;
+	box-shadow: 0 0 5px rgba(0,0,0,0.1);
+	text-align: center;
+	cursor: pointer;
+}
+.title-style p{
+	font-weight: 500;
+	margin: 5px 0;
+	padding:5px;
+}
+.title-style.active{
+	border: 2px solid #006EFF;
+}
+.title-style.active p{
+	background-color: #006EFF;
+	color:#fff;
+}
+/* booking form settings */
+
+.ttbm-booking-styles{
+	display: flex;
+	gap:10px;
+	flex-wrap: wrap;
+}
+.booking-style{
+	width: calc(33.33% - 10px);
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	background-color: #fff;
+	box-shadow: 0 0 5px rgba(0,0,0,0.1);
+	text-align: center;
+	cursor: pointer;
+}
+.booking-style p{
+	font-weight: 500;
+	margin: 5px 0;
+	padding:5px;
+}
+.booking-style.active{
+	border: 2px solid #006EFF;
+}
+.booking-style.active p{
+	background-color: #006EFF;
+	color:#fff;
+}
+ #ttbm_meta_box_panel  .ttbm_settings_dates .tabLists{
+	padding-left: 0;
+ }
+.ttbm_settings_dates .tabLists{
+	padding:0;
+}
+.ttbm_settings_dates .tabLists li{
+	margin: 5px;
+}
+.ttbm_settings_dates .tabsContent{
+	padding:10px;
+}
 /* ttbm_hotel_features_tab */
 .features_header{
 	display: flex;
@@ -1109,4 +1227,175 @@
 
 .auto-search-wrapper input{
 	font-size: 14px;
+}
+.ttbm_settings [data-tabs-target]{
+	margin:5px  0;
+	background-color: #f8f8f8;
+	color:var(--color_theme);
+}
+.ttbm-template-section{
+	display: flex;
+	justify-content: space-evenly;
+	align-items: start;
+	gap: 50px;
+}
+.ttbm-template-section .ttbm-template{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 25%;
+	gap: 20px;
+}
+
+ .ttbm_style .ttbm-template-section .ttbm-template img{
+  border: 2px solid #DDD;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  object-position: top center;
+  position: relative;
+  padding: 10px;
+  box-shadow: 0 0 10px #B9B9B9;
+}
+.ttbm-template-section .ttbm-template.active img {
+  border-color: var(--color_theme);
+  box-shadow: 0 0 10px var(--color_theme);
+}
+.ttbm-pricing-types{
+	display: flex;
+	justify-content: start;
+	align-items: center;
+	gap:10px;
+	margin-bottom: 20px;
+}
+.ttbm-pricing-type{
+  padding: 10px;
+  border-radius:5px;
+  width: 50%;
+  border: 1px solid #999;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  text-align: left;
+}
+
+.ttbm-pricing-type.active {
+  background-color: #efefef;
+  border: 2px solid var(--color_theme);
+  color: var(--color_theme);
+  font-size: 16px;
+}
+.ttbm-pricing-type i{
+	font-size: 50px;
+}
+.ttbm-pricing-type p{
+	color: #666;
+}
+.ttbm-pricing-type.active::after {
+  content: "";
+  position: absolute;
+  bottom: -11px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 20px;
+  height: 20px;
+  border-bottom: 2px solid var(--color_theme);
+  border-right: 2px solid var(--color_theme);
+  background: #efefef;
+}
+
+/* =============Tour admin responsive======== */
+#ttbm_meta_box_panel .meta-sidebar{
+	position: relative;
+}
+
+.meta-sidebar-toggle{
+	display: none;
+	position: absolute;
+	top: 100px;
+	right: -20px;
+	background-color: #fff;
+	transform: translateY(-50%);
+	z-index: 1;
+	color: #444;
+	border: 1px solid #ccc;
+	border-radius:0 4px 4px 0; 
+	border-left: 0;
+	padding:10px 2px;
+	cursor: pointer;
+}
+
+@media (max-width: 1680px) {
+	.meta-sidebar-toggle{
+		display: block;
+	}
+
+	#ttbm_meta_box_panel .meta-sidebar{
+		min-width: 55px;
+		max-width: 55px;
+		border-right: 1px solid #ccc;
+	}
+	#ttbm_meta_box_panel .ttbmTabs.leftTabs{
+		position: relative;
+	}
+	#ttbm_meta_box_panel .meta-sidebar.meta-sidebar-collapsed{
+		min-width: 250px;
+		max-width: 250px;
+		
+		/* position: absolute;
+		top: 0;
+		left:0;
+		z-index: 2; */
+		z-index: 2;
+	}
+	/* Previously added dark overlay over the content when the sidebar was expanded.
+	   This was making the main settings area look disabled, so we neutralize it. */
+	.leftTabs-collapsed::after{
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0,0,0,0.2);
+		z-index: 1;
+		pointer-events: none;
+		content: none;
+	}
+	#ttbm_meta_box_panel .ttbm_style .tabsContent{
+		padding: 20px 40px;
+	}
+
+	#ttbm_meta_box_panel .meta-sidebar li i{ 
+		margin: 0;
+	}
+	#ttbm_meta_box_panel .meta-sidebar li span{ 
+		display: none;
+	}
+	#ttbm_meta_box_panel .meta-sidebar-collapsed li span{ 
+		display: block;
+	}
+	/* Ensure right sidebar meta boxes are above overlays */
+	#postbox-container-2,
+	#side-sortables,
+	.postbox-container-right {
+		position: relative;
+		z-index: 10;
+	}
+}
+@media (max-width: 1400px) {
+	.tabsItem section .dFlex{
+		flex-direction: column;
+	}
+	.tabsItem section .label .dFlex{
+		flex-direction: row;
+	}
+	#ttbm_meta_box_panel .tabsItem .col-left,
+	#ttbm_meta_box_panel .tabsItem .col-right{
+		width:100%;
+	}
 }

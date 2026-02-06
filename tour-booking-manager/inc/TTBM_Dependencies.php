@@ -26,6 +26,7 @@
 				require_once TTBM_PLUGIN_DIR . '/inc/TTBM_Custom_Slider.php';
 				require_once TTBM_PLUGIN_DIR . '/admin/settings/TTBM_Select_Icon_image.php';
 				require_once TTBM_PLUGIN_DIR . '/admin/settings/TTBM_Setting_API.php';
+				// Always load Quick Setup (needed even when WooCommerce is not active)
 				require_once TTBM_PLUGIN_DIR . '/admin/TTBM_Quick_Setup.php';
 				if (TTBM_Global_Function::check_woocommerce() == 1) {
 					require_once TTBM_PLUGIN_DIR . '/inc/TTBM_Function.php';
@@ -36,13 +37,14 @@
 					require_once TTBM_PLUGIN_DIR . '/inc/TTBM_Query.php';
 					require_once TTBM_PLUGIN_DIR . '/inc/TTBM_Shortcodes.php';
 					require_once TTBM_PLUGIN_DIR . '/inc/TTBM_Filter_Pagination.php';
+					require_once TTBM_PLUGIN_DIR . '/inc/TTBM_Hotel_Data_Display.php';
 					require_once TTBM_PLUGIN_DIR . '/inc/TTBM_Tour_List.php';
 					require_once TTBM_PLUGIN_DIR . '/inc/TTBM_Details_Layout.php';
 					require_once TTBM_PLUGIN_DIR . '/inc/TTBM_Travel_List_Tab_Details.php';
 					require_once TTBM_PLUGIN_DIR . '/inc/TTBM_Hotel_Details_Layout.php';
 					require_once TTBM_PLUGIN_DIR . '/inc/TTBM_Booking.php';
 					require_once TTBM_PLUGIN_DIR . '/inc/TTBM_Hotel_Booking.php';
-					require_once TTBM_PLUGIN_DIR . '/inc/TTBM_Woocommerce.php';
+require_once TTBM_PLUGIN_DIR . '/inc/TTBM_Woocommerce.php';
 				}
 			}
 			public function appsero_init_tracker_ttbm() {
@@ -67,12 +69,16 @@
 				$this->registration_enqueue();
 				do_action('ttbm_common_script');
 				wp_enqueue_style('mage-icons', TTBM_PLUGIN_URL . '/assets/mage-icon/css/mage-icon.css', array(), time());
+
+                $this->myplugin_enqueue_flatpickr();
 			}
 			public function frontend_script() {
 				$this->global_enqueue();
 				wp_enqueue_script('jquery-ui-accordion');
 				wp_enqueue_script('ttbm_script', TTBM_PLUGIN_URL . '/assets/frontend/ttbm_script.js', array('jquery'), time(), true);
 				wp_enqueue_script('ttbm_shortcode', TTBM_PLUGIN_URL . '/assets/frontend/ttbm_shortcode.js', array('jquery'), time(), true);
+                wp_enqueue_style('ttbm_hotel_lists', TTBM_PLUGIN_URL . '/assets/frontend/ttbm_hotel_lists.css', array(), time());
+
 				wp_localize_script('ttbm_script', 'ttbm_ajax', array(
 					'ajax_url' => admin_url('admin-ajax.php'),
 					'nonce' => wp_create_nonce('ttbm_frontend_nonce')
@@ -112,13 +118,17 @@
 				wp_enqueue_script('ttbm_date_range_picker_js', TTBM_PLUGIN_URL . '/assets/date_range_picker/date_range_picker.js', array('jquery', 'moment'), '1', true);
 				wp_enqueue_style('ttbm_registration', TTBM_PLUGIN_URL . '/assets/frontend/ttbm_registration.css', array(), time());
 				wp_enqueue_script('ttbm_registration', TTBM_PLUGIN_URL . '/assets/frontend/ttbm_registration.js', array('jquery'), time(), true);
-				wp_enqueue_script('ttbm_price_calculation', TTBM_PLUGIN_URL . '/assets/frontend/ttbm_price_calculation.js', array('jquery'), time(), true);
-				wp_enqueue_script('ttbm_hotel_script', TTBM_PLUGIN_URL . '/assets/frontend/ttbm_hotel_script.js', array('jquery'), time(), true);
-				wp_enqueue_script('ttbm_filter_pagination_script', TTBM_PLUGIN_URL . '/assets/frontend/filter_pagination.js', array('jquery'), time(), true);
-				wp_localize_script('ttbm_registration', 'ttbm_ajax', array(
-					'ajax_url' => admin_url('admin-ajax.php'),
-					'nonce' => wp_create_nonce('ttbm_frontend_nonce')
-				));
+			wp_enqueue_script('ttbm_price_calculation', TTBM_PLUGIN_URL . '/assets/frontend/ttbm_price_calculation.js', array('jquery'), time(), true);
+			wp_enqueue_script('ttbm_hotel_script', TTBM_PLUGIN_URL . '/assets/frontend/ttbm_hotel_script.js', array('jquery'), time(), true);
+			wp_enqueue_script('ttbm_filter_pagination_script', TTBM_PLUGIN_URL . '/assets/frontend/filter_pagination.js', array('jquery'), time(), true);
+			wp_localize_script('ttbm_registration', 'ttbm_ajax', array(
+				'ajax_url' => admin_url('admin-ajax.php'),
+				'nonce' => wp_create_nonce('ttbm_frontend_nonce')
+			));
+			wp_localize_script('ttbm_price_calculation', 'ttbm_price_calc_vars', array(
+				'ajax_url' => admin_url('admin-ajax.php'),
+				'nonce' => wp_create_nonce('ttbm_frontend_nonce')
+			));
 				do_action('add_ttbm_registration_enqueue');
 			}
 			public function ttbm_upgrade() {
@@ -172,6 +182,35 @@
 					update_option('ttbm_upgrade_global', 'completed');
 				}
 			}
+
+            function myplugin_enqueue_flatpickr() {
+
+                // Flatpickr CSS
+                wp_enqueue_style(
+                    'flatpickr-css',
+                    'https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css',
+                    [],
+                    null
+                );
+
+                // Flatpickr JS
+                wp_enqueue_script(
+                    'flatpickr-js',
+                    'https://cdn.jsdelivr.net/npm/flatpickr',
+                    ['jquery'],
+                    null,
+                    true
+                );
+
+                // Your custom script that initializes Flatpickr
+                wp_enqueue_script(
+                    'myplugin-flatpickr-init',
+                    plugin_dir_url(__FILE__) . 'assets/js/flatpickr-init.js',
+                    ['flatpickr-js'],
+                    false,
+                    true
+                );
+            }
 			public function js_constant() {
 				?>
                 <script type="text/javascript">

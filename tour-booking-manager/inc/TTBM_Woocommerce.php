@@ -28,7 +28,7 @@
 				$product_id = is_string(get_post_status($linked_ttbm_id)) ? $linked_ttbm_id : $product_id;
 				$product_id = TTBM_Function::post_id_multi_language($product_id);
 				if (get_post_type($product_id) == TTBM_Function::get_cpt_name() && (isset($_POST['ttbm_form_nonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['ttbm_form_nonce'])), 'ttbm_form_nonce'))) {
-					$total_price = $this->get_cart_total_price($product_id);
+					$total_price = self::get_cart_total_price($product_id);
 					$hotel_info = self::cart_hotel_info();
 					$cart_item_data['ttbm_hotel_info'] = apply_filters('ttbm_hotel_info_filter', $hotel_info, $product_id);
 					$cart_item_data['ttbm_date'] = isset($_POST['ttbm_start_date']) ? sanitize_text_field(wp_unslash($_POST['ttbm_start_date'])) : '';
@@ -411,6 +411,55 @@
 				}
 				return $zdata;
 			}
+
+            public static function ttbm_hotel_booking_info_with_travel( $ticket_info, $hotel_info, $order_id ){
+                $order = wc_get_order($order_id);
+                $order_status = $order->get_status();
+                $payment_method = $order->get_payment_method();
+                $user_id = $order->get_user_id() ?? '';
+                $billing_name = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
+                $billing_email = $order->get_billing_email();
+                $billing_phone = $order->get_billing_phone();
+                $billing_address = $order->get_billing_address_1() . ' ' . $order->get_billing_address_2();
+                $hotel_id = is_array($hotel_info) && sizeof($hotel_info) > 0 ? $hotel_info['hotel_id'] : 0;
+                $checkin_date = is_array($hotel_info) && sizeof($hotel_info) > 0 ? $hotel_info['ttbm_checkin_date'] : '';
+                $checkout_date = is_array($hotel_info) && sizeof($hotel_info) > 0 ? $hotel_info['ttbm_checkout_date'] : '';
+                $num_of_day = is_array($hotel_info) && sizeof($hotel_info) > 0 ? $hotel_info['ttbm_hotel_num_of_day'] : 1;
+                $order_created_date = $order->get_date_created()->date('Y-m-d H:i:s');;
+                $order_title = 'Hotel Booking #' . $order_id;
+                $order_description = '';
+                $hotel_title = get_the_title($hotel_id);
+                $hotel_booking_status = 'In Progress';
+                $custom_order_id = wp_insert_post(array(
+                    'post_title' => $order_title,
+                    'post_type' => 'ttbm_hotel_booking',
+                    'post_status' => 'publish',
+                    'post_author' => 1,
+                ));
+//                $price = ($_ticket['ticket_price'] * $qty) * $num_of_day;
+                $price = 100;
+
+                if ($custom_order_id) {
+                    // Store meta data in the custom post
+                    update_post_meta($custom_order_id, '_ttbm_hotel_booking_order_id', $order_id);
+                    update_post_meta($custom_order_id, '_ttbm_hotel_booking_date', $order_created_date);
+                    update_post_meta($custom_order_id, '_ttbm_hotel_booking_status', $order_status);
+                    update_post_meta($custom_order_id, '_ttbm_hotel_booking_customer_id', $user_id);
+                    update_post_meta($custom_order_id, '_ttbm_hotel_booking_customer_name', $billing_name);
+                    update_post_meta($custom_order_id, '_ttbm_hotel_booking_customer_email', $billing_email);
+                    update_post_meta($custom_order_id, '_ttbm_hotel_booking_room_info', $ticket_info);
+                    update_post_meta($custom_order_id, '_ttbm_hotel_booking_checkin_date', $checkin_date);
+                    update_post_meta($custom_order_id, '_ttbm_hotel_booking_checkout_date', $checkout_date);
+                    update_post_meta($custom_order_id, '_ttbm_hotel_booking_status', $hotel_booking_status);
+                    update_post_meta($custom_order_id, '_ttbm_hotel_booking_days', $num_of_day);
+                    update_post_meta($custom_order_id, '_ttbm_hotel_booking_price', $price);
+                    update_post_meta($custom_order_id, '_ttbm_hotel_id', $hotel_id);
+                    update_post_meta($custom_order_id, '_ttbm_hotel_title', $hotel_title);
+                    update_post_meta($custom_order_id, '_ttbm_hotel_booking_payment_method', $payment_method);
+                }
+
+            }
+
 			public static function add_billing_data($ticket_info, $hotel_info, $user_info, $ttbm_id, $order_id) {
 				$order = wc_get_order($order_id);
 				$order_status = $order->get_status();
@@ -424,7 +473,10 @@
 				$checkin_date = is_array($hotel_info) && sizeof($hotel_info) > 0 ? $hotel_info['ttbm_checkin_date'] : '';
 				$checkout_date = is_array($hotel_info) && sizeof($hotel_info) > 0 ? $hotel_info['ttbm_checkout_date'] : '';
 				$num_of_day = is_array($hotel_info) && sizeof($hotel_info) > 0 ? $hotel_info['ttbm_hotel_num_of_day'] : 1;
+                $order_description = [];
+
 				if (is_array($ticket_info) && sizeof($ticket_info) > 0) {
+
 					$count = 0;
 					foreach ($ticket_info as $_ticket) {
 						//$qty = apply_filters('ttbm_group_ticket_qty_actual', $_ticket['ticket_qty'],$ttbm_id,$_ticket['ticket_name']);
@@ -442,7 +494,7 @@
 								$zdata[$count]['ttbm_ticket_name'] = $_ticket['ticket_name'];
 								$zdata[$count]['ttbm_ticket_price'] = $_ticket['ticket_price'] * $num_of_day;
 								$zdata[$count]['ttbm_ticket_total_price'] = ($_ticket['ticket_price'] * $qty) * $num_of_day;
-								$zdata[$count]['ttbm_date'] = $_ticket['ttbm_date'];
+								$zdata[$count]['ttbm_date'] = isset($_ticket['ttbm_date']) ? $_ticket['ttbm_date'] : '';
 								$zdata[$count]['ttbm_ticket_qty'] = $_ticket['ticket_qty'];
 								$zdata[$count]['ttbm_group_id'] = $group_id;
 								$zdata[$count]['ttbm_hotel_id'] = $hotel_id;
@@ -464,7 +516,16 @@
 								$group_count++;
 							}
 						}
+
+//                        $key = str_replace(' ', '', $_ticket['ticket_name']);
+                        $room_name_key = preg_replace('/[^A-Za-z0-9]/', '', $_ticket['ticket_name'] );
+                        $order_description[$room_name_key] = [
+                            'quantity' => (int) $_ticket['ticket_qty'],
+                            'price'    => (int) $_ticket['ticket_price'],
+                        ];
 					}
+
+                    self::ttbm_hotel_booking_info_with_travel( $order_description, $hotel_info, $order_id );
 				}
 			}
 			public static function cart_ticket_info($tour_id) {
@@ -525,7 +586,7 @@
 				}
 				return $extra_service;
 			}
-			public function get_cart_total_price($tour_id) {
+			public static function get_cart_total_price($tour_id) {
 				$total_price = 0;
 				$total_qty = 0;
 				if (isset($_POST['ttbm_form_nonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['ttbm_form_nonce'])), 'ttbm_form_nonce')) {
@@ -573,7 +634,7 @@
 					'post_status' => $status,
 					'post_type' => $cpt_name
 				);
-				wp_reset_postdata();
+				//wp_reset_postdata();
 				$post_id = wp_insert_post($new_post);
 				if (sizeof($meta_data) > 0) {
 					foreach ($meta_data as $key => $value) {

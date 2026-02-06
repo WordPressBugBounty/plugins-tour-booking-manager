@@ -28,6 +28,23 @@
             parent.find('.ttbm_tour_hotel_setting').slideUp(250);
         }
     });
+    $(document).on('click', '.ttbm-pricing-type', function (e) {
+        e.preventDefault();
+        $('.ttbm-pricing-type').removeClass('active');
+        $(this).addClass('active');
+        
+        let ttbm_type = $(this).data('price-type');
+        $(this).closest('.ttbm-pricing-types').find('input[name="ttbm_type"]').val(ttbm_type);
+
+        let parent = $(this).closest('.ttbm_settings');
+        if (ttbm_type === 'hotel') {
+            parent.find('.ttbm_ticket_config').slideUp(250);
+            parent.find('.ttbm_tour_hotel_setting').slideDown(250);
+        } else {
+            parent.find('.ttbm_ticket_config').slideDown(250);
+            parent.find('.ttbm_tour_hotel_setting').slideUp(250);
+        }
+    });
     //*********Pricing************//
     $(document).on('click', '.ttbm_price_config  .ttbm_add_item', function (e) {
         if (e.result) {
@@ -1245,6 +1262,36 @@
         reverseGeocode(location);
     }
 })(jQuery);
+//=================title style switcher==================
+(function($){
+    $(document).on('click', '.ttbm-title-styles .title-style', function(){
+       var parent = $(this).closest('.ttbm-title-styles');
+        $(parent).find('.title-style').removeClass('active');
+        $(this).addClass('active');
+        var titleStyle = $(this).data('title-style');
+        $('#ttbm-title-style').val(titleStyle);
+    });
+})(jQuery);
+
+(function($){
+    $(document).on('click', '.ttbm-booking-styles .booking-style', function(){
+       var parent = $(this).closest('.ttbm-booking-styles');
+        $(parent).find('.booking-style').removeClass('active');
+        $(this).addClass('active');
+        var titleStyle = $(this).data('booking-style');
+        $('#ttbm-booking-style').val(titleStyle);
+    });
+})(jQuery);
+
+// ==============metabox sidebar collapse==============
+(function($){
+    $(document).on('click', '.meta-sidebar-toggle', function() {
+        $('.meta-sidebar-toggle i').toggleClass('mi-angle-right mi-angle-left');
+        $('.tabLists.meta-sidebar').closest('.leftTabs').toggleClass('leftTabs-collapsed');
+        $('.tabLists.meta-sidebar').toggleClass('meta-sidebar-collapsed');
+    });
+})(jQuery);
+
 // New Activity Popup Logic
 (function ($) {
     "use strict";
