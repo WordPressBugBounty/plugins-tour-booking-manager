@@ -576,9 +576,58 @@
 				$tour_date = $tour_date ?: TTBM_Global_Function::get_post_info($tour_id, 'ttbm_upcoming_date');
 				$type = apply_filters('ttbm_type_filter', $type, $tour_id);
 				$sold_query = TTBM_Query::query_all_sold($tour_id, $tour_date, $type, $hotel_id);
-				return $sold_query->post_count;
+				// Booking rows can be duplicated per attendee while storing the same line quantity.
+				// Count each order/ticket/date/hotel line once to avoid over-counting.
+				$total_sold = 0;
+				$line_qty_map = array();
+				if ($sold_query->have_posts()) {
+					foreach ($sold_query->posts as $booking_post) {
+						$ticket_qty = TTBM_Global_Function::get_post_info($booking_post->ID, 'ttbm_ticket_qty', 1);
+						$ticket_qty = max(1, intval($ticket_qty));
+						$order_id = TTBM_Global_Function::get_post_info($booking_post->ID, 'ttbm_order_id');
+						$ticket_name = TTBM_Global_Function::get_post_info($booking_post->ID, 'ttbm_ticket_name');
+						$booked_date = TTBM_Global_Function::get_post_info($booking_post->ID, 'ttbm_date');
+						$booked_hotel = TTBM_Global_Function::get_post_info($booking_post->ID, 'ttbm_hotel_id');
+
+						$key = $order_id ? $order_id . '|' . $ticket_name . '|' . $booked_date . '|' . $booked_hotel : '';
+						if ($key) {
+							if (!array_key_exists($key, $line_qty_map)) {
+								$line_qty_map[$key] = $ticket_qty;
+							} else {
+								$line_qty_map[$key] = max($line_qty_map[$key], $ticket_qty);
+							}
+						} else {
+							$total_sold += $ticket_qty;
+						}
+					}
+				}
+				$total_sold += array_sum($line_qty_map);
+				wp_reset_postdata();
+				return $total_sold;
 			}
 			public static function get_total_available($tour_id, $tour_date = '') {
+				$tour_type = self::get_tour_type($tour_id);
+				
+				if ($tour_type == 'general') {
+					$ticket_lists = self::get_ticket_type($tour_id);
+					if (sizeof($ticket_lists) > 0) {
+						$total_available = 0;
+						foreach ($ticket_lists as $ticket) {
+							$ticket_name = array_key_exists('ticket_type_name', $ticket) ? $ticket['ticket_type_name'] : '';
+							$ticket_qty = array_key_exists('ticket_type_qty', $ticket) && $ticket['ticket_type_qty'] > 0 ? $ticket['ticket_type_qty'] : 0;
+							$reserve = array_key_exists('ticket_type_resv_qty', $ticket) && $ticket['ticket_type_resv_qty'] > 0 ? $ticket['ticket_type_resv_qty'] : 0;
+							
+							$sold_type = self::get_total_sold($tour_id, $tour_date, $ticket_name);
+							$sold_type = apply_filters('ttbm_sold_qty', $sold_type, $tour_id, $tour_date, $ticket_name);
+							
+							$available = (int)$ticket_qty - ($sold_type + (int)$reserve);
+							$available = apply_filters('ttbm_group_ticket_qty', $available, $tour_id, $ticket_name);
+							$total_available += max(0, floor($available));
+						}
+						return $total_available;
+					}
+				}
+
 				$total = self::get_total_seat($tour_id);
 				$reserve = self::get_total_reserve($tour_id);
 				$sold = self::get_total_sold($tour_id, $tour_date);
@@ -627,7 +676,14 @@
 				$tour_date = current(self::get_date($tour_id));
 			}
 			
-			$tour_date = gmdate('Y-m-d', strtotime($tour_date));
+			// Preserve time component if present for time-slot specific availability
+			$has_time = TTBM_Global_Function::check_time_exit_date($tour_date);
+			if ($has_time) {
+				$tour_date = date('Y-m-d H:i', strtotime($tour_date));
+			} else {
+				$tour_date = date('Y-m-d', strtotime($tour_date));
+			}
+			
 			$ticket_types = self::get_ticket_type($tour_id);
 			$availability_info = array();
 			
@@ -983,6 +1039,12 @@
 			}
 			public static function service_qty_text() {
 				return self::get_translation_settings('ttbm_string_service_qty', esc_html__('Qty', 'tour-booking-manager'));
+			}
+			public static function cancellation_policy_text() {
+				return self::get_translation_settings('ttbm_string_cancellation_policy', esc_html__('Free cancellation up to 24 hours before the experience starts (local time)', 'tour-booking-manager'));
+			}
+			public static function reserve_pay_later_text() {
+				return self::get_translation_settings('ttbm_string_reserve_pay_later', esc_html__('Reserve Now and Pay Later - Secure your spot while staying flexible', 'tour-booking-manager'));
 			}
 			//*****************//
 			public static function get_cpt_name(): string {

@@ -51,7 +51,7 @@
 					$ttbm_id = array_key_exists('ttbm_id', $value) ? $value['ttbm_id'] : 0;
 					$ttbm_id = TTBM_Function::post_id_multi_language($ttbm_id);
 					if (get_post_type($ttbm_id) == TTBM_Function::get_cpt_name()) {
-						$total_price = $value['ttbm_tp'];
+						$total_price = array_key_exists('ttbm_tp', $value) ? $value['ttbm_tp'] : 0;
 						$value['data']->set_price($total_price);
 						$value['data']->set_regular_price($total_price);
 						$value['data']->set_sale_price($total_price);
@@ -95,12 +95,12 @@
 				$ttbm_id = array_key_exists('ttbm_id', $values) ? $values['ttbm_id'] : 0;
 				$ttbm_id = TTBM_Function::post_id_multi_language($ttbm_id);
 				//echo '<pre>';print_r($values);echo '</pre>';die();
-				if (get_post_type($ttbm_id) == TTBM_Function::get_cpt_name()) {
-					$hotel_info = $values['ttbm_hotel_info'] ?: [];
-					$ticket_type = $values['ttbm_ticket_info'] ?: [];
-					$extra_service = $values['ttbm_extra_service_info'] ?: [];
-					$user_info = $values['ttbm_user_info'] ?: [];
-					$date = $values['ttbm_date'] ?: '';
+			if (get_post_type($ttbm_id) == TTBM_Function::get_cpt_name()) {
+				$hotel_info = isset($values['ttbm_hotel_info']) ? $values['ttbm_hotel_info'] : [];
+				$ticket_type = isset($values['ttbm_ticket_info']) ? $values['ttbm_ticket_info'] : [];
+				$extra_service = isset($values['ttbm_extra_service_info']) ? $values['ttbm_extra_service_info'] : [];
+				$user_info = isset($values['ttbm_user_info']) ? $values['ttbm_user_info'] : [];
+				$date = isset($values['ttbm_date']) ? $values['ttbm_date'] : '';
 					$data_format = TTBM_Global_Function::check_time_exit_date($date) ? 'full' : 'date';
 					$start_date = TTBM_Global_Function::date_format($date, $data_format);
 					$location = TTBM_Global_Function::get_post_info($ttbm_id, 'ttbm_location_name');
@@ -216,14 +216,14 @@
 				}
 			}
 			//**************************//
-			public function show_cart_item($cart_item, $ttbm_id) {
-				$ticket_type = $cart_item['ttbm_ticket_info'] ?: [];
-				$extra_service = $cart_item['ttbm_extra_service_info'] ?: [];
-				$tour_name = TTBM_Function::get_name();
-				$location = TTBM_Global_Function::get_post_info($ttbm_id, 'ttbm_location_name');
-				$date = $cart_item['ttbm_date'];
-				$data_format = TTBM_Global_Function::check_time_exit_date($date) ? 'full' : 'date';
-				$hotel_info = $cart_item['ttbm_hotel_info'] ?: array();
+		public function show_cart_item($cart_item, $ttbm_id) {
+			$ticket_type = isset($cart_item['ttbm_ticket_info']) ? $cart_item['ttbm_ticket_info'] : [];
+			$extra_service = isset($cart_item['ttbm_extra_service_info']) ? $cart_item['ttbm_extra_service_info'] : [];
+			$tour_name = TTBM_Function::get_name();
+			$location = TTBM_Global_Function::get_post_info($ttbm_id, 'ttbm_location_name');
+			$date = isset($cart_item['ttbm_date']) ? $cart_item['ttbm_date'] : '';
+			$data_format = TTBM_Global_Function::check_time_exit_date($date) ? 'full' : 'date';
+			$hotel_info = isset($cart_item['ttbm_hotel_info']) ? $cart_item['ttbm_hotel_info'] : array();
 				?>
                 <div class="ttbm_style">
 					<?php do_action('ttbm_before_cart_item_display', $cart_item, $ttbm_id); ?>
@@ -232,7 +232,7 @@
 							<?php if (!empty($location) && TTBM_Global_Function::get_post_info($ttbm_id, 'ttbm_display_location', 'on') != 'off') { ?>
                                 <li>
                                     <span class="fas fa-map-marker-alt"></span>&nbsp;
-                                    <h6><?php echo esc_html($tour_name . ' ' . esc_html__('Location', 'tour-booking-manager')); ?> :&nbsp;</h6>
+                                    <h6><?php echo esc_html($tour_name) . ' ' . esc_html__('Location', 'tour-booking-manager'); ?> :&nbsp;</h6>
                                     <span><?php echo esc_html($location); ?></span>
                                 </li>
 							<?php } ?>
@@ -597,10 +597,10 @@
 					$ttbm_hotel_num_of_day = isset($_POST['ttbm_hotel_num_of_day']) ? sanitize_text_field(wp_unslash($_POST['ttbm_hotel_num_of_day'])) : 0;
 					$count = count($names);
 					if (sizeof($names) > 0) {
-						for ($i = 0; $i < $count; $i++) {
-							if ($qty[$i] > 0) {
-								$total_qty=$total_qty+$qty[$i] ;
-								$price = TTBM_Function::get_price_by_name($names[$i], $tour_id, $hotel_id, $qty[$i], $start_date) * $qty[$i];
+						foreach ($names as $i => $name) {
+							if (isset($qty[$i]) && $qty[$i] > 0) {
+								$total_qty = $total_qty + $qty[$i];
+								$price = TTBM_Function::get_price_by_name($name, $tour_id, $hotel_id, $qty[$i], $start_date) * $qty[$i];
 								if ($hotel_id > 0) {
 									$price = $price * $ttbm_hotel_num_of_day;
 								}
