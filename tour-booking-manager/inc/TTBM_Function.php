@@ -582,10 +582,13 @@
 				$line_qty_map = array();
 				if ($sold_query->have_posts()) {
 					foreach ($sold_query->posts as $booking_post) {
-						$ticket_qty = TTBM_Global_Function::get_post_info($booking_post->ID, 'ttbm_ticket_qty', 1);
-						$ticket_qty = max(1, intval($ticket_qty));
 						$order_id = TTBM_Global_Function::get_post_info($booking_post->ID, 'ttbm_order_id');
 						$ticket_name = TTBM_Global_Function::get_post_info($booking_post->ID, 'ttbm_ticket_name');
+						$ticket_qty = TTBM_Global_Function::get_post_info($booking_post->ID, 'ttbm_ticket_qty', 1);
+						$ticket_qty = max(1, intval($ticket_qty));
+						// Convert purchased group count to actual seat count when group tickets are enabled.
+						$ticket_qty = apply_filters('ttbm_group_ticket_qty_actual', $ticket_qty, $tour_id, $ticket_name);
+						$ticket_qty = max(1, intval($ticket_qty));
 						$booked_date = TTBM_Global_Function::get_post_info($booking_post->ID, 'ttbm_date');
 						$booked_hotel = TTBM_Global_Function::get_post_info($booking_post->ID, 'ttbm_hotel_id');
 
@@ -615,6 +618,7 @@
 						foreach ($ticket_lists as $ticket) {
 							$ticket_name = array_key_exists('ticket_type_name', $ticket) ? $ticket['ticket_type_name'] : '';
 							$ticket_qty = array_key_exists('ticket_type_qty', $ticket) && $ticket['ticket_type_qty'] > 0 ? $ticket['ticket_type_qty'] : 0;
+							$ticket_qty = apply_filters('ttbm_ticket_capacity', intval($ticket_qty), $tour_id, $tour_date, $ticket_name);
 							$reserve = array_key_exists('ticket_type_resv_qty', $ticket) && $ticket['ticket_type_resv_qty'] > 0 ? $ticket['ticket_type_resv_qty'] : 0;
 							
 							$sold_type = self::get_total_sold($tour_id, $tour_date, $ticket_name);
@@ -696,8 +700,10 @@
 				}
 				
 				$total_capacity = intval($ticket['ticket_type_qty']);
+				$total_capacity = apply_filters('ttbm_ticket_capacity', $total_capacity, $tour_id, $tour_date, $type_name);
 				$reserved_qty = intval($ticket['ticket_type_resv_qty'] ?? 0);
 				$sold_qty = self::get_total_sold($tour_id, $tour_date, $type_name);
+				$sold_qty = apply_filters('ttbm_sold_qty', $sold_qty, $tour_id, $tour_date, $type_name);
 				$available_qty = max(0, $total_capacity - ($reserved_qty + $sold_qty));
 				
 				$percentage_sold = $total_capacity > 0 ? round(($sold_qty / $total_capacity) * 100, 2) : 0;
@@ -1793,6 +1799,7 @@
 			"Norway",
 			"Oman",
 			"Pakistan",
+            "Palestine",
 			"Palau",
 			"Panama",
 			"Papua New Guinea",
