@@ -1,11 +1,11 @@
-=== Tour & Travel Booking Manager for WooCommerce | Tour & Hotel Booking Solution ===
+=== Travelly – Tour & Travel Booking Manager for WooCommerce | Tour & Hotel Booking Solution ===
 Contributors: magepeopleteam, aamahin
 Plugin link: https://mage-people.com/
 Tags: tour-booking, tour-operator, travel, travel-booking, travel-agency
 Requires at least: 4.4.0
-Tested up to: 6.9
+Tested up to: 6.8
 Requires PHP: 7.0
-Stable tag: 2.1.4
+Stable tag: 2.0.0
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,7 +13,7 @@ Enhance and manage travel bookings effortlessly with WPTravelly—your complete 
 
 == Description ==
 
-**Tour & Travel Booking Manager** is the ultimate [tour and travel booking solution](https://mage-people.com/product/woocommerce-tour-and-travel-booking-manager-pro/) for WordPress websites. Ideal for travel agencies and tour operators, this plugin enables you to create and manage customized packages effortlessly.
+**Travelly** is the ultimate [tour and travel booking solution](https://mage-people.com/product/woocommerce-tour-and-travel-booking-manager-pro/) for WordPress websites. Ideal for travel agencies and tour operators, this plugin enables you to create and manage customized packages effortlessly.
 
 Launch your travel booking site in under five minutes using the most feature-rich booking plugin available.
 
@@ -118,7 +118,7 @@ To Show the Tour grid Style Orchid you need to use the shortcode below. example 
 
 ### Tour Location grid view
 To show the Tour location grid view you need to use the shortcode below. example 👉 [Tour Location list Demo ](https://wptravelly.com/travel-location-list-display-shortcode/) 👈:
-`Tour & Travel
+`
 [travel-location-list column=4 show=4]
 `
 
@@ -463,6 +463,11 @@ Bug Fixed
 Style fixing.
 Bug Fixed
 - 23 Aug 2024*
+
+= 2.1.8 =
+Forntend settings fixed.
+Language setting issue fixed.
+- 11 Mar 2026*
 
 ### Customer Dashboard & Cancellations
 
