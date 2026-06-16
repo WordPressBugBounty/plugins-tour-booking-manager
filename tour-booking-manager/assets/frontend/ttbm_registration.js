@@ -383,5 +383,246 @@ function get_ttbm_sold_ticket(parent, tour_id, tour_date) {
         $(this).closest('[data-ttbm-modal-target]').removeClass('open');
     });
 
+    // === frontend filter modal========
 
+    jQuery(document).ready(function ($) {
+        // =========================================================
+        // View Switcher (Grid / List)
+        // =========================================================
+        $('.ttbm_grid_view').on('click', function () {
+
+            $('.ttbm-view-btn').removeClass('ttbm-view-active').attr('aria-pressed', 'false');
+            $(this).addClass('ttbm-view-active').attr('aria-pressed', 'true');
+
+            $('.all_filter_item .flexWrap')
+                .removeClass('ttbm-list-mode')
+                .addClass('ttbm-grid-mode');
+
+            $('.all_filter_item .filter_item')
+                .removeClass('list_1')
+                .addClass('grid_'.concat(window.ttbm_column || '3'));
+        });
+
+        $('.ttbm_list_view').on('click', function () {
+
+            $('.ttbm-view-btn').removeClass('ttbm-view-active').attr('aria-pressed', 'false');
+            $(this).addClass('ttbm-view-active').attr('aria-pressed', 'true');
+
+            $('.all_filter_item .flexWrap')
+                .removeClass('ttbm-grid-mode')
+                .addClass('ttbm-list-mode');
+
+            $('.all_filter_item .filter_item')
+                .removeClass(function (index, className) {
+                    return (className.match(/(^|\s)grid_\S+/g) || []).join(' ');
+                })
+                .addClass('list_1');
+        });
+
+        // =========================================================
+        // Sort Tours
+        // =========================================================
+        // =========================================================
+// Sort Tours
+// =========================================================
+$(document).on('change', '.ttbm-sort-select', function () {
+
+    let sortValue = $(this).val();
+
+    let container = $('.all_filter_item .flexWrap');
+
+    let items = container.children('.filter_item').get();
+
+    items.sort(function (a, b) {
+
+        let priceA = parseFloat($(a).data('price')) || 0;
+        let priceB = parseFloat($(b).data('price')) || 0;
+
+        let titleA = ($(a).data('title') || '').toString().toLowerCase();
+        let titleB = ($(b).data('title') || '').toString().toLowerCase();
+
+        let dateA = new Date($(a).data('date')).getTime() || 0;
+        let dateB = new Date($(b).data('date')).getTime() || 0;
+
+        switch (sortValue) {
+
+            case 'price_asc':
+                return priceA - priceB;
+
+            case 'price_desc':
+                return priceB - priceA;
+
+            case 'title_asc':
+                return titleA.localeCompare(titleB);
+
+            case 'date_desc':
+                return dateB - dateA;
+
+            default:
+                return 0;
+        }
+    });
+
+    $.each(items, function (index, item) {
+        container.append(item);
+    });
+
+});
+
+        // =========================================================
+        // Top Filter Tabs
+        // =========================================================
+        $(document).on('click', '.ttbm-tab-btn', function () {
+
+            $('.ttbm-tab-btn').removeClass('ttbm-tab-active');
+            $(this).addClass('ttbm-tab-active');
+
+            let filter = $(this).data('filter-tab');
+            let parent = $(this).closest('.ttbm_filter_area');
+
+            let now = new Date();
+            now.setHours(0, 0, 0, 0);
+
+            let weekEnd = new Date(now);
+            weekEnd.setDate(weekEnd.getDate() + 7);
+
+            parent.find('.filter_item').each(function () {
+
+                let item = $(this);
+                let itemDate = item.attr('data-date');
+
+                if (!itemDate || filter === 'all') {
+                    item.show();
+                    return;
+                }
+
+                let tourDate = new Date(itemDate + 'T00:00:00');
+
+                if (filter === 'week') {
+                    if (tourDate >= now && tourDate <= weekEnd) {
+                        item.show();
+                    } else {
+                        item.hide();
+                    }
+                } else if (filter === 'month') {
+                    if (
+                        tourDate.getMonth() === now.getMonth() &&
+                        tourDate.getFullYear() === now.getFullYear()
+                    ) {
+                        item.show();
+                    } else {
+                        item.hide();
+                    }
+                } else if (filter === 'year') {
+                    if (tourDate.getFullYear() === now.getFullYear()) {
+                        item.show();
+                    } else {
+                        item.hide();
+                    }
+                }
+            });
+
+            // Update "Showing X of Y" count after tab filter
+            let visibleCount = parent.find('.filter_item:visible').length;
+            let totalCount   = parent.find('.filter_item').length;
+            parent.find('.qty_count').html(visibleCount);
+            parent.find('.total_filter_qty').html(totalCount);
+
+            // Show/hide the empty-result notice
+            if (visibleCount === 0) {
+                parent.find('.search_result_empty').slideDown('fast');
+                parent.find('.filter_short_result').slideUp('fast');
+            } else {
+                parent.find('.search_result_empty').slideUp('fast');
+                parent.find('.filter_short_result').slideDown('fast');
+            }
+        });
+
+        // =========================================================
+        // Activity Filter
+        // =========================================================
+        $('.ttbm_item_filter_by_activity').on('click', function () {
+
+            $('.ttbm_item_filter_by_activity').removeClass('active');
+            $(this).addClass('active');
+
+            let activityID = $(this).attr('id');
+
+            $('.filter_item').hide();
+
+            $('.filter_item').each(function () {
+
+                let activities = ($(this).attr('data-activity') || '').split(',');
+
+                if (activities.includes(activityID)) {
+                    $(this).show();
+                }
+            });
+        });
+
+
+        // =========================================================
+        // Mobile Left Filter Toggle
+        // =========================================================
+        function ttbmSetupMobileFilterToggle() {
+            $('.ttbm_filter_area .leftSidebar').each(function () {
+                let sidebar = $(this);
+                let filterBody = sidebar.children('.ttbm_filter').first();
+                let toggle = sidebar.find('.ttbm-mobile-filter-toggle').first();
+                let showLabel = toggle.data('show-label') || 'Show filters';
+
+                if (filterBody.length < 1 || toggle.length < 1) {
+                    return;
+                }
+
+                if (window.matchMedia('(max-width: 767px)').matches) {
+                    if (!sidebar.hasClass('ttbm-mobile-filter-ready')) {
+                        filterBody.hide();
+                        toggle
+                            .removeClass('is-open')
+                            .attr('aria-expanded', 'false')
+                            .find('.ttbm-mobile-filter-toggle-text')
+                            .text(showLabel);
+                        sidebar.addClass('ttbm-mobile-filter-ready');
+                    }
+                } else {
+                    filterBody.show();
+                    toggle
+                        .removeClass('is-open')
+                        .attr('aria-expanded', 'true')
+                        .find('.ttbm-mobile-filter-toggle-text')
+                        .text(showLabel);
+                    sidebar.removeClass('ttbm-mobile-filter-ready');
+                }
+            });
+        }
+
+        ttbmSetupMobileFilterToggle();
+
+        $(window).on('resize', function () {
+            ttbmSetupMobileFilterToggle();
+        });
+
+        $(document).on('click', '.ttbm_filter_area .ttbm-mobile-filter-toggle', function () {
+            if (!window.matchMedia('(max-width: 767px)').matches) {
+                return;
+            }
+
+            let toggle = $(this);
+            let sidebar = toggle.closest('.leftSidebar');
+            let filterBody = sidebar.children('.ttbm_filter').first();
+            let isOpen = toggle.hasClass('is-open');
+            let showLabel = toggle.data('show-label') || 'Show filters';
+            let hideLabel = toggle.data('hide-label') || 'Hide filters';
+
+            toggle
+                .toggleClass('is-open', !isOpen)
+                .attr('aria-expanded', !isOpen ? 'true' : 'false')
+                .find('.ttbm-mobile-filter-toggle-text')
+                .text(!isOpen ? hideLabel : showLabel);
+
+            filterBody.stop(true, true).slideToggle(220);
+        });
+
+    });
 }(jQuery));

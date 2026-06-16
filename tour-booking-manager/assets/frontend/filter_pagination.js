@@ -56,12 +56,13 @@
 		let ttbm_flatpickr_locale = (typeof ttbm_flatpickr_vars !== 'undefined' && ttbm_flatpickr_vars.locale)
 			? ttbm_flatpickr_vars.locale
 			: 'default';
-
+		let isMobile = window.innerWidth < 768
 		let rangeDatePicker = $("#ttbm_date_start_end_input").flatpickr({
 			mode: "range",
 			dateFormat: "F j, Y",
-			showMonths: 2,
+			showMonths: isMobile ? 1 : 2,
 			minDate: "today",
+			disableMobile: true,
 			locale: ttbm_flatpickr_locale,
 			onChange: function (selectedDates, dateStr, instance) {
 
@@ -164,7 +165,6 @@
 		$(this).attr('disabled', '');
 		all_item.find('.modern').toggleClass('grid modern').promise().done(function () {
 			parent.find('.ttbm_list_view').removeAttr('disabled');
-			parent.find('.ttbm_explore_button').slideToggle(250);
 			placeholderLoaderRemove(all_item);
 		});
 	});
@@ -175,7 +175,6 @@
 		$(this).attr('disabled', '');
 		all_item.find('.grid').toggleClass('grid modern').promise().done(function () {
 			parent.find('.ttbm_grid_view').removeAttr('disabled');
-			parent.find('.ttbm_explore_button').slideToggle(250);
 			placeholderLoaderRemove(all_item);
 		});
 	});
@@ -212,7 +211,9 @@
 		title_filter: 'data-title',
 		type_filter: 'data-type',
 		category_filter: 'data-category',
+		category_filter_multiple: 'data-category',
 		organizer_filter: 'data-organizer',
+		organizer_filter_multiple: 'data-organizer',
 		location_filter: 'data-location',
 		location_filter_multiple: 'data-location',
 		country_filter: 'data-country',
@@ -226,7 +227,7 @@
 		date_range_filter: 'data-date',
 	};
 	//************Filter*************//
-	$(document).on('change', '.ttbm_filter .formControl', function (e) {
+	$(document).on('change', '.ttbm_filter .formControl:not([type="checkbox"]):not([type="radio"]), .ttbm_filter input[type="hidden"]', function (e) {
 		e.preventDefault();
 		let parent = $(this).closest('.ttbm_filter_area');
 		list_filter(parent);
@@ -250,7 +251,9 @@
 		active = active > 0 ? Math.min(active, filter_text(parent, item, 'title_filter', active)) : active;
 		active = active > 0 ? Math.min(active, filter_text(parent, item, 'type_filter', active)) : active;
 		active = active > 0 ? Math.min(active, filter_single_in_multi(parent, item, 'category_filter', active)) : active;
+		active = active > 0 ? Math.min(active, filter_multi_in_multi(parent, item, 'category_filter_multiple', active)) : active;
 		active = active > 0 ? Math.min(active, filter_single_in_multi(parent, item, 'organizer_filter', active)) : active;
+		active = active > 0 ? Math.min(active, filter_multi_in_multi(parent, item, 'organizer_filter_multiple', active)) : active;
 		active = active > 0 ? Math.min(active, filter_text(parent, item, 'location_filter', active)) : active;
 		active = active > 0 ? Math.min(active, filter_multi_in_single(parent, item, 'location_filter_multiple', active)) : active;
 		active = active > 0 ? Math.min(active, filter_text(parent, item, 'country_filter', active)) : active;

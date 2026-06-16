@@ -15,7 +15,10 @@ if (!defined('ABSPATH')) {
 	die;
 } // Cannot access pages directly.
 if (!class_exists('TTBM_Woocommerce_Plugin')) {
+
+
 	class TTBM_Woocommerce_Plugin {
+
 			public function __construct() {
 				$this->load_ttbm_plugin();
 				add_action('init', array($this, 'load_blocks'));
@@ -33,40 +36,13 @@ if (!class_exists('TTBM_Woocommerce_Plugin')) {
 				add_action('admin_init', array($this, 'activation_redirect_setup'), 90);
 			}
 			public function plugin_activation() {
-				// Set transient to trigger redirect
-				set_transient('ttbm_activation_redirect', true, 30);
+				// Set transient to trigger WooCommerce check / redirect
+				set_transient('ttbm_plugin_activated', true, 60);
 			}
 			public function activation_redirect_setup($plugin) {
 				// Create pages if WooCommerce is active
 				if (TTBM_Global_Function::check_woocommerce() == 1) {
 					self::on_activation_page_create();
-				}
-				
-				// Check if we should redirect to quick setup
-				if (!get_transient('ttbm_activation_redirect')) {
-					return;
-				}
-				
-				// Delete the transient so we don't redirect again
-				delete_transient('ttbm_activation_redirect');
-				
-				// Don't redirect if activating multiple plugins or if doing AJAX
-				if (is_network_admin() || isset($_GET['activate-multi']) || wp_doing_ajax()) {
-					return;
-				}
-				// Avoid interfering with REST requests (e.g., Gutenberg saves)
-				if (defined('REST_REQUEST') && REST_REQUEST) {
-					return;
-				}
-				
-				$ttbm_quick_setup_done = get_option('ttbm_quick_setup_done', 'no');
-				
-				// Only redirect if setup is not done
-				if ($ttbm_quick_setup_done == 'no') {
-					// Always redirect to main menu quick setup page
-					// This ensures the page exists regardless of WooCommerce status
-					wp_safe_redirect(admin_url('admin.php?page=ttbm_quick_setup'));
-					exit();
 				}
 			}
 			public static function on_activation_page_create() {
@@ -92,14 +68,20 @@ if (!class_exists('TTBM_Woocommerce_Plugin')) {
 					'lotus-grid' => [
 						'slug' => 'lotus-grid',
 						'title' => 'Tour Lotus Grid View',
-						'content' => "[travel-list style='lotus' column=4 show='12' pagination='yes']",
+						'content' => "[travel-list style='lotus' column= show='12' pagination='yes']",
 						'option_key' => 'ttbm_page_lotus_grid_created',
 					],
 					'orchid-grid' => [
 						'slug' => 'orchid-grid',
 						'title' => 'Tour Orchid Grid View',
-						'content' => "[travel-list style='orchid' column=4 pagination='yes' show=12]",
+						'content' => "[travel-list style='orchid' column= pagination='yes' show=12]",
 						'option_key' => 'ttbm_page_orchid_grid_created',
+					],
+					'ttbm-tour-list' => [
+						'slug' => 'ttbm-tour-list',
+						'title' => 'Tour New Style',
+						'content' => "[ttbm-tour-list column='3' pagination='yes' show=12]",
+						'option_key' => 'ttbm_page_ttbm_tour_list_grid_created',
 					],
 				];
 				foreach ($pages_to_create as $page_data) {

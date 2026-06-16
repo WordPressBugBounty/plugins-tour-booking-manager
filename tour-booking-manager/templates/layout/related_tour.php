@@ -23,7 +23,7 @@
         ]);
     }
     $related_tour_count=sizeof( $related_tours );
-    if ( $related_tour_count > 1 &&  ( $key = array_search($ttbm_post_id, $related_tours ) ) !== false) {
+    if ( $related_tour_count > 0 &&  ( $key = array_search($ttbm_post_id, $related_tours ) ) !== false) {
         unset( $related_tours[$key] );
     }
 
@@ -31,12 +31,11 @@
 	$num_of_tour=$num_of_tour??'';
 	if ( $related_tour_count > 0 ) {
 
-        $num_of_tour=$num_of_tour>0?$num_of_tour:4;
-		$num_of_tour=min($num_of_tour,$related_tour_count);
-		$grid_class=$related_tour_count <= $num_of_tour?'grid_'.$num_of_tour:'';
-		$div_class=$related_tour_count==1?'flexWrap modern':'flexWrap grid';
+        $num_of_tour = (isset($num_of_tour) && $num_of_tour > 0) ? $num_of_tour : 4;
+		$grid_class  = $related_tour_count <= $num_of_tour ? 'grid_' . $num_of_tour : '';
+		$div_class   = 'flexWrap grid';
 		?>
-		<div class='ttbm_style related-hotel' id="ttbm_related_tour">
+			<div class='ttbm_style related-hotel' id="ttbm_related_tour">
 			<h2 class="content-title"><?php esc_html_e( 'You may like ', 'tour-booking-manager' ) ?></h2>
 			<?php
 				if ( sizeof( $related_tours ) > $num_of_tour ) {
@@ -45,8 +44,8 @@
 			?>
 			<div class="_mZero  <?php echo esc_attr($related_tour_count >$num_of_tour?'owl-theme owl-carousel':$div_class); ?>" data-show="<?php echo esc_attr($num_of_tour); ?>">
 				<?php foreach ( $related_tours as $ttbm_post_id ) { ?>
-					<div class="filter_item <?php echo esc_attr($grid_class); ?>">
-						<?php include( TTBM_Function::template_path( 'list/grid_list.php' ) ); ?>
+					<div class="filter_item placeholder_area <?php echo esc_attr($grid_class); ?>">
+						<?php include( TTBM_Function::template_path( 'list/grid_list_style.php' ) ); ?>
 					</div>
 				<?php } ?>
 

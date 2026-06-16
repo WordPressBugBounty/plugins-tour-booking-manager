@@ -94,7 +94,7 @@
 	#ttbm_meta_box_panel textarea { background-color: #F5F8FF; font-weight: normal; line-height: 1.5rem;}
 	#ttbm_meta_box_panel input[type=search] { border: 0px solid var(--mpl-dark); background-color: #F5F8FF;}
 	#ttbm_meta_box_panel .tool-tips { color:#999; position: relative; padding-left: 0.25em;}
-	#ttbm_meta_box_panel .tool-tips span {text-wrap: wrap; position: absolute; z-index: 1; bottom: 130%; left: 50%; transform: translate(-50%); visibility: hidden; font-size: 0.9rem; text-align: center; background-color: var(--mpl-black); color: var(--mpl-white); border-radius: 0.25rem; padding: 0.5em 0.75em; width: max-content; max-width: 350px; font-weight: normal; font-family: sans-serif;}
+	#ttbm_meta_box_panel .tool-tips span {text-wrap: wrap; position: absolute; z-index: 1; bottom: 130%; left: 50%; transform: translate(-50%); visibility: hidden; font-size: 0.9rem; text-align: center; background-color: var(--mpl-black); color: var(--mpl-white); border-radius: 0.25rem; padding: 0.5em 0.75em; width: max-content; max-width: 350px; font-weight: normal;}
 	#ttbm_meta_box_panel .tool-tips span:after { content: " "; position: absolute; top: 100%; left: 50%; transform: translate(-50%); border: 5px solid var(--mpl-black); border-color: var(--mpl-black) transparent transparent transparent; margin-left: 0.18em; }
 	#ttbm_meta_box_panel .tool-tips:hover { color: var(--mpl-primary); }
 	#ttbm_meta_box_panel .tool-tips:hover span { visibility: visible; }
@@ -502,7 +502,8 @@ input.medium{
 	.ttbm-hotel-list-table td { padding: 12px 10px; vertical-align: top; border-bottom: 1px solid #F0F0F1;}
 	.ttbm-hotel-list-table .ttbm-hotel-list-column-image { width: 120px; text-align: center;}
 	.ttbm-tour-card .ttbm-hotel-list-column-image{height: 100px;}
-	.ttbm-hotel-list-image-placeholder { width:120px; height:120px; object-fit: cover; object-position: center; border-radius: 4px; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);}
+	.ttbm-hotel-list-image-placeholder { width:220px; height:120px; object-fit: cover; object-position: center; border-radius: 4px; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);}
+	.ttbm-hotel-list-image-placeholder img{width: 100%;}
 	.ttbm-hotel-list-hotel-title { font-size: 15px; font-weight: 600; margin-bottom: 5px; color: #0073AA; transition: color 0.2s ease;}
 	.ttbm-hotel-list-hotel-location { font-size: 13px; color: #666; margin-bottom: 8px; display: flex; align-items: center; gap: 5px;}
 	.ttbm-hotel-list-hotel-location .fas { color: rgb(255, 109, 0);}
@@ -729,7 +730,12 @@ input.medium{
 	.ttbm-btn:hover { opacity: 0.9;}
 	.ttbm-title-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;}
 	.ttbm-taxonomy-card-actions { display: none; gap: 8px; flex-shrink: 0;}
-	.ttbm-taxonomy-card:hover .ttbm-taxonomy-card-actions { display: flex;}
+	.ttbm-taxonomy-card:hover .ttbm-taxonomy-card-actions { display: flex;
+		position: absolute;
+    	top: 0;
+    	right: 0;
+		z-index: 1;
+	}
 	.ttbm_places_load_more_holder,
 	.ttbm_plocation_load_more_holder { display: flex; padding: 10px; justify-content: center;}
 	.ttbm_places_load_more_btn,
@@ -906,7 +912,7 @@ input.medium{
 	.ttbm_promotional_shortcode { margin-bottom: 20px; padding: 15px; background-color: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 5px;}
 	.ttbm_promotional_shortcode .ttbm_shortcode_item_title { margin: 0 0 10px 0; font-size: 16px; font-weight: 600; color: var(--mpl-secondary);}
 	.ttbm_promotional_shortcode .ttbm_shortcode_box { display: flex; align-items: center; gap: 10px; background-color: #fff; padding: 10px; border: 1px solid #ddd; border-radius: 4px;}
-	.ttbm_promotional_shortcode .ttbm_shortcode_text { flex: 1; font-family: monospace; font-size: 13px; color: #333; padding: 8px; background-color: #f5f5f5; border-radius: 3px; word-break: break-all;}
+	.ttbm_promotional_shortcode .ttbm_shortcode_text { flex: 1; font-size: 13px; color: #333; padding: 8px; background-color: #f5f5f5; border-radius: 3px; word-break: break-all;}
 	.ttbm_promotional_shortcode .ttbm_copy_btn { padding: 8px 15px; background-color: var(--mpl-primary); color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500; transition: background-color 0.3s ease; position: relative; z-index: 10;}
 	.ttbm_promotional_shortcode .ttbm_copy_btn:hover { background-color: #d91e5e; opacity: 0.9;}
 	.ttbm_promotional_shortcode .ttbm_copy_btn:active { transform: scale(0.98);}
@@ -931,8 +937,8 @@ input.medium{
 @media only screen and (min-width: 1024px) {
 	.ttbm-tour-list-page .ttbm-tour-list { gap: 10px; }
 	.ttbm-tour-list-page .ttbm-tour-list .ttbm-tour-card { flex-direction: row; }
-	.ttbm-tour-list-page .ttbm-tour-list .ttbm-tour-card .ttbm-tour-thumb { width: 10%; }
-	.ttbm-tour-list-page .ttbm-tour-list .ttbm-tour-card .ttbm-tour-card-content { width: 90%; }
+	.ttbm-tour-list-page .ttbm-tour-list .ttbm-tour-card .ttbm-tour-thumb { width: 20%; }
+	.ttbm-tour-list-page .ttbm-tour-list .ttbm-tour-card .ttbm-tour-card-content { width: 80%; }
 	.ttbm-tour-list-page .ttbm-tour-list .ttbm-tour-card .ttbm-tour-card-content .ttbm-tour-details .ttbm-tour-info { width: 80%; }
 	.ttbm-tour-list-page .ttbm-tour-list .ttbm-tour-card .ttbm-tour-card-content .ttbm-tour-details .ttbm-tour-meta { width: 15%; }
 }
@@ -1492,18 +1498,13 @@ input.medium{
 
 /******************************************************************** Organizer ID Badge & Shortcode Display ************************************************/
 .ttbm-term-id-badge {
-	background-color: var(--mpl-primary);
-	color: var(--mpl-white);
-	padding: 3px 8px;
-	font-size: 11px;
-	font-weight: 500;
-	border-radius: 3px;
-	margin-left: 6px;
+	/* background-color: var(--mpl-primary); */
+	color:  var(--mpl-dark);
+	padding: 5px;
+	font-size: 12px;
 	display: inline-block;
 	vertical-align: middle;
 	white-space: nowrap;
-	position: relative;
-	z-index: 1;
 }
 
 .ttbm_show_location_shortcode {
@@ -1512,7 +1513,6 @@ input.medium{
 	border: 1px solid var(--mpl-gray);
 	border-radius: 4px;
 	padding: 6px 10px;
-	font-family: 'Courier New', monospace;
 	font-size: 13px;
 	color: #2c3e50;
 	margin-top: 8px;

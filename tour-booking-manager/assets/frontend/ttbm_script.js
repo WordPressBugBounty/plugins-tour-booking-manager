@@ -11,6 +11,7 @@
 		loop: true,
 		margin: 10,
 		nav: true,
+		rtl: false,
 		responsive: {
 			0: {
 				items: 1
@@ -36,6 +37,7 @@
 		loop: true,
 		margin: 10,
 		nav: true,
+		rtl: true,
 		responsive: {
 			0: {
 				items: 1
@@ -281,5 +283,169 @@
 		});
     }
 
+
+	// ═══ Toast Notification ════════════════════════════════════════
+	function ttbmShowToast(message, type, duration, html) {
+		type = type || 'info';
+		duration = duration || 3500;
+		var wrap = $('#ttbm-toast-wrap');
+		if (!wrap.length) {
+			wrap = $('<div id="ttbm-toast-wrap" class="ttbm-toast-wrap"></div>');
+			$('body').append(wrap);
+		}
+		var item = $('<div class="ttbm-toast-item ttbm-toast-' + type + '"></div>');
+		var content = $('<span class="ttbm-toast-content"></span>');
+		if (html) {
+			content.html(message);
+		} else {
+			content.text(message);
+		}
+		item.append(content);
+		var closeBtn = $('<button type="button" class="ttbm-toast-close">&times;</button>');
+		item.append(closeBtn);
+		wrap.append(item);
+		// Force reflow for transition
+		void wrap[0].offsetWidth;
+		wrap.addClass('ttbm-toast-visible');
+
+		var timer = setTimeout(function() {
+			item.fadeOut(250, function() {
+				$(this).remove();
+				if (!wrap.children().length) {
+					wrap.removeClass('ttbm-toast-visible');
+				}
+			});
+		}, duration);
+
+		closeBtn.on('click', function() {
+			clearTimeout(timer);
+			item.fadeOut(200, function() {
+				$(this).remove();
+				if (!wrap.children().length) {
+					wrap.removeClass('ttbm-toast-visible');
+				}
+			});
+		});
+	}
+
+	function ttbmSetWishlistButtonState(btn, inWishlist) {
+		var icon = btn.find('.mi');
+		var label = inWishlist ? 'Remove from wishlist' : 'Add to wishlist';
+
+		btn.toggleClass('active', !!inWishlist);
+		btn.attr('aria-label', label);
+		btn.attr('title', label);
+		icon.toggleClass('mi-wishlist-heart', !!inWishlist);
+		icon.toggleClass('mi-heart', !inWishlist);
+	}
+
+	function ttbmSyncWishlistButtons(tourId, inWishlist) {
+		$('.ttbm-gc-wishlist[data-tour-id="' + tourId + '"]').each(function() {
+			ttbmSetWishlistButtonState($(this), inWishlist);
+		});
+	}
+
+	// ═══ Wishlist Toggle ═══════════════════════════════════════════
+	$(document).on('click', '.ttbm-gc-wishlist', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		e.stopImmediatePropagation();
+
+		var btn = $(this);
+		var tourId = btn.data('tour-id');
+
+		if (!tourId) return;
+
+		$.ajax({
+			type: 'POST',
+			url: ttbm_ajax.ajax_url,
+			data: {
+				action: 'ttbm_wishlist_toggle',
+				nonce: ttbm_ajax.nonce,
+				tour_id: tourId
+			},
+			success: function(response) {
+				if (response.success) {
+					ttbmSetWishlistButtonState(btn, response.data.in_wishlist);
+					ttbmSyncWishlistButtons(tourId, response.data.in_wishlist);
+					if (response.data.in_wishlist) {
+						var toastMsg = 'Added to wishlist.';
+						if (ttbm_ajax.wishlist_url) {
+							toastMsg = 'Added to wishlist. <a href="' + ttbm_ajax.wishlist_url + '">Open wishlist</a>';
+						}
+						ttbmShowToast(toastMsg, 'success', 4000, true);
+					} else {
+						ttbmShowToast('Removed from wishlist.', 'info', 3000, false);
+					}
+				} else if (response.data && response.data.need_login) {
+					// Show login modal
+					$('#ttbm-wishlist-login-modal').addClass('ttbm-modal-active');
+				}
+			},
+			error: function() {
+				// Fallback: show modal for any AJAX failure when not logged in
+				if (!ttbm_ajax_is_logged_in) {
+					$('#ttbm-wishlist-login-modal').addClass('ttbm-modal-active');
+				}
+			}
+		});
+	});
+
+	// Close modal
+	$(document).on('click', '.ttbm-modal-close, .ttbm-modal-overlay', function() {
+		$(this).closest('.ttbm-modal-wrap').removeClass('ttbm-modal-active');
+	});
+
+	// ═══ Wishlist Remove (My Account page) ══════════════════════════
+	$(document).on('click', '.ttbm-wishlist-remove', function(e) {
+		e.preventDefault();
+		var btn = $(this);
+		var tourId = btn.data('tour-id');
+		if (!tourId) return;
+
+		$.ajax({
+			type: 'POST',
+			url: ttbm_ajax.ajax_url,
+			data: {
+				action: 'ttbm_wishlist_toggle',
+				nonce: ttbm_ajax.nonce,
+				tour_id: tourId
+			},
+			success: function(response) {
+				if (response.success && !response.data.in_wishlist) {
+					ttbmSyncWishlistButtons(tourId, false);
+					btn.closest('.ttbm-wishlist-item').fadeOut(300, function() { $(this).remove(); });
+					ttbmShowToast('Removed from wishlist.', 'info', 3000, false);
+				}
+			}
+		});
+	});
+
+	// ═══ Wishlist View Toggle (Grid / List) ══════════════════════════
+	$(document).on('click', '.ttbm-wishlist-view-btn', function(e) {
+		e.preventDefault();
+		var btn = $(this);
+		var view = btn.data('view');
+		var container = btn.closest('.ttbm-myaccount-wishlist');
+		var grid = container.find('.ttbm-wishlist-grid');
+
+		// Toggle active state on buttons
+		container.find('.ttbm-wishlist-view-btn').removeClass('ttbm-wishlist-view-active').attr('aria-pressed', 'false');
+		btn.addClass('ttbm-wishlist-view-active').attr('aria-pressed', 'true');
+
+		// Switch view class on grid container
+		if (view === 'list') {
+			grid.removeClass('ttbm-wishlist-view-grid').addClass('ttbm-wishlist-view-list');
+		} else {
+			grid.removeClass('ttbm-wishlist-view-list').addClass('ttbm-wishlist-view-grid');
+		}
+	});
+
+	$(document).on('click', '.ttbm-view-more-features-btn', function(e) {
+		e.preventDefault();
+		const list = $(this).closest('ul');
+		list.find('.ttbm-feature-hidden').removeClass('ttbm-feature-hidden').hide().slideDown();
+		$(this).closest('li').remove();
+	});
 
 }(jQuery));

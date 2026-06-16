@@ -178,6 +178,19 @@
                 <div class="wrap ttbm-tour-list-page ">
                     <!--Here Analytics-->
                     <?php do_action('ttbm_travel_analytics_display', $posts_query->found_posts, $analytics_Data )?>
+                    <?php
+                    // Show Import Dummy Data button if eligible
+                    $count_posts = wp_count_posts('ttbm_tour');
+                    $published_count = isset($count_posts->publish) ? $count_posts->publish : 0;
+                    if ( get_option('ttbm_dummy_already_inserted', 'no') !== 'yes' && empty($published_count) && \TTBM_Dummy_Import::check_plugin('tour-booking-manager', 'tour-booking-manager.php') == 1 ) :
+                    ?>
+                    <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+                        <button type="button" id="ttbm-trigger-dummy-import-btn" style="background-color: #0071a1; color: #fff; border: none; border-radius: 6px; padding: 8px 18px; cursor: pointer; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                            <span style="font-size: 16px;">↓</span>
+                            <?php esc_html_e('Import Dummy Data', 'tour-booking-manager'); ?>
+                        </button>
+                    </div>
+                    <?php endif; ?>
                     <div class="ttbm-tour-dashboard">
                         <div class="ttbm_trvel_lists_tabs">
                             <button class="active" data-target="ttbm_trvel_lists_tour" data-tab-type="Add New Tour"><span class="icon-wrap"><i class="mi mi-box"></i><?php  esc_html_e(' Tour Package','tour-booking-manager'); ?></span></button>
@@ -188,6 +201,7 @@
                             <button data-target="ttbm_trvel_lists_features" data-tab-type="Add New Feature"><span class="icon-wrap"><i class="mi mi-list"></i><?php  esc_html_e('Features','tour-booking-manager'); ?></span></button>
                             <button data-target="ttbm_trvel_lists_tag" data-tab-type="Add New Tag"><span class="icon-wrap"><i class="mi mi-tags"></i> <?php  esc_html_e('Tags','tour-booking-manager'); ?></span></button>
                             <button data-target="ttbm_trvel_lists_activities" data-tab-type="Add New Activities"><span class="icon-wrap"><i class="mi mi-practice"></i><?php  esc_html_e('Activities','tour-booking-manager'); ?></span></button>
+                            <?php do_action('ttbm_travel_lists_tab_button', $label); ?>
                         </div>
                         
                         <div class="ttbm-tour-dashboard-content">

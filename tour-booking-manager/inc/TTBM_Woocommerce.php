@@ -34,6 +34,7 @@
 					$hotel_info = self::cart_hotel_info();
 					$cart_item_data['ttbm_hotel_info'] = apply_filters('ttbm_hotel_info_filter', $hotel_info, $product_id);
 					$cart_item_data['ttbm_date'] = isset($_POST['ttbm_start_date']) ? sanitize_text_field(wp_unslash($_POST['ttbm_start_date'])) : '';
+					$cart_item_data['ttbm_end_date'] = isset($_POST['ttbm_end_date']) ? sanitize_text_field(wp_unslash($_POST['ttbm_end_date'])) : '';
 					$cart_item_data['ttbm_ticket_info'] = self::cart_ticket_info($product_id);
 					$cart_item_data['ttbm_user_info'] = apply_filters('ttbm_user_info_data', array(), $product_id);
 					$cart_item_data['ttbm_extra_service_info'] = self::cart_extra_service_info($product_id);
@@ -158,30 +159,37 @@
 				$extra_service = isset($values['ttbm_extra_service_info']) ? $values['ttbm_extra_service_info'] : [];
 				$user_info = isset($values['ttbm_user_info']) ? $values['ttbm_user_info'] : [];
 				$date = isset($values['ttbm_date']) ? $values['ttbm_date'] : '';
+				$end_date = isset($values['ttbm_end_date']) ? $values['ttbm_end_date'] : '';
 					$data_format = TTBM_Global_Function::check_time_exit_date($date) ? 'full' : 'date';
 					$start_date = TTBM_Global_Function::date_format($date, $data_format);
+					$end_data_format = TTBM_Global_Function::check_time_exit_date($end_date) ? 'full' : 'date';
+					$formatted_end_date = $end_date ? TTBM_Global_Function::date_format($end_date, $end_data_format) : '';
 					$location = TTBM_Global_Function::get_post_info($ttbm_id, 'ttbm_location_name');
 					$date_text = TTBM_Function::get_name() . ' ' . esc_html__('Date', 'tour-booking-manager');
+					$end_date_text = TTBM_Function::get_name() . ' ' . esc_html__('End Date', 'tour-booking-manager');
 					$location_text = TTBM_Function::get_name() . ' ' . esc_html__('Location', 'tour-booking-manager');
 					$item->add_meta_data($date_text, $start_date);
+					if ($formatted_end_date) {
+						$item->add_meta_data($end_date_text, $formatted_end_date);
+					}
 					if (!empty($location) && TTBM_Global_Function::get_post_info($ttbm_id, 'ttbm_display_location', 'on') != 'off') {
 						$item->add_meta_data($location_text, $location);
 					}
-					if (sizeof($ticket_type) > 0) {
-						if (sizeof($hotel_info) > 0) {
+					if (is_array($ticket_type) && ! empty($ticket_type)) {
+						if (is_array($hotel_info) && ! empty($hotel_info)) {
 							$item->add_meta_data(esc_html__('Hotel Name', 'tour-booking-manager'), get_the_title($hotel_info['hotel_id']));
-							$item->add_meta_data(esc_html__('Check In Date', 'tour-booking-manager'), $hotel_info['ttbm_checkin_date']);
-							$item->add_meta_data(esc_html__('Check Out Date', 'tour-booking-manager'), $hotel_info['ttbm_checkout_date']);
+								$item->add_meta_data(esc_html__('Check In Date', 'tour-booking-manager'), $hotel_info['ttbm_checkin_date']);
+								$item->add_meta_data(esc_html__('Check Out Date', 'tour-booking-manager'), $hotel_info['ttbm_checkout_date']);
 							$item->add_meta_data(esc_html__('Duration ', 'tour-booking-manager'), $hotel_info['ttbm_hotel_num_of_day']);
 						}
 						foreach ($ticket_type as $ticket) {
-							if (sizeof($hotel_info) > 0) {
+							if (is_array($hotel_info) && ! empty($hotel_info)) {
 								$item->add_meta_data(esc_html__('Room Name', 'tour-booking-manager'), $ticket['ticket_name']);
 							} else {
 								$item->add_meta_data(TTBM_Function::ticket_name_text(), $ticket['ticket_name']);
 							}
 							$item->add_meta_data(TTBM_Function::ticket_qty_text(), $ticket['ticket_qty']);
-							if (sizeof($hotel_info) > 0) {
+							if (is_array($hotel_info) && ! empty($hotel_info)) {
 								$item->add_meta_data(TTBM_Function::ticket_price_text(), ' ( ' . wp_kses_post(TTBM_Global_Function::wc_price($ttbm_id, $ticket['ticket_price'])) . ' x ' . esc_html($ticket['ticket_qty']) . 'x' . esc_html($hotel_info['ttbm_hotel_num_of_day']) . ') = ' . wp_kses_post(TTBM_Global_Function::wc_price($ttbm_id, ($ticket['ticket_price'] * $ticket['ticket_qty'] * $hotel_info['ttbm_hotel_num_of_day']))));
 							} else {
 								$item->add_meta_data(TTBM_Function::ticket_price_text(), ' ( ' . wp_kses_post(TTBM_Global_Function::wc_price($ttbm_id, $ticket['ticket_price'])) . ' x ' . esc_html($ticket['ticket_qty']) . ') = ' . wp_kses_post(TTBM_Global_Function::wc_price($ttbm_id, ($ticket['ticket_price'] * $ticket['ticket_qty']))));
@@ -196,7 +204,8 @@
 						}
 					}
 					$item->add_meta_data('_ttbm_id', $ttbm_id);
-					$item->add_meta_data('_ttbm_date', $date);
+					//$item->add_meta_data('_ttbm_date', $date);
+					//$item->add_meta_data('_ttbm_end_date', $end_date);
 					$item->add_meta_data('_ttbm_hotel_info', $hotel_info);
 					$item->add_meta_data('_ttbm_ticket_info', $ticket_type);
 					$item->add_meta_data('_ttbm_user_info', $user_info);
@@ -279,7 +288,9 @@
 			$tour_name = TTBM_Function::get_name();
 			$location = TTBM_Global_Function::get_post_info($ttbm_id, 'ttbm_location_name');
 			$date = isset($cart_item['ttbm_date']) ? $cart_item['ttbm_date'] : '';
+			$end_date = isset($cart_item['ttbm_end_date']) ? $cart_item['ttbm_end_date'] : '';
 			$data_format = TTBM_Global_Function::check_time_exit_date($date) ? 'full' : 'date';
+			$end_data_format = TTBM_Global_Function::check_time_exit_date($end_date) ? 'full' : 'date';
 			$hotel_info = isset($cart_item['ttbm_hotel_info']) ? $cart_item['ttbm_hotel_info'] : array();
 				?>
                 <div class="ttbm_style">
@@ -293,7 +304,7 @@
                                     <span><?php echo esc_html($location); ?></span>
                                 </li>
 							<?php } ?>
-							<?php if (sizeof($hotel_info) > 0) { ?>
+							<?php if (is_array($hotel_info) && ! empty($hotel_info)) { ?>
                                 <li>
                                     <span class="fas fa-hotel"></span>&nbsp;
                                     <h6><?php esc_html_e('Hotel Name', 'tour-booking-manager'); ?> :&nbsp;</h6>
@@ -320,12 +331,19 @@
                                     <h6><?php echo esc_html($tour_name . ' ' . esc_html__('Date', 'tour-booking-manager')); ?> :&nbsp;</h6>
                                     <span><?php echo esc_html(TTBM_Global_Function::date_format($date, $data_format)); ?></span>
                                 </li>
+								<?php if ($end_date) { ?>
+                                <li>
+                                    <span class="far fa-calendar-alt"></span>&nbsp;&nbsp;
+                                    <h6><?php echo esc_html($tour_name . ' ' . esc_html__('End Date', 'tour-booking-manager')); ?> :&nbsp;</h6>
+                                    <span><?php echo esc_html(TTBM_Global_Function::date_format($end_date, $end_data_format)); ?></span>
+                                </li>
+								<?php } ?>
 							<?php } ?>
                         </ul>
                     </div>
-					<?php if (sizeof($ticket_type) > 0) { ?>
+					<?php if (is_array($ticket_type) && ! empty($ticket_type)) { ?>
                         <h5 class="mb_xs">
-							<?php if (sizeof($hotel_info) > 0) { ?>
+							<?php if (is_array($hotel_info) && ! empty($hotel_info)) { ?>
 								<?php esc_html_e('Room List ', 'tour-booking-manager'); ?>
 							<?php } else { ?>
 								<?php esc_html_e('Ticket List ', 'tour-booking-manager'); ?>
@@ -334,7 +352,7 @@
 						<?php foreach ($ticket_type as $ticket) { ?>
                             <div class="dLayout_xs">
                                 <ul class="cart_list">
-									<?php if (sizeof($hotel_info) > 0) { ?>
+									<?php if (is_array($hotel_info) && ! empty($hotel_info)) { ?>
                                         <li>
                                             <h6><?php esc_html_e('Room Name', 'tour-booking-manager'); ?> :&nbsp;</h6>
                                             <span>&nbsp; <?php echo esc_html($ticket['ticket_name']); ?></span>
@@ -478,10 +496,10 @@
                 $billing_email = $order->get_billing_email();
                 $billing_phone = $order->get_billing_phone();
                 $billing_address = $order->get_billing_address_1() . ' ' . $order->get_billing_address_2();
-                $hotel_id = is_array($hotel_info) && sizeof($hotel_info) > 0 ? $hotel_info['hotel_id'] : 0;
-                $checkin_date = is_array($hotel_info) && sizeof($hotel_info) > 0 ? $hotel_info['ttbm_checkin_date'] : '';
-                $checkout_date = is_array($hotel_info) && sizeof($hotel_info) > 0 ? $hotel_info['ttbm_checkout_date'] : '';
-                $num_of_day = is_array($hotel_info) && sizeof($hotel_info) > 0 ? $hotel_info['ttbm_hotel_num_of_day'] : 1;
+                $hotel_id = is_array($hotel_info) && ! empty($hotel_info) ? $hotel_info['hotel_id'] : 0;
+                $checkin_date = is_array($hotel_info) && ! empty($hotel_info) ? $hotel_info['ttbm_checkin_date'] : '';
+                $checkout_date = is_array($hotel_info) && ! empty($hotel_info) ? $hotel_info['ttbm_checkout_date'] : '';
+                $num_of_day = is_array($hotel_info) && ! empty($hotel_info) ? $hotel_info['ttbm_hotel_num_of_day'] : 1;
                 $order_created_date = $order->get_date_created()->date('Y-m-d H:i:s');;
                 $order_title = 'Hotel Booking #' . $order_id;
                 $order_description = '';
@@ -526,10 +544,10 @@
 				$billing_email = $order->get_billing_email();
 				$billing_phone = $order->get_billing_phone();
 				$billing_address = $order->get_billing_address_1() . ' ' . $order->get_billing_address_2();
-				$hotel_id = is_array($hotel_info) && sizeof($hotel_info) > 0 ? $hotel_info['hotel_id'] : 0;
-				$checkin_date = is_array($hotel_info) && sizeof($hotel_info) > 0 ? $hotel_info['ttbm_checkin_date'] : '';
-				$checkout_date = is_array($hotel_info) && sizeof($hotel_info) > 0 ? $hotel_info['ttbm_checkout_date'] : '';
-				$num_of_day = is_array($hotel_info) && sizeof($hotel_info) > 0 ? $hotel_info['ttbm_hotel_num_of_day'] : 1;
+				$hotel_id = is_array($hotel_info) && ! empty($hotel_info) ? $hotel_info['hotel_id'] : 0;
+				$checkin_date = is_array($hotel_info) && ! empty($hotel_info) ? $hotel_info['ttbm_checkin_date'] : '';
+				$checkout_date = is_array($hotel_info) && ! empty($hotel_info) ? $hotel_info['ttbm_checkout_date'] : '';
+				$num_of_day = is_array($hotel_info) && ! empty($hotel_info) ? $hotel_info['ttbm_hotel_num_of_day'] : 1;
                 $order_description = [];
 
 				if (is_array($ticket_info) && sizeof($ticket_info) > 0) {
