@@ -8,7 +8,6 @@
 				add_action('admin_menu', array($this, 'welcome_menu'));
 			}
 			public function welcome_menu() {
-				add_submenu_page('edit.php?post_type=ttbm_tour', __('Welcome', 'tour-booking-manager'), __('Welcome', 'tour-booking-manager'), 'manage_options', 'ttbm_welcome_page', array($this, 'welcome_page'));
 			}
 			public function welcome_page() {
 				?>
@@ -47,7 +46,7 @@
                                             </div>
                                         </div>
                                         <a href="https://mage-people.com/product/woocommerce-tour-and-travel-booking-manager-pro/" target="_blank" class="buttonOutline allCenter_radius_transition customButton">Buy Pro Today</a>
-                                        <a href="https://docs.mage-people.com/tour-travel-booking-manager/" target="_blank" class="buttonOutline allCenter_radius_transition customButton">Find Documentation Here</a>
+                                        <a href="https://docs.mage-people.com/plugins/wptravelly/overview" target="_blank" class="buttonOutline allCenter_radius_transition customButton">Find Documentation Here</a>
                                     </div>
                                 </div>
                                 <div class="col_6 sd_12">

@@ -1,489 +1,339 @@
-=== Travelly – Tour & Travel Booking Manager for WooCommerce | Tour & Hotel Booking Solution ===
+=== Travelly – Tour & Travel Booking Manager for WooCommerce  ===
 Contributors: magepeopleteam, aamahin
 Plugin link: https://mage-people.com/
-Tags: tour-booking, tour-operator, travel, travel-booking, travel-agency
+Tags: tour booking, travel agency, travel booking, tour operator, hotel booking
 Requires at least: 4.4.0
 Tested up to: 7.0
 Requires PHP: 7.0
-Stable tag: 2.1.9
+Stable tag: 2.2.0
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Enhance and manage travel bookings effortlessly with WPTravelly—your complete WordPress booking solution for websites.
+Travelly is a WordPress tour and travel booking plugin for WooCommerce. Sell tours, manage hotel bookings, and accept payments online.
 
 == Description ==
 
-**Travelly** is the ultimate [tour and travel booking solution](https://mage-people.com/product/woocommerce-tour-and-travel-booking-manager-pro/) for WordPress websites. Ideal for travel agencies and tour operators, this plugin enables you to create and manage customized packages effortlessly.
+**Travelly – Tour & Travel Booking Manager for WooCommerce** is a complete WordPress booking plugin built for travel agencies, tour operators, and hotel owners who want to sell and manage bookings directly from their website. Launch a fully functional travel booking site in under five minutes, no coding required.
+ 
+With Travelly, you can create unlimited tour packages, set custom pricing and schedules, manage guest information, and accept payments through any WooCommerce-supported gateway — all from your familiar WordPress dashboard.
+
+Prefer to run without WooCommerce? Switch to **Custom** booking mode and Travelly handles the whole booking flow itself — its own checkout, its own order records, and the built-in Offline Payment method — with no WooCommerce install required.
 
 Launch your travel booking site in under five minutes using the most feature-rich booking plugin available.
 
 === Explore the Demo: ===  
 🌐 [Live Demo](https://wptravelly.com/)  
-📘 [Online Documentation](https://docs.mage-people.com/tour-travel-booking-manager/)  
+📘 [Online Documentation](https://docs.mage-people.com/plugins/wptravelly/overview)  
 🛍️ [Install Travelly](https://downloads.wordpress.org/plugin/tour-booking-manager.zip)  
 
-### 🏆 The #1 WordPress Booking Plugin With 1000+ Installations
+= 🏆 Trusted by 1,000+ WordPress Websites =
+ 
+Travelly is one of the most popular free tour and travel booking plugins in the WordPress.org repository, rated 4.8 out of 5 stars by travel agencies and tour operators worldwide.
+ 
+= ✨ Key Features =
+ 
+* **Full WooCommerce Integration** – Sell tour packages using your existing WooCommerce store and accept payments through every gateway WooCommerce supports (Stripe, PayPal, and more).
+* **Works Without WooCommerce** – Choose Custom booking mode to use Travelly's own checkout, order records, and built-in Offline Payment method instead.
+* **Unified Booking Manager** – One admin screen for every booking, whether it came from WooCommerce or the built-in checkout, with status changes, order notes, and CSV export.
+* **Comprehensive Tour Management** – Add tour name, description, ticket type, quantity, price, category, and organizer.
+* **Extra Services** – Offer optional add-ons with their own price and quantity.
+* **Google Maps Integration** – Show tour locations visually on an interactive map.
+* **Flexible Scheduling** – Set start date, end date, time options, and off-schedule (blocked) dates for every tour.
+* **Guest Information** – Capture and manage guest details directly from the booking details screen.
+* **Hotel Booking Support** – Manage hotel listings alongside your tour packages.
+* **Customer Wishlist** – Let visitors save tours to a wishlist from any listing and review them in their account.
+* **Modern Admin Experience** – Redesigned tour editor with sidebar navigation and autosave, a searchable tour list with Classic/Compact/Modern layouts, plus Welcome and System Status pages.
+* **Responsive & SEO-Friendly Design** – Fast, mobile-friendly booking pages that are optimized for search engines.
+* **Cross-Browser Compatibility** – Consistent experience across all modern browsers.
+* **Multilingual Ready** – Works with WPML and Polylang for multilingual travel websites.
+* **Powerful Shortcodes & Gutenberg Blocks** – Display tour lists, search forms, filters, and hotel listings anywhere using shortcodes or blocks.
+* **Works With Any Theme** – Fully compatible with any standard WordPress theme that supports WooCommerce.
+ 
+= 🧱 Gutenberg Blocks Included =
+ 
+Travelly ships with 8 ready-to-use blocks:
+ 
+1. Tour Top Search
+2. Tour List
+3. Tour Top Filter
+4. Tour Location List
+5. Tour Search Result
+6. Tour Hotel List
+7. Tour Registration
+8. Related Tours
+ 
+= 🔧 Shortcodes =
+ 
+Display your tours anywhere on your site using flexible shortcodes:
+ 
+`[travel-list cat='' org='' style='grid' show='' pagination='no' sort='ASC' city='' country='' status='']`
+ 
+**Tour list view**
+`[travel-list style='list']`
+ 
+**Tour grid view**
+`[travel-list style='grid']`
+ 
+**Grid styles (Lotus, Flora, Blossom, Orchid)**
+`[travel-list style='lotus' column=3]`
+`[travel-list style='flora' column=3 show='15' pagination='yes']`
+`[travel-list style='blossom' show='9' column=3 pagination='yes']`
+`[travel-list style='orchid' column=3 pagination='yes' show=12]`
+ 
+**Tour location grid**
+`[travel-location-list column=4 show=4]`
+ 
+**Tour search form**
+`[ttbm-top-search]`
+ 
+**Tour list without sidebar filter**
+`[travel-list style='grid' show='9' column=3 pagination='yes' sidebar-filter='no']`
+ 
+**Tour list with top filter**
+`[ttbm-top-filter style='list']`
 
-== Features ==
+**Tour list with modern filter bar**
+`[ttbm-tour-list style='grid' column=3 show='9' pagination='yes']`
+ 
+**Expired tours only**
+`[travel-list style='list' status='expired']`
+ 
+**Featured / popular / trending / deal-discount tours**
+`[wptravelly-tour-list type='feature' column=2 show=4 carousel='no']`
+`[wptravelly-tour-list type='popular' column=2 show=4 carousel='no']`
+`[wptravelly-tour-list type='trending' column=2 show=4 carousel='no']`
+`[wptravelly-tour-list type='deal-discount' column=2 show=2 carousel='no']`
+ 
+**Hotel search form**
+`[wptravelly-hotel-search]`
+ 
+**Hotel search result** (create a page with slug `hotel-search-result`)
+`[wptravelly-hotel-search-list]`
+ 
+**Hotel list with sidebar filter**
+`[wptravelly-hotel-list sidebar-filter='yes' price-filter='yes']`
+ 
+**Booking confirmation page** (used by the built-in checkout in Custom booking mode)
+`[ttbm-booking-confirmation]`
 
-= 🌐 Support for All Payment Methods =  
-Integrate seamlessly with WooCommerce to accept payments through various gateways.
+= 💳 Payment Gateways =
 
-= 🖥️ Cross-Browser Support =  
-Ensure a consistent user experience across all modern browsers.
+Travelly supports two booking modes, switchable from **Tour Settings → Payments**:
 
-= 📱 Responsive and SEO-Friendly =  
-Enjoy responsive design and search engine optimization for your booking system.
-
-= 🌍 Multilingual Translation Support =  
-Reach a wider audience with multilingual compatibility.
-
-= 🔍 Shortcodes for Customization =  
-Customize and embed tour details easily using shortcodes.
-
-= 🌟 Comprehensive Tour Management =  
-- Tour Name & Description  
-- Ticket Type, Quantity, Price, Category & Organizer  
-- Extra Services with Price & Quantity  
-- Google Maps Integration  
-- Start Date, End Date, Time Options  
-- Guest Info via WooCommerce Order Details  
-- Compatible with any standard WordPress theme  
-
-= 🛒 WooCommerce Integration =  
-Sell travel packages independently from other WooCommerce products.
-
-== Premium Features (PRO Version) ==
-
-🚀 Ready to take your booking system to the next level? Upgrade to the PRO Version to unlock:
-
-- 🎫 Downloadable PDF Tickets  
-- 📝 Custom Registration Forms  
-- 📧 Automatic Email Confirmations with PDF Ticket  
-- 📊 CSV Export of Attendee List  
-- 📅 Recurring Tours with Specific and Repeated Dates  
-
-= Ready to upgrade your tour booking experience? View our live PRO Version Demo now. =
-Let's go ahead and install the Plugin and find out what is waiting for you.
-
-###  [Try Travelly Pro Plugin](https://mage-people.com/product/woocommerce-tour-and-travel-booking-manager-pro/)
-
-### Shortcodes included with Tour & Travel Booking  Manager
-
-`
-[travel-list cat='' org='' style='grid' show='' pagination='no' sort='ASC' city='' country='' status='']
-`
-
-### Tour List view 
-
-To Show the Tour list Style you need to use the shortcode below. example 👉 [List Style Demo ](https://wptravelly.com/modern-list/) 👈:
-`
-[travel-list style='list']
-`
-
-### Tour Grid view 
-
-To Show the Tour grid Style you need to use the shortcode below. example 👉 [Grid Style Demo ](https://wptravelly.com/travel-grid-view/) 👈:
-`
-[travel-list style='grid']
-`
-
-### Tour Grid view style Lotus
-
-To Show the Tour grid Style lotus you need to use the shortcode below. example 👉 [Grid lotus Style Demo ](https://wptravelly.com/lotus-grid-style/) 👈:
-`
-[travel-list style='lotus' column=3]
-`
-
-### Tour Grid view style Flora
-
-To Show the Tour grid Style Flora you need to use the shortcode below. example 👉 [Grid Flora Style Demo ](https://wptravelly.com/flora-grid-style/) 👈:
-`
-[travel-list style='flora' column=3 show='15' pagination='yes']
-`
-
-### Tour Grid view style Blossom
-
-To Show the Tour grid Style Blossom you need to use the shortcode below. example 👉 [Grid Blossom Style Demo ](https://wptravelly.com/blossom-grid/) 👈:
-`
-[travel-list style='blossom' show='9' column=3 pagination='yes']
-`
-
-### Tour Grid view style Orchid
-
-To Show the Tour grid Style Orchid you need to use the shortcode below. example 👉 [Grid Orchid Style Demo ](https://wptravelly.com/orchid-grid-style/) 👈:
-`
-[travel-list style='orchid' column=3 pagination='yes' show=12]
-`
-
-### Tour Location grid view
-To show the Tour location grid view you need to use the shortcode below. example 👉 [Tour Location list Demo ](https://wptravelly.com/travel-location-list-display-shortcode/) 👈:
-`
-[travel-location-list column=4 show=4]
-`
-
-### Tour Search form
-To show the Tour search form you need to use the shortcode below. example 👉 [Tour search form Demo ](https://wptravelly.com/tour-search-form/) 👈:
-`
-[ttbm-top-search]
-`
-
-### Tour list without sidebar filter
-To Show the Tour list without a sidebar filter you need to use the shortcode below. example 👉 [Tour list without sidebar Demo ](https://wptravelly.com/tour-list-grid-without-filter/) 👈:
-`
-[travel-list style='grid' show='9' column=3 pagination='yes' sidebar-filter='no']
-`
-
-### Tour list with top filter
-To Show the Tour list top filter you need to use the shortcode below. example 👉 [Tour list without sidebar Demo ](https://wptravelly.com/tour-list-with-top-filter/) 👈:
-`
-[ttbm-top-filter style='list']
-`
-
-### Expire Tour list Only
-To Show the Expire Tour list only, we  use the shortcode below. example 👉 [Expire Tour list Only Demo ](https://wptravelly.com/expire-tour-list/) 👈:
-`
-[travel-list style='list' status='expired']
-`
-
-### Display featured Tour list 
-To Show the featured Tour list only, we  use the shortcode below. example 👉 [featured Tour list Only Demo ](https://wptravelly.com/) 👈:
-`
-[wptravelly-tour-list type='feature' column=2 show=4 carousel='no']
-`
-
-### Display popular Tour list 
-To Show the popular Tour list only, we  use the shortcode below. example 👉 [popular Tour list Only Demo ](https://wptravelly.com/) 👈:
-`
-[wptravelly-tour-list type='popular' column=2 show=4 carousel='no']
-`
-### Display trending Tour list Only
-To Show the trending Tour list only, we  use the shortcode below. example 👉 [Display trending Tour list Only Demo ](https://wptravelly.com/) 👈:
-`
-[wptravelly-tour-list type='trending' column=2 show=4 carousel='no']
-`
-### Display deal-discount Tour list Only
-To Show the deal-discount Tour list only, we  use the shortcode below. example 👉 [deal-discount Tour list Only Demo ](https://wptravelly.com/expire-tour-list/) 👈:
-`
-[wptravelly-tour-list type='deal-discount' column=2 show=2 carousel='no']
-`
-### Display Hotel Search form 
-To display search form of hotel use this shortcode
-`
-[wptravelly-hotel-search] 
-`
-### Display Hotel Search Result 
-if you did not create hotel search result page then create page wth slug hotel-search-result and use this shortcode 
-`
-[wptravelly-hotel-search-list]
-`
-### Display Hotel list with left sidebar 
-To disply hotel list with sidebar use this shortcode. 
-`
-[wptravelly-hotel-list sidebar-filter='yes' price-filter = 'yes'] 
-`
-
-
-== Tour Page Templates ==
-
-Preview different Tour Details page styles:
-
-- [Title Section Style 1](https://wptravelly.com/tour-travel/coxbazaar-3day-4-night/)  
-- [Title Section Style 2](https://wptravelly.com/tour-travel/get-social-central-europe-highlights/)  
-- [Title Section Style 3](https://wptravelly.com/tour-travel/bandarban-experience/)  
-- [Default Template](https://wptravelly.com/tour-travel/boat-tour-hop-on-hop-off-bus-berlin-copy-copy/)  
-- [Viator Style Template](https://wptravelly.com/tour-travel/sajek-valley-4-days-3-night-copy/)  
-
-== Available Add-ons ==
-
-Take your tour booking system to the next level with these premium add-ons:
-
-- 👉 [Backend Order Addon](https://mage-people.com/product/backend-order-addon-for-tour-booking-manager/) – Admins can create bookings manually from the dashboard.  
-- 👉 [Seat Plan Addon](https://mage-people.com/product/seat-plan-addon-for-tour-booking-manager/) – Let users pick specific seats while booking.  
-- 👉 [Seasonal Pricing Addon](https://mage-people.com/product/seasonal-pricing-addon-for-woocommerce-tour-plugin/) – Set ticket prices by date range.  
-- 👉 [Group/Bulk Pricing Addon](https://mage-people.com/product/group-pricing-or-bulk-qty-discount-addon-for-tour-plugin/) – Apply discounts based on booking quantity.  
-- 👉 [Early Bird Pricing Addon](https://mage-people.com/product/early-bird-pricing-addon-for-tour-booking-manager/) – Offer time-limited discounts.  
-- 👉 [QR Code Addon](https://mage-people.com/product/qr-code-addon-for-tour-booking-manager/) – Enable QR code check-ins and verify roles for ticket checkers.  
-
-
-== PAYMENT GATEWAYS ==
-
-Our plugin works seamlessly with **WooCommerce**, so **all WooCommerce-supported payment gateways** are compatible with WPTravelly. This is one of the key advantages of using this plugin.
-
-== Support and Suggestions ==
-
-Need help or have an idea to improve the plugin?  
-📩 [Submit a Support Ticket](https://mage-people.com/submit-ticket/)  
-We welcome feedback and suggestions to make WPTravelly even better!
-
-== Theme Compatibility ==
-
-WPTravelly is compatible with **any WordPress theme** that works with WooCommerce. This gives you the flexibility to integrate it into your existing website design without hassle.
-
-== How to Install & Create a Tour ==
-
-📺 [Watch the Tutorial Video](https://www.youtube.com/watch?v=ZQ99Z3kOMws)
-
-
-
+* **WooCommerce mode** – bookings go through the WooCommerce cart and checkout, so every WooCommerce-supported payment gateway (Stripe, PayPal, and dozens more) works out of the box.
+* **Custom mode** – Travelly runs its own checkout and stores its own order records, so you can take bookings with WooCommerce deactivated. **Offline Payment** (bank transfer, pay on arrival, cash) is included free; PayPal and Stripe for Custom mode ship with Travelly PRO.
+ 
+= 🚀 Premium Features (PRO Version) =
+ 
+Upgrade to [Travelly PRO](https://mage-people.com/product/woocommerce-tour-and-travel-booking-manager-pro/) for advanced tour and travel booking management:
+ 
+* 🎫 Downloadable PDF Tickets
+* 📝 Custom Registration Forms
+* 📧 Automatic Email Confirmations with PDF Ticket
+* 📊 CSV Export of Attendee List
+* 📅 Recurring Tours with Specific and Repeated Dates
+ 
+= 🧩 Available Add-ons =
+ 
+Extend Travelly further with these premium add-ons:
+ 
+* [Backend Order Addon](https://mage-people.com/product/backend-order-addon-for-tour-booking-manager/) – create bookings manually from the admin dashboard
+* [Seat Plan Addon](https://mage-people.com/product/seat-plan-addon-for-tour-booking-manager/) – let customers pick specific seats
+* [Seasonal Pricing Addon](https://mage-people.com/product/seasonal-pricing-addon-for-woocommerce-tour-plugin/) – set prices by date range
+* [Group/Bulk Pricing Addon](https://mage-people.com/product/group-pricing-or-bulk-qty-discount-addon-for-tour-plugin/) – quantity-based discounts
+* [Early Bird Pricing Addon](https://mage-people.com/product/early-bird-pricing-addon-for-tour-booking-manager/) – time-limited discounts
+* [QR Code Addon](https://mage-people.com/product/qr-code-addon-for-tour-booking-manager/) – QR code check-in and ticket verification
+ 
+= 🎨 Tour Page Templates =
+ 
+Choose from multiple tour details page styles, including a Viator-style template, to match your travel website's design.
+ 
+= 🛠️ Support & Documentation =
+ 
+* 📘 [Documentation](https://docs.mage-people.com/plugins/wptravelly/overview)
+* 📺 [Video Tutorial: How to Install & Create a Tour](https://www.youtube.com/watch?v=ZQ99Z3kOMws)
+* 📩 [Submit a Support Ticket](https://mage-people.com/submit-ticket/)
+* 💬 [WordPress.org Support Forum](https://wordpress.org/support/plugin/tour-booking-manager/)
+ 
+= 🔒 Privacy Notice =
+ 
+Travelly uses the [Appsero](https://appsero.com) SDK to collect basic telemetry data, but only with the user's explicit confirmation via an admin notice. Appsero does not gather any data by default. [Learn more about how Appsero collects and uses data](https://appsero.com/privacy-policy/).
+ 
 == Installation ==
-
+ 
 = Uploading in WordPress Dashboard =
-
-1. Navigate to the 'Add New' in the plugins dashboard
-2. Navigate to the 'Upload' area
-3. Select tour-booking-manager.zip from your computer
-4. Click 'Install Now'
-5. Activate the plugin in the Plugin dashboard
-
+ 
+1. Navigate to Plugins → Add New in your WordPress dashboard.
+2. Click the Upload Plugin button.
+3. Select the `tour-booking-manager.zip` file from your computer.
+4. Click Install Now.
+5. Activate the plugin from the Plugins page.
+ 
 = Using FTP =
+ 
+1. Download `tour-booking-manager.zip`.
+2. Extract the `tour-booking-manager` folder to your computer.
+3. Upload the `tour-booking-manager` folder to the `/wp-content/plugins/` directory on your server.
+4. Activate the plugin from the Plugins page in WordPress.
+ 
+= Getting Started =
+ 
+1. Make sure WooCommerce is installed and activated.
+2. Go to the Travelly menu in your dashboard and run the Quick Setup wizard.
+3. Create your first tour with pricing, schedule, and location details.
+4. Add a shortcode or block (e.g. `[travel-list]`) to any page to display your tours.
+5. Configure your preferred WooCommerce payment gateway and start accepting bookings.
+ 
+== Frequently Asked Questions ==
+ 
+= Does Travelly require WooCommerce? =
 
-1. Download tour-booking-manager.zip
-2. Extract the tour-booking-manager directory to your computer
-3. Upload the tour-booking-manager directory to the /wp-content/plugins/ directory
-4. Activate the plugin in the Plugin dashboard
+No longer. Travelly runs in two booking modes. In **WooCommerce mode** it uses the WooCommerce cart, checkout, and payment gateways, exactly as before. In **Custom mode** it uses its own checkout and order records with the built-in Offline Payment method, so tours, hotels, listings, and bookings all work with WooCommerce deactivated. Pick the mode under Tour Settings → Payments.
 
-== Screenshots ==
+= Where do bookings show up? =
 
+Under **Tours → Tour Booking**. That screen lists bookings from both engines — WooCommerce orders and built-in checkout orders — so you can change status, add order notes, and export to CSV from one place. Notes added to a WooCommerce booking are written into the real WooCommerce order notes, not a separate copy.
 
-**CHECKOUT OUR OTHER PRODUCTS**
+= Can I sell tour packages separately from other WooCommerce products? =
+ 
+Yes, Travelly lets you sell tours and travel packages as their own product type, independent from regular WooCommerce products.
+ 
+= Which payment gateways are supported? =
+ 
+Every payment gateway supported by WooCommerce works with Travelly, including Stripe, PayPal, and many regional gateways.
+ 
+= Is Travelly compatible with my WordPress theme? =
+ 
+Yes. Travelly is designed to work with any standard WordPress theme that supports WooCommerce.
+ 
+= Can I manage hotel bookings as well as tours? =
+ 
+Yes, Travelly includes hotel listing and hotel search shortcodes so you can manage both tours and hotel bookings from one plugin.
+ 
+= Does Travelly support multiple languages? =
+ 
+Yes, Travelly is multilingual-ready and works with WPML and Polylang.
+ 
+= Can visitors save tours for later? =
 
-**CHECK OUR OUR OTHER PLUGINS** 
-[Bus Booking Manager](https://wordpress.org/plugins/bus-booking-manager/)
-[Bus Ticket Booking with Seat Reservation](https://wordpress.org/plugins/bus-ticket-booking-with-seat-reservation/)
-[Woocommerce Events Manager](https://wordpress.org/plugins/mage-eventpress/)
+Yes. When WooCommerce is active, visitors can add tours to a wishlist from any listing and review them under the Wishlist tab in My Account. Admins can see who wishlisted what from the Wishlist tab on the Tour List screen.
 
-
-## Privacy Policy
-Tour Booking Manager For Woocommerce uses [Appsero](https://appsero.com) SDK to collect some telemetry data upon the user's confirmation. This helps us to troubleshoot problems faster & make product improvements.
-
-Appsero SDK **does not gather any data by default.** The SDK only starts gathering basic telemetry data **when a user allows it via the admin notice**. We collect the data to ensure a great user experience for all our users.
-
-Integrating Appsero SDK **DOES NOT IMMEDIATELY** start gathering data, **without confirmation from users in any case.**
-
-Learn more about how [Appsero collects and uses this data](https://appsero.com/privacy-policy/).
-
+= Is there a PRO version with more features? =
+ 
+Yes, [Travelly PRO](https://mage-people.com/product/woocommerce-tour-and-travel-booking-manager-pro/) adds PDF tickets, custom registration forms, automatic email confirmations, CSV attendee export, and recurring tours.
+ 
+= Where can I get support? =
+ 
+Use the [WordPress.org support forum](https://wordpress.org/support/plugin/tour-booking-manager/) or [submit a support ticket](https://mage-people.com/submit-ticket/) directly to the development team.
 
 
 == Changelog ==
-= 1.0.0 =
-*Initial Release - 11 February 2021*
+= 2.2.0 – 28 July 2026 =
 
-= 1.0.1 =
-*
-Bug Fixed
-New Hook Added
-Code Optimized
-Elementor Support Added
-Shortcode New Attribute Added 
-- 14 February 2021*
+**Booking & Payments**
 
-= 1.0.2 =
-*
-Bug Fixed
-New Hook Added
-Code Optimized
-- 18 February 2021*
+* New: Custom booking mode — Travelly now ships its own checkout and order records, so tours and hotels can be sold with WooCommerce deactivated. Switch modes under Tour Settings → Payments.
+* New: Offline Payment gateway (bank transfer, pay on arrival, cash) included free, with a pluggable gateway API (`ttbm_register_payment_gateways`) that PRO extends with PayPal and Stripe.
+* New: Built-in checkout modal with guest checkout, order review, and a booking confirmation page powered by the new `[ttbm-booking-confirmation]` shortcode.
+* New: Payments settings tab with a booking-mode switch, gateway icons, guest-booking control, and an adaptive admin notice when no payment method is usable.
+* New: "Tour Booking" admin screen listing bookings from both engines — WooCommerce orders and built-in checkout orders — with status changes, order notes, search/filtering, and CSV export. Notes on a WooCommerce booking write into the real WooCommerce order notes.
+* New: Optional login gate on the booking form, with a Confirm Booking button that completes in place.
+* Improved: Booking data is normalized into one shape before display, so tour, date, ticket, guest, and extra-service details render consistently across the checkout, confirmation, and admin screens.
+* Improved: The custom orders screen is fully responsive down to mobile.
 
-= 1.0.3 =
-*
-Hotel Type Added
-HipHop Tour Added
-Bug Fixed
-New Hook Added
-Code Optimized
-- 07 June 2021*
+**Admin Experience**
 
+* New: Redesigned tour editor — sidebar navigation, deep-linkable tabs, background autosave with toast feedback, skeleton loading, and inline validation for dates, tickets, and pricing.
+* New: Tour List dashboard with AJAX filtering and pagination plus switchable Classic, Compact, and Modern layouts.
+* New: Guides and Ticket Types are now managed as tabs on the Tour List screen with add/edit/delete modals; their separate submenus are hidden.
+* New: Welcome page and a System Status diagnostics page.
+* New: Modular settings architecture with dedicated panels for pricing, dates, extra services, gallery, location, and sidebar, on a modern CSS design-token admin layer.
+* New: Pro Features menu listing the available premium add-ons.
+* New: WooCommerce installer popup and dummy-data import rebuilt as memory-safe stepped AJAX requests, so they no longer time out on small hosts.
+* Improved: Google Maps API key handling and map embedding in location settings.
+* Improved: Ticket type icons can be replaced by clicking the existing icon.
 
-= 1.0.7 =
-*
-Bug Fixed
-New Hook Added
-Code Optimized
-- 09 Sep 2021*
+**Front End**
 
-= 1.1.3 =
-*
-New UI Added
-Bug Fixed
-New Hook Added
-Code Optimized
-- 27 Jan 2022*
+* New: Modern tour details redesign — reworked hero, sticky sidebar CTA, day-wise schedule timeline, expandable inclusions and features, and a scoped stylesheet that stays out of your theme's way.
+* New: Smart theme booking flow with its own date picker, ticket, and extra-service templates.
+* New: Wishlist — save tours from any listing, review them under the My Account Wishlist tab in grid or list view, and see wishlisted tours per customer from the admin Wishlist tab (requires WooCommerce).
+* New: `[ttbm-tour-list]` shortcode with a modern filter bar, "Showing X of Y" counter, and This Week / This Month / This Year tab filters that work together with Load More.
+* New: Auto-related tours, featured image slider, off-schedule (blocked) dates, and per-tour custom titles for tours and hotels.
+* New: New grid list style plus refreshed Lotus, Flora, Blossom, and Orchid cards.
+* Improved: Shortcode output now aligns with the active theme's container width.
+* Improved: Travel translation settings are applied to booking labels.
+* Improved: Korean translations for the modern filter bar; updated language files.
 
-= 1.1.4 =
-*
-New UI Added
-Bug Fixed
-New Hook Added
-Viator theme added
-- 11 feb 2022*
+**Performance**
 
+* Improved: Frontend and admin assets only load on pages and screens that need them (filterable via `ttbm_load_assets` and `ttbm_load_admin_assets`).
+* Improved: Asset cache-busting uses the plugin version instead of `time()`, so browser and CDN caches actually work.
+* Improved: Faster list shortcode rendering; list output is capped by `ttbm_list_render_cap` (default 300) with client-side pagination.
 
-= 1.1.5 =
-*
-PHP error fixed
-New UI Added
-Bug Fixed
-New Hook Added
-Viator theme added
-- 11 feb 2022*
+**Fixes**
 
+* Fixed: "Undefined array key 0" notice on tour list cards.
+* Fixed: Fatal errors and connection timeouts on the tour list and tour details pages.
+* Fixed: Syntax error in the filter/pagination handler.
+* Fixed: WooCommerce bookings were dropped when the PRO add-on was inactive.
+* Fixed: Extra-service prices were misallocated across tickets; each ticket now gets its correct share.
+* Fixed: Hotel room display bug, hotel expired label, and checkout total price.
+* Fixed: Rooms no longer auto-load outside hotel detail pages.
+* Fixed: Tickets were loaded multiple times when changing the date.
+* Fixed: Wishlist toast feedback on mobile; the admin wishlist table now lists real customers correctly.
+* Fixed: Related tours no longer drop the list when only one result remains.
+* Fixed: Wishlist button is guarded when the wishlist class is unavailable.
+* Fixed: Global settings not saving in some setups; settings tab deep links now resolve to the right tab.
+* Fixed: Numerous responsive and styling issues across list, filter, hotel, and registration views.
 
-= 1.1.6 =
-*
-PHP error fixed
-New UI Added
-Bug Fixed
-New Hook Added
-- 01 March 2022*
+**Developer**
 
+* New: `do_action('ttbm_after_ticket_price', $tour_id, $ticket_name, $tour_date)` for injecting markup after a ticket price.
+* New: `apply_filters` hook making booking availability overridable for non-WooCommerce checkouts.
+* New: `ttbm_register_payment_gateways` action for registering custom standalone gateways.
+* Improved: Plugin loading and asset management centralized in `TTBM_Dependencies`.
 
-= 1.2.1 =
-*
-PHP error fixed
-New UI Added
-Bug Fixed
-New Hook Added
-- 01 March 2022*
+= 2.1.9 – 15 May 2026 =
+* New: Customer dashboard with booking cancellation requests (`[ttbm-customer-dashboard]`)
+* New: Admin management of cancellation requests with approve/reject and notifications
+* New: Global cancellation window setting in Travel Settings
+* Improved: Performance and speed optimization
+* Fixed: Starting price display issue
+* Removed: Unnecessary legacy code
 
-= 1.2.3 =
-*
-PHP error fixed
-- 15 April 2022*
+= 2.1.8 – 11 Mar 2026 =
+* Fixed: Frontend settings issue
+* Fixed: Language setting issue
 
+= 1.8.3 – 23 Aug 2024 =
+* Fixed: Style issues and general bugs
 
-= 1.2.8 =
-*
-PHP error fixed
-- 27 Jun 2022*
-
-= 1.3.6 =
-*
-PHP error fixed
-- 13 Sep 2022*
-
-= 1.4.3 =
-*
-PHP error fixed
-- 13 Dec 2022*
-
-= 1.4.5 =
-*
-Bug Fixed
-- 03 Feb 2023*
-
-
-= 1.4.6 =
-*
-Hotel Saving issue fixed
-Review & Ratings issue solved
-Category & Organizer Page Tour List issue fixed.
-Bug Fixed
-- 16 Feb 2023*
-
-
-= 1.4.7 =
-Bug Fixed
-- 10 March 2023*
-
-
-= 1.4.8 =
-Releted Tour Shortcode added
-Repeated Inventory Issue fixed
-Bug Fixed
-- 22 March 2023*
-
-
-= 1.4.9 =
-Email Text Format issue fixed
-- 23 March 2023*
-
-
-= 1.5.0 =
-Bug Fixed
-- 29 March 2023*
-
-
-= 1.5.1 =
-Bug Fixed
-- 11 May 2023*
-
-
-= 1.5.2 =
-Bug Fixed
-- 17 May 2023*
-
-= 1.5.3 =
-Tour List Menu Added
-Qucik Setup Improved
-Available Seat Issue fixed
-Admin Note Feature Added
-Design issue fixed
-Code Optimized
-New Hooks added
-Bug Fixed
-- 12 July 2023*
-
-= 1.5.4 =
-Releted Tour Same Image and URL issue fixed
-Multi Language Support added (WPML & Polylang)
-Code Optimized
-New Hooks added
-Bug Fixed
-- 13 July 2023*
-
-= 1.5.5 =
-Astra Theme issue fixed
-Quick Setup Fixing
-Code Optimized
-New Hooks added
-Bug Fixed
-- 27 July 2023*
-
-= 1.5.6 =
-Astra Theme issue fixed
-Quick Setup Fixing
-Code Optimized
-New Hooks added
-Bug Fixed
-- 09 Aug 2023*
+= 1.8.2 – 20 Aug 2024 =
+* Improved: Styles and code optimization
+* New: Additional developer hooks
 
 = 1.7.8 =
-Security Issue Fixed.
-Code Optimized
+* Security: Security issue fixed
+* Improved: Code optimization
 
-= 1.8.2 =
-Style fixing.
-Code Optimized
-New Hooks added
-Bug Fixed
-- 20 Aug 2024*
+= Earlier versions =
+* 1.5.3–1.5.6 (Jul–Aug 2023): Tour list menu, improved quick setup, WPML & Polylang multilanguage support, Astra theme fixes, admin notes, new hooks
+* 1.4.6–1.5.2 (Feb–May 2023): Hotel saving fix, reviews & ratings fix, related tour shortcode, email format fix, general bug fixes
+* 1.1.3–1.4.5 (2022–2023): New UI, Viator-style template, PHP error fixes, code optimization
+* 1.0.0–1.0.7 (2021): Initial release, Elementor support, hotel type, new hooks and shortcode attributes
 
-= 1.8.3 =
-Style fixing.
-Bug Fixed
-- 23 Aug 2024*
+[View the full changelog](https://plugins.trac.wordpress.org/log/tour-booking-manager/)
 
-= 2.1.8 =
-Forntend settings fixed.
-Language setting issue fixed.
-- 11 Mar 2026*
+== Upgrade Notice ==
 
+= 2.2.0 =
+Major update. Travelly can now take bookings without WooCommerce using its own checkout and free Offline Payment method, adds a unified booking manager for both engines, a redesigned admin and tour details page, a customer wishlist, and large performance gains. Back up your site before updating.
 
 = 2.1.9 =
-Removed unnecessary code
-Resolved starting price issue
-Improved performance and speed optimization
-- 15 May 2026
+Adds the new customer dashboard with self-service cancellation requests, plus performance improvements and a starting-price fix. Recommended for all users.
 
-### Customer Dashboard & Cancellations
 
-Allow your customers to view their bookings and request cancellations directly from a modern dashboard.
 
-**Shortcode:**
-```
-[ttbm-customer-dashboard]
-```
-- Customers can see their orders and request a cancellation (if within the allowed window).
-- Admin can manage all cancellation requests from the backend, approve/reject, and send notifications.
-- The cancellation window is set globally in Travel Settings.
+
+

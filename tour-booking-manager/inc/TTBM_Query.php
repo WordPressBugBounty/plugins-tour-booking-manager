@@ -16,7 +16,8 @@
 			}
 			public static function ttbm_query($show, $sort = '', $cat = '', $org = '', $city = '', $country = '', $status = '', $tour_type = '', $activity = '', $sort_by = '', $attraction = '', $feature = '' ): WP_Query {
 				TTBM_Function::update_all_upcoming_date_month();
-				$sort_by = $sort_by ?: 'meta_value';
+				$sort_by = $sort_by ?: 'date';
+				$meta_order = in_array($sort_by, array('meta_value', 'meta_value_num'), true);
 				if (get_query_var('paged')) {
 					$paged = get_query_var('paged');
 				} elseif (get_query_var('page')) {
@@ -96,7 +97,7 @@
 					'posts_per_page' => $show,
 					'order' => $sort,
 					'orderby' => $sort_by,
-					'meta_key' => 'ttbm_upcoming_date',
+					'meta_key' => $meta_order ? 'ttbm_upcoming_date' : '',
 					'meta_query' => array(
 						'relation' => 'AND',
 						array(
@@ -153,8 +154,8 @@
 				} else {
 					$selected_date_filter = '';
 				}
-				TTBM_Function::update_all_upcoming_date_month();
-				$sort_by = $sort_by ?: 'meta_value';
+				$sort_by = $sort_by ?: 'date';
+				$meta_order = in_array($sort_by, array('meta_value', 'meta_value_num'), true);
 				if (get_query_var('paged')) {
 					$paged = get_query_var('paged');
 				} elseif (get_query_var('page')) {
@@ -223,7 +224,7 @@
 					'posts_per_page' => $show,
 					'order' => $sort,
 					'orderby' => $sort_by,
-					'meta_key' => 'ttbm_upcoming_date',
+					'meta_key' => $meta_order ? 'ttbm_upcoming_date' : '',
 					'meta_query' => array(
 						'relation' => 'AND',
 						$expire_filter,
@@ -249,7 +250,7 @@
 				if (!$date_value) {
 					return '';
 				}
-				$formats = array('F j, Y', 'F d, Y', 'Y-m-d');
+				$formats = array('M j, Y', 'F j, Y', 'F d, Y', 'Y-m-d');
 				foreach ($formats as $format) {
 					$date_obj = DateTime::createFromFormat($format, $date_value);
 					if ($date_obj !== false) {
@@ -353,7 +354,12 @@
 				}
 				return array_values($candidate_dates);
 			}
-			public static function get_all_tour_in_location($location, $status = ''): WP_Query {
+			/**
+			 * @param string $fields Pass 'ids' when only the count is needed, to skip
+			 *                       hydrating full post objects. Defaults to the
+			 *                       original full-object behaviour for existing callers.
+			 */
+			public static function get_all_tour_in_location($location, $status = '', $fields = ''): WP_Query {
 				$compare = '>=';
 				if ($status) {
 					$compare = $status == 'expired' ? '<' : '>=';
@@ -383,9 +389,14 @@
 				);
 				if ($status == 'active') {
 					return TTBM_Function::get_active_tours($args);
-				} else {
-					return new WP_Query($args);
 				}
+				if ($fields === 'ids') {
+					$args['fields'] = 'ids';
+					$args['no_found_rows'] = true;
+					$args['update_post_meta_cache'] = false;
+					$args['update_post_term_cache'] = false;
+				}
+				return new WP_Query($args);
 			}
 		public static function query_all_sold($tour_id, $tour_date, $type = '', $hotel_id = ''): WP_Query {
 			$_seat_booked_status = TTBM_Function::get_general_settings('ttbm_set_book_status', array('processing', 'completed'));
