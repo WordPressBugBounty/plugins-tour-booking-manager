@@ -1175,6 +1175,7 @@
 					'ttbm_display_related',
 					'ttbm_display_include_service',
 					'ttbm_display_exclude_service',
+					'ttbm_display_rating',
 					'mep_disable_ticket_time',
 					'ttbm_enable_off_schedule',
 				));
@@ -1418,20 +1419,26 @@
 					update_post_meta($tour_id, 'mep_disable_ticket_time', $display_time);
 					$enable_off_schedule = isset($_POST['ttbm_enable_off_schedule']) && sanitize_text_field(wp_unslash($_POST['ttbm_enable_off_schedule'])) ? 'yes' : 'no';
 					update_post_meta($tour_id, 'ttbm_enable_off_schedule', $enable_off_schedule);
+					$timewise_stock = isset($_POST['ttbm_enable_timewise_stock']) && sanitize_text_field(wp_unslash($_POST['ttbm_enable_timewise_stock'])) ? 'on' : 'off';
+					update_post_meta($tour_id, 'ttbm_enable_timewise_stock', $timewise_stock);
 					$all_time_slot_infos = TTBM_Settings_Dates::time_slot_array();
 					//echo '<pre>';print_r($all_time_slot_infos);echo '</pre>';die();
 					if (sizeof($all_time_slot_infos) > 0) {
 						foreach ($all_time_slot_infos as $meta_key => $value) {
 							$label_key = array_key_exists('label_key', $value) && $value['label_key'] ? $value['label_key'] : '';
 							$time_key = array_key_exists('time_key', $value) && $value['time_key'] ? $value['time_key'] : '';
+							$stock_key = array_key_exists('stock_key', $value) && $value['stock_key'] ? $value['stock_key'] : '';
 							$default_time_info = [];
 							$default_labels = isset($_POST[$label_key]) ? array_map('sanitize_text_field', wp_unslash($_POST[$label_key])) : [];
 							$default_times = isset($_POST[$time_key]) ? array_map('sanitize_text_field', wp_unslash($_POST[$time_key])) : [];
+							/* Kept even while the Time-wise Stock toggle is off, so turning it back on restores the numbers. */
+							$default_stocks = ($stock_key && isset($_POST[$stock_key])) ? array_map('absint', wp_unslash($_POST[$stock_key])) : [];
 							if (sizeof($default_times) > 0) {
 								foreach ($default_times as $key => $default_time) {
 									if ($default_time) {
 										$default_time_info[$key]['mep_ticket_time_name'] = array_key_exists($key, $default_labels) && $default_labels[$key] ? $default_labels[$key] : '';
 										$default_time_info[$key]['mep_ticket_time'] = $default_time;
+										$default_time_info[$key]['mep_ticket_time_stock'] = array_key_exists($key, $default_stocks) ? (int) $default_stocks[$key] : 0;
 									}
 								}
 							}
@@ -1480,6 +1487,13 @@
 					update_post_meta($tour_id, 'ttbm_theme_file', $ttbm_template);
 					update_post_meta($tour_id, 'ttbm_display_enquiry', $display_enquiry);
 					update_post_meta($tour_id, 'ttbm_auto_related_tour', $auto_related_tour);
+					//*********Rating & Reviews (off by default, no fabricated data)**************//
+					$display_rating = isset($_POST['ttbm_display_rating']) && sanitize_text_field(wp_unslash($_POST['ttbm_display_rating'])) ? 'on' : 'off';
+					$rating_average = isset($_POST['ttbm_rating_average']) ? sanitize_text_field(wp_unslash($_POST['ttbm_rating_average'])) : '';
+					$rating_count = isset($_POST['ttbm_rating_count']) ? absint(wp_unslash($_POST['ttbm_rating_count'])) : '';
+					update_post_meta($tour_id, 'ttbm_display_rating', $display_rating);
+					update_post_meta($tour_id, 'ttbm_rating_average', $rating_average);
+					update_post_meta($tour_id, 'ttbm_rating_count', $rating_count);
 					//*********FAQ**************//
 					$faq = isset($_POST['ttbm_display_faq']) && sanitize_text_field(wp_unslash($_POST['ttbm_display_faq'])) ? 'on' : 'off';
 					update_post_meta($tour_id, 'ttbm_display_faq', $faq);

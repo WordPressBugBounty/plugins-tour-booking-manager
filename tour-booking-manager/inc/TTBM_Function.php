@@ -162,7 +162,7 @@
 			}
 
 			/**
-			 * Extra class for hero stat chips beyond the first five visible items.
+			 * Extra class for hero stat chips beyond the first four visible items.
 			 *
 			 * @param bool $counts_toward_limit Pass false for chips hidden in hero (e.g. price).
 			 */
@@ -170,13 +170,15 @@
 				if ( ! self::$hero_stat_limit_enabled ) {
 					return '';
 				}
-				$extra = '';
-				if ( $counts_toward_limit ) {
-					if ( self::$hero_stat_render_index >= 5 ) {
-						$extra = ' ttbm_hero_stat_item--extra';
-					}
-					self::$hero_stat_render_index++;
+				// Price (and similar) stay in markup for other themes but never show in the hero bar.
+				if ( ! $counts_toward_limit ) {
+					return ' ttbm_hero_stat_item--hidden';
 				}
+				$extra = '';
+				if ( self::$hero_stat_render_index >= 4 ) {
+					$extra = ' ttbm_hero_stat_item--extra';
+				}
+				self::$hero_stat_render_index++;
 				return $extra;
 			}
 
@@ -285,6 +287,41 @@
 				}
 				return array((array) $off_days, $off_dates);
 			}
+			/**
+			 * Dates that must appear on a repeated tour's calendar even when the
+			 * recurrence pattern, the weekly off days or the blocked dates would
+			 * exclude them.
+			 *
+			 * A repeated tour's calendar is derived purely from its recurrence
+			 * pattern minus those filters, so until now nothing could *add* a
+			 * one-off date to the schedule -- an add-on could only re-time a date
+			 * the pattern had already produced. This is the seam add-ons hook to
+			 * inject genuine exceptions (PRO's "Special Dates Time" tab uses it).
+			 *
+			 * @return array Y-m-d => Y-m-d map, so membership tests stay O(1).
+			 */
+			public static function get_forced_schedule_dates($tour_id) {
+				if (self::cache_has('forced_dates', (int) $tour_id)) {
+					return self::cache_get('forced_dates', (int) $tour_id);
+				}
+				$dates = array();
+				foreach ((array) apply_filters('ttbm_forced_schedule_dates', array(), $tour_id) as $forced_date) {
+					$timestamp = $forced_date ? strtotime((string) $forced_date) : false;
+					if ($timestamp) {
+						$normalized = gmdate('Y-m-d', $timestamp);
+						$dates[$normalized] = $normalized;
+					}
+				}
+				return self::cache_set('forced_dates', (int) $tour_id, $dates);
+			}
+			public static function is_forced_schedule_date($tour_id, $date): bool {
+				$timestamp = $date ? strtotime((string) $date) : false;
+				if (!$timestamp) {
+					return false;
+				}
+				$forced_dates = self::get_forced_schedule_dates($tour_id);
+				return isset($forced_dates[gmdate('Y-m-d', $timestamp)]);
+			}
 
 			public static function get_date($tour_id, $expire = '') {
 				$cache_key = (int) $tour_id . '|' . self::cache_scalar_key($expire);
@@ -354,6 +391,23 @@
 							}
 						}
 					}
+					/*
+					 * Fold in the admin's explicit one-off dates. These sit outside the
+					 * recurrence entirely, so they are merged here rather than filtered
+					 * above, then the list is re-sorted: update_upcoming_date_month()
+					 * takes current()/end() of this array as the tour's first and last
+					 * date, so chronological order is load-bearing.
+					 */
+					foreach (self::get_forced_schedule_dates($tour_id) as $forced_date) {
+						if (!$expire && $now_date > strtotime($forced_date)) {
+							continue;
+						}
+						$current_date = self::get_date_by_time_check($tour_id, $forced_date, $expire);
+						if ($current_date && !in_array($current_date, $tour_date, true)) {
+							$tour_date[] = $current_date;
+						}
+					}
+					sort($tour_date);
 				} else {
 					$date = TTBM_Global_Function::get_post_info($tour_id, 'ttbm_travel_start_date');
 					if ($date) {
@@ -434,20 +488,33 @@
 						$end_date = '';
 					}
 					
+					/*
+					 * An admin-entered one-off date is an explicit exception, so it
+					 * overrides all three recurrence gates below: the start/end window,
+					 * the repeat interval, and the off day / off date filters. Without
+					 * this, a date added purely to open an extra departure could never
+					 * pass -- the recurrence would have excluded it by definition.
+					 */
+					$is_forced = self::is_forced_schedule_date($tour_id, $date_normalized);
+
 					// Check if date is within range
-					if ($start_date && $end_date && $date_normalized >= $start_date && $date_normalized <= $end_date) {
+					if ($is_forced || ($start_date && $end_date && $date_normalized >= $start_date && $date_normalized <= $end_date)) {
 						// Check off days and off dates
 						list($off_days, $off_dates) = self::get_tour_off_schedule_data($tour_id);
 						$day = strtolower(gmdate('D', strtotime($date_normalized)));
-						
+
 						// Check if date matches interval pattern
-						$interval = TTBM_Global_Function::get_post_info($tour_id, 'ttbm_travel_repeated_after', 1);
-						$all_dates = self::get_repeat_pattern_dates($start_date, $end_date, $interval);
-						$date_in_pattern = isset($all_dates[$date_normalized]);
+						if ($is_forced) {
+							$date_in_pattern = true;
+						} else {
+							$interval = TTBM_Global_Function::get_post_info($tour_id, 'ttbm_travel_repeated_after', 1);
+							$all_dates = self::get_repeat_pattern_dates($start_date, $end_date, $interval);
+							$date_in_pattern = isset($all_dates[$date_normalized]);
+						}
 
 						// Validate date is not expired and matches pattern
 						if ($date_in_pattern && ($expire || $now_date <= strtotime($date_normalized))) {
-							if (!in_array($day, (array)$off_days) && !in_array($date_normalized, (array)$off_dates)) {
+							if ($is_forced || (!in_array($day, (array)$off_days) && !in_array($date_normalized, (array)$off_dates))) {
 								// Date is valid, now check time
 								if (TTBM_Global_Function::check_time_exit_date($date)) {
 									$full_date = TTBM_Function::reduce_stop_sale_hours($date);
@@ -836,6 +903,41 @@
 					? __( 'Tour Date', 'tour-booking-manager' )
 					: __( 'Next Tour', 'tour-booking-manager' );
 			}
+			/**
+			 * Split a schedule value into [ Y-m-d, H:i ].
+			 *
+			 * get_date() is not consistent about the shape it returns: repeated tours come
+			 * back as "Y-m-d H:i" because get_date_by_time_check() bakes the matched slot
+			 * time into the value, while fixed/particular tours return a bare "Y-m-d".
+			 * Callers that append a time themselves must split first -- concatenating onto
+			 * a value that already carries one yields "Y-m-d H:i H:i", which strtotime()
+			 * cannot parse.
+			 */
+			private static function split_schedule_value( $value ) {
+				$value = trim( (string) $value );
+				if ( preg_match( '/^(\d{4}-\d{2}-\d{2})[ T](\d{1,2}:\d{2}(?::\d{2})?)$/', $value, $matches ) ) {
+					return array( $matches[1], $matches[2] );
+				}
+				return array( $value, '' );
+			}
+			/**
+			 * Repeated-tour start time for tours saved before the repeated-tab mirror shipped.
+			 *
+			 * get_time() reads a repeated tour's effective time from ttbm_travel_start_time,
+			 * which TTBM_Settings mirrors from ttbm_travel_repeated_start_time -- but only on
+			 * save. Tours last edited before that mirror existed still have a blank
+			 * ttbm_travel_start_time, so the admin's configured time is invisible and the
+			 * date renders as midnight. Read-side fallback only: the booking flow keeps
+			 * using get_time() unchanged.
+			 */
+			private static function get_repeated_start_time_fallback( $tour_id ) {
+				if ( self::get_travel_type( $tour_id ) !== 'repeated' ) {
+					return '';
+				}
+				return self::normalize_time_value(
+					TTBM_Global_Function::get_post_info( $tour_id, 'ttbm_travel_repeated_start_time' )
+				);
+			}
 			public static function get_next_tour_date_display( $tour_id ) {
 				$all_dates = self::get_date( $tour_id );
 				if ( empty( $all_dates ) ) {
@@ -843,8 +945,10 @@
 				}
 
 				if ( ! empty( $all_dates['date'] ) ) {
-					$start_date      = $all_dates['date'];
-					$start_time      = self::normalize_time_value( self::get_time( $tour_id, $start_date ) );
+					list( $start_date, $start_time ) = self::split_schedule_value( $all_dates['date'] );
+					if ( ! $start_time ) {
+						$start_time = self::normalize_time_value( self::get_time( $tour_id, $start_date ) );
+					}
 					$start_date_time = $start_time ? $start_date . ' ' . $start_time : $start_date;
 					$display         = TTBM_Global_Function::date_format( $start_date_time, 'full' );
 					$checkout        = $all_dates['checkout_date'] ?? '';
@@ -863,8 +967,19 @@
 					return '';
 				}
 
-				$start_time = self::normalize_time_value( self::get_time( $tour_id, $next_date ) );
+				list( $next_date, $start_time ) = self::split_schedule_value( $next_date );
+				if ( ! $start_time ) {
+					$start_time = self::normalize_time_value( self::get_time( $tour_id, $next_date ) );
+				}
+				if ( ! $start_time ) {
+					$start_time = self::get_repeated_start_time_fallback( $tour_id );
+				}
 				$date_time = $start_time ? $next_date . ' ' . $start_time : $next_date;
+
+				/* date_format() renders "now" for anything strtotime() rejects -- show nothing instead. */
+				if ( ! strtotime( $date_time ) ) {
+					return '';
+				}
 
 				return TTBM_Global_Function::date_format( $date_time, 'full' );
 			}
@@ -877,6 +992,9 @@
 				return self::cache_set('start_price', $price_cache_key, self::build_tour_start_price($tour_id, $start_date));
 			}
 			private static function build_tour_start_price($tour_id, $start_date = ''): string {
+				$tour_id      = self::post_id_multi_language( $tour_id );
+				$manual_price = self::normalize_positive_price( TTBM_Global_Function::get_post_info( $tour_id, 'ttbm_travel_start_price' ) );
+
 				if ( self::get_tour_type( $tour_id ) === 'hotel' ) {
 					$hotel_prices = array();
 					foreach ( self::get_hotel_list( $tour_id ) as $hotel_id ) {
@@ -886,42 +1004,64 @@
 						}
 					}
 					if ( ! empty( $hotel_prices ) ) {
-						return min( $hotel_prices );
+						return (string) min( $hotel_prices );
 					}
-					$manual_price = TTBM_Global_Function::get_post_info( $tour_id, 'ttbm_travel_start_price' );
-					return $manual_price ? (string) $manual_price : '';
+					return $manual_price;
 				}
 
-				$manual_price = TTBM_Global_Function::get_post_info($tour_id, 'ttbm_travel_start_price');
-				$ticket_list  = self::get_ticket_type($tour_id);
-				$start_price  = '';
+				$ticket_list = self::get_ticket_type( $tour_id );
+				$start_price = '';
 
-				if ( ! empty( $ticket_list ) && sizeof( $ticket_list ) > 0 ) {
+				if ( ! empty( $ticket_list ) && is_array( $ticket_list ) ) {
 					if ( ! $start_date ) {
 						$all_dates  = self::get_date( $tour_id );
 						$start_date = self::get_effective_booking_date( $tour_id, $all_dates );
 					}
-					$ticket_price = [];
+					$filtered_prices = array();
+					$raw_prices      = array();
 					foreach ( $ticket_list as $ticket ) {
-						$ticket_name = $ticket['ticket_type_name'];
-						$price       = $ticket['ticket_type_price'];
-						$price       = array_key_exists('sale_price', $ticket) && $ticket['sale_price'] ? $ticket['sale_price'] : $price;
-						$price       = apply_filters('ttbm_filter_ticket_price', $price, $tour_id, $start_date, $ticket_name);
-						$price       = apply_filters('ttbm_price_by_name_filter', $price, $tour_id, 1, $start_date, $ticket_name);
-						if ( $price !== '' && $price !== null ) {
-							$ticket_price[] = floatval( $price );
+						if ( ! is_array( $ticket ) ) {
+							continue;
+						}
+						$ticket_name = $ticket['ticket_type_name'] ?? '';
+						$price       = $ticket['ticket_type_price'] ?? '';
+						if ( ! empty( $ticket['sale_price'] ) && is_numeric( $ticket['sale_price'] ) && floatval( $ticket['sale_price'] ) > 0 ) {
+							$price = $ticket['sale_price'];
+						}
+						$raw = self::normalize_positive_price( $price );
+						if ( $raw !== '' ) {
+							$raw_prices[] = floatval( $raw );
+						}
+						$filtered = apply_filters( 'ttbm_filter_ticket_price', $price, $tour_id, $start_date, $ticket_name );
+						$filtered = apply_filters( 'ttbm_price_by_name_filter', $filtered, $tour_id, 1, $start_date, $ticket_name );
+						$filtered = self::normalize_positive_price( $filtered );
+						if ( $filtered !== '' ) {
+							$filtered_prices[] = floatval( $filtered );
 						}
 					}
-					if ( ! empty( $ticket_price ) ) {
-						$start_price = min( $ticket_price );
+					if ( ! empty( $filtered_prices ) ) {
+						$start_price = min( $filtered_prices );
+					} elseif ( ! empty( $raw_prices ) ) {
+						$start_price = min( $raw_prices );
 					}
 				}
 
-				if ( $start_price === '' && $manual_price ) {
+				if ( $start_price === '' || $start_price === null || (float) $start_price <= 0 ) {
 					$start_price = $manual_price;
 				}
 
-				return $start_price;
+				return $start_price === '' || $start_price === null ? '' : (string) $start_price;
+			}
+
+			/**
+			 * Keep a usable numeric price; empty / non-numeric / zero become ''.
+			 */
+			private static function normalize_positive_price( $price ): string {
+				if ( $price === '' || $price === null || ! is_numeric( $price ) ) {
+					return '';
+				}
+				$price = floatval( $price );
+				return $price > 0 ? (string) $price : '';
 			}
 
 			/**
@@ -1102,6 +1242,27 @@
 				natsort($duration);
 				set_transient($cache_key, $duration, HOUR_IN_SECONDS);
 				return $duration;
+			}
+			//************Price range (sidebar price-per-person filter)***********************//
+			public static function get_price_range(): array {
+				$cache_key = 'ttbm_price_range';
+				$cached = get_transient($cache_key);
+				if ($cached !== false) {
+					return $cached;
+				}
+				$tour_ids = TTBM_Global_Function::get_all_post_id(TTBM_Function::get_cpt_name());
+				$prices = array();
+				foreach ($tour_ids as $tour_id) {
+					$price = (float) self::get_tour_start_price($tour_id);
+					if ($price > 0) {
+						$prices[] = $price;
+					}
+				}
+				$range = $prices
+					? array('min' => (float) floor(min($prices)), 'max' => (float) ceil(max($prices)))
+					: array('min' => 0, 'max' => 0);
+				set_transient($cache_key, $range, HOUR_IN_SECONDS);
+				return $range;
 			}
 			//************Seat***********************//
 			public static function get_total_seat($tour_id) {
@@ -1352,6 +1513,140 @@
 				$available = $total - ($reserve + $sold);
 				return max(0, $available);
 			}
+			//************Time-wise Stock***********************//
+			/**
+			 * Whether this tour manages its inventory per time slot instead of
+			 * (only) per ticket type.
+			 *
+			 * Restricted to repeated general tours: those are the only ones whose
+			 * schedule is built from the reusable `mep_ticket_times_*` slot rows that
+			 * carry a per-slot stock value. Hotel tours have their own room
+			 * inventory and fixed/particular tours have one departure per date, so
+			 * per-slot stock would have nothing to attach to.
+			 */
+			public static function is_timewise_stock_enabled($tour_id): bool {
+				$tour_id = (int) $tour_id;
+				if (!$tour_id) {
+					return false;
+				}
+				if (self::cache_has('timewise_enabled', $tour_id)) {
+					return self::cache_get('timewise_enabled', $tour_id);
+				}
+				$enabled = TTBM_Global_Function::get_post_info($tour_id, 'ttbm_enable_timewise_stock', 'off') === 'on'
+					&& self::get_travel_type($tour_id) === 'repeated'
+					&& self::get_tour_type($tour_id) === 'general';
+				return self::cache_set('timewise_enabled', $tour_id, (bool) apply_filters('ttbm_is_timewise_stock_enabled', $enabled, $tour_id));
+			}
+			/**
+			 * Capacity configured for one time slot on one date, or 0 when that slot
+			 * has no stock of its own.
+			 *
+			 * Resolution order matches how get_repeated_time_slots() picks the slot
+			 * list itself: the weekday-specific rows win when that weekday defines
+			 * any, otherwise the default ("global") rows apply. Returning 0 is the
+			 * documented "not configured" answer -- callers then fall back to the
+			 * regular per-ticket-type capacity, so switching the feature on without
+			 * filling in stock values changes nothing.
+			 *
+			 * @param int    $tour_id
+			 * @param string $date      Y-m-d (a date-time is accepted and truncated).
+			 * @param string $time_slot H:i as stored on the slot row.
+			 */
+			public static function get_timewise_stock($tour_id, $date, $time_slot): int {
+				$tour_id = (int) $tour_id;
+				$time_slot = self::normalize_time_value($time_slot);
+				if (!$tour_id || !$date || !$time_slot || strtotime($date) === false) {
+					return 0;
+				}
+				$date = gmdate('Y-m-d', strtotime($date));
+				$stock_cache_key = $tour_id . '|' . $date . '|' . $time_slot;
+				if (self::cache_has('timewise_stock', $stock_cache_key)) {
+					return self::cache_get('timewise_stock', $stock_cache_key);
+				}
+				$day_name = strtolower(gmdate('D', strtotime($date)));
+				$day_slots = TTBM_Global_Function::get_post_info($tour_id, 'mep_ticket_times_' . $day_name, array());
+				$slot_rows = (is_array($day_slots) && count($day_slots) > 0)
+					? $day_slots
+					: TTBM_Global_Function::get_post_info($tour_id, 'mep_ticket_times_global', array());
+				$stock = 0;
+				if (is_array($slot_rows)) {
+					foreach ($slot_rows as $slot_row) {
+						if (!is_array($slot_row)) {
+							continue;
+						}
+						$row_time = isset($slot_row['mep_ticket_time']) ? (string) $slot_row['mep_ticket_time'] : '';
+						if ($row_time === '' || !self::same_slot_time($row_time, $time_slot)) {
+							continue;
+						}
+						$stock = isset($slot_row['mep_ticket_time_stock']) ? (int) $slot_row['mep_ticket_time_stock'] : 0;
+						break;
+					}
+				}
+				$stock = max(0, (int) apply_filters('ttbm_timewise_slot_stock', $stock, $tour_id, $date, $time_slot));
+				return self::cache_set('timewise_stock', $stock_cache_key, $stock);
+			}
+			/**
+			 * Compare two slot times tolerantly: rows saved by an <input type="time">
+			 * are "09:30", but older data (and hand-edited meta) can carry "9:30" or
+			 * "09:30:00", and the value coming back from the frontend is re-formatted
+			 * from a full date. Comparing the minute-of-day avoids treating those as
+			 * different slots.
+			 */
+			private static function same_slot_time($left, $right): bool {
+				if ((string) $left === (string) $right) {
+					return true;
+				}
+				$left_ts = strtotime('1970-01-01 ' . $left);
+				$right_ts = strtotime('1970-01-01 ' . $right);
+				return $left_ts !== false && $right_ts !== false && gmdate('H:i', $left_ts) === gmdate('H:i', $right_ts);
+			}
+			/**
+			 * Availability for a single departure (date + time slot) under time-wise
+			 * stock.
+			 *
+			 * This is the single source every consumer resolves to: the availability
+			 * filters in TTBM_Timewise_Stock, the time slot chips, and the cart
+			 * validator all read it, so a slot's number can never drift between the
+			 * chip, the ticket table and checkout. It must therefore stay free of
+			 * calls back into get_total_available() / get_ticket_availability_info(),
+			 * which are themselves filtered through this value.
+			 *
+			 * @return array{enabled:bool,capacity:int,sold:int,available:int,datetime:string}
+			 */
+			public static function get_timewise_slot_availability($tour_id, $date, $time_slot): array {
+				$time_slot = self::normalize_time_value($time_slot);
+				$empty = array('enabled' => false, 'capacity' => 0, 'sold' => 0, 'available' => 0, 'datetime' => '');
+				if (!self::is_timewise_stock_enabled($tour_id) || !$date || !$time_slot || strtotime($date) === false) {
+					return $empty;
+				}
+				$capacity = self::get_timewise_stock($tour_id, $date, $time_slot);
+				if ($capacity < 1) {
+					return $empty;
+				}
+				$slot_timestamp = strtotime(gmdate('Y-m-d', strtotime($date)) . ' ' . $time_slot);
+				if ($slot_timestamp === false) {
+					return $empty;
+				}
+				$datetime = gmdate('Y-m-d H:i', $slot_timestamp);
+				$sold = self::get_timewise_sold($tour_id, $datetime);
+				return array(
+					'enabled' => true,
+					'capacity' => $capacity,
+					'sold' => $sold,
+					'available' => max(0, $capacity - $sold),
+					'datetime' => $datetime,
+				);
+			}
+			/**
+			 * Seats already sold on one departure, across every ticket type.
+			 *
+			 * Per-slot stock is one shared pool, so the whole departure is counted
+			 * once instead of per ticket type -- which also keeps this to a single
+			 * cached lookup no matter how many ticket types the tour sells.
+			 */
+			public static function get_timewise_sold($tour_id, $datetime): int {
+				return (int) self::get_total_sold($tour_id, $datetime, '');
+			}
 			public static function get_any_date_seat_available($tour_id) {
 				if (self::cache_has('any_available', (int) $tour_id)) {
 					return self::cache_get('any_available', (int) $tour_id);
@@ -1578,9 +1873,9 @@
 				return $arr;
 			}
 			public static function get_full_location($tour_id): string {
-				$city = TTBM_Global_Function::get_post_info($tour_id, 'ttbm_location_name');
-				$country = self::get_country($tour_id);
-				$full_location = $city && $country ? $city . ' , ' . $country : '';
+				$city = trim( (string) TTBM_Global_Function::get_post_info($tour_id, 'ttbm_location_name') );
+				$country = trim( (string) self::get_country($tour_id) );
+				$full_location = $city && $country ? $city . ', ' . $country : '';
 				$full_location = $city && !$country ? $city : $full_location;
 				$full_location = is_array($full_location) ? '' : $full_location;
 				return !$city && $country ? $country : $full_location;

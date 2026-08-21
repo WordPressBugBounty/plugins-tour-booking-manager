@@ -29,6 +29,23 @@
                 add_shortcode('ttbm-hotel-rooms', array($this, 'ttbm_hotel_rooms_by_id') );
                 add_shortcode('ttbm-hotel-map',  array( $this, 'ttbm_hotel_map_shortcode') );
                 add_shortcode('ttbm-hotel-slider',  array( $this, 'ttbm_hotel_slider_shortcode') );
+
+				// Top search bar ([ttbm-top-search]) — AJAX, same-page results.
+				// The form still posts to /find/ ([ttbm-search-result]) as a
+				// plain-GET fallback for no-JS visitors; this just lets pages
+				// that also render the results grid inline (the tour archive)
+				// swap it in place instead of navigating away.
+				add_action('wp_ajax_ttbm_top_search_ajax', array($this, 'ajax_top_search'));
+				add_action('wp_ajax_nopriv_ttbm_top_search_ajax', array($this, 'ajax_top_search'));
+			}
+			public function ajax_top_search() {
+				check_ajax_referer('ttbm_search_nonce', 'ttbm_search_nonce');
+				// search_result() reads every filter value straight from $_GET —
+				// the request is sent as a GET-type AJAX call (not POST) purely so
+				// this identical, already-battle-tested code path (same one /find/
+				// itself calls) runs completely unmodified.
+				echo $this->search_result(array());
+				wp_die();
 			}
 
             public function ttbm_hotel_slider_shortcode( $atts ){
@@ -255,6 +272,8 @@
 					<?php
 						if ($params['sidebar-filter'] == 'yes') {
 							?>
+							<?php /* Populated client-side by assets/frontend/ttbm_active_filter_chips.js from whatever's currently active in .leftSidebar below — full-width, above both columns, so it never has to live inside just one of them. */ ?>
+							<div class="ttbm-active-filter-chips" data-placeholder></div>
 							<div class="left_filter">
 								<div class="leftSidebar placeholder_area">
 									<?php do_action('ttbm_left_filter', $params); ?>
@@ -1062,7 +1081,15 @@
 				'type-filter' => 'no',
 				'shuffle' => $shuffle,
 				'filter_by_activity' => 'yes',
-				'price-filter' => 'yes',
+				/* Both off by default everywhere; the tour archive shortcode call
+				   (travail/templates/tours/archive-tour.php) explicitly turns them
+				   on so no other existing [ttbm-tour-list]/[travel-list]/[ttbm-top-filter]
+				   usage on a site is affected. 'price-filter' previously defaulted
+				   'yes' here but was never actually read by any render method — now
+				   that price_filter_left() consumes it, defaulting to 'no' keeps
+				   every other current usage's rendered output unchanged. */
+				'price-filter' => 'no',
+				'rating-filter' => 'no',
 				'limit' => $show,
 				'list_grid' => 'list',
 				'top-bar' => $top_bar,

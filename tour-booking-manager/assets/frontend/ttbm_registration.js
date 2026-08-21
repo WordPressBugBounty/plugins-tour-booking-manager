@@ -184,6 +184,10 @@ function get_ttbm_sold_ticket(parent, tour_id, tour_date) {
     $(document).on('click', '.ttbm_select_time_area .customRadio[data-radio]', function (e) {
         e.stopImmediatePropagation();
         let $slot = $(this);
+        // Sold-out slots (time-wise stock) render disabled: keep them visible but inert.
+        if ($slot.hasClass('mage_disabled') || $slot.hasClass('is-disabled')) {
+            return;
+        }
         let timeArea = $slot.closest('.ttbm_select_time_area');
         let regArea = timeArea.closest('.ttbm_registration_area');
         timeArea.css('border', '');
@@ -598,7 +602,15 @@ function get_ttbm_sold_ticket(parent, tour_id, tour_date) {
         // =========================================================
         // View Switcher (Grid / List)
         // =========================================================
-        $('.ttbm_grid_view').on('click', function () {
+        // Ensure default mode class exists so CSS can distinguish layouts.
+        $('.all_filter_item .flexWrap').each(function () {
+            var $wrap = $(this);
+            if (!$wrap.hasClass('ttbm-list-mode') && !$wrap.hasClass('ttbm-grid-mode')) {
+                $wrap.addClass('ttbm-grid-mode');
+            }
+        });
+
+        $(document).on('click', '.ttbm_grid_view', function () {
 
             $('.ttbm-view-btn').removeClass('ttbm-view-active').attr('aria-pressed', 'false');
             $(this).addClass('ttbm-view-active').attr('aria-pressed', 'true');
@@ -612,7 +624,7 @@ function get_ttbm_sold_ticket(parent, tour_id, tour_date) {
                 .addClass('grid_'.concat(window.ttbm_column || '3'));
         });
 
-        $('.ttbm_list_view').on('click', function () {
+        $(document).on('click', '.ttbm_list_view', function () {
 
             $('.ttbm-view-btn').removeClass('ttbm-view-active').attr('aria-pressed', 'false');
             $(this).addClass('ttbm-view-active').attr('aria-pressed', 'true');
@@ -653,6 +665,12 @@ $(document).on('change', '.ttbm-sort-select', function () {
         let dateA = new Date($(a).data('date')).getTime() || 0;
         let dateB = new Date($(b).data('date')).getTime() || 0;
 
+        let ratingA = parseFloat($(a).data('rating')) || 0;
+        let ratingB = parseFloat($(b).data('rating')) || 0;
+
+        let durationA = parseFloat($(a).data('duration')) || 0;
+        let durationB = parseFloat($(b).data('duration')) || 0;
+
         switch (sortValue) {
 
             case 'price_asc':
@@ -660,6 +678,12 @@ $(document).on('change', '.ttbm-sort-select', function () {
 
             case 'price_desc':
                 return priceB - priceA;
+
+            case 'rating_desc':
+                return ratingB - ratingA;
+
+            case 'duration_asc':
+                return durationA - durationB;
 
             case 'title_asc':
                 return titleA.localeCompare(titleB);

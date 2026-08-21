@@ -5,7 +5,7 @@ Tags: tour booking, travel agency, travel booking, tour operator, hotel booking
 Requires at least: 4.4.0
 Tested up to: 7.0
 Requires PHP: 7.0
-Stable tag: 2.2.0
+Stable tag: 2.3.0
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -228,6 +228,54 @@ Use the [WordPress.org support forum](https://wordpress.org/support/plugin/tour-
 
 
 == Changelog ==
+= 2.3.0 – 20 August 2026 =
+
+**Booking & Availability**
+
+* New (PRO): Schedule Planner — a Schedule Planner tab on the tour editor for single-date and date-range exceptions to a tour's schedule: cancel a date outright, add or remove individual time slots, or reopen a day the off-day/off-date rules had closed, all without editing the recurrence underneath. Bulk rules can be narrowed to chosen weekdays or an explicit date list.
+* New (PRO): Capacity Override — a Capacity Override tab for giving a ticket type a different seat count on one date, a date range, or a single time slot, as an add, a reduce, or a fixed override. Where a shared pool is in play (Shared Quantity or Time-wise Stock), the override adjusts that pool.
+* New: Time-wise Stock — a repeated tour can give every time slot its own seat count, so the 09:30 departure sells out while 13:30 still has seats. Turn it on under Dates → Tour Time Slots and fill in "Slot Stock" per slot; leave a slot empty to keep using the ticket type capacity for it. The slot's seats are one shared pool across all ticket types, shown on the time picker ("N seats left" / "Sold out", with sold-out slots disabled) and enforced on the quantity steppers, at add-to-cart, and again at checkout. Where both are configured, a slot's stock takes precedence over PRO's tour-wide Shared Capacity.
+* Fixed: Bookings taken through Custom (non-WooCommerce) checkout never appeared in Bookings & Guests. The listing filtered on the "which statuses reserve a seat" setting (processing/completed), but custom-checkout bookings are recorded as pending — so the screen was empty no matter how many bookings had been taken. The listing now shows every booking and leaves narrowing to its own Status filter.
+* Fixed: Bookings & Guests rendered a blank page on sites running without WooCommerce, because the WooCommerce compatibility shim was missing methods that the page called.
+* Fixed: Tour dates are stored on order line items again (`_ttbm_date` / `_ttbm_end_date`). Without them, anything parsing the date — notably the PRO confirmation email's `{tour_date}` placeholder — printed the day the email was sent instead of the tour date.
+* Fixed: Tours duplicated by older versions shared the original's hidden WooCommerce product. Because that product is sold individually, only one of the colliding tours could be in a cart at a time and customers were bounced back to the booking form; orders, emails, and invoices also carried the wrong tour name. A one-time repair pass now relinks or recreates the affected products.
+* Fixed: Duplicated tour pricing in the cart.
+* Fixed: A PRO "Special Date" can now open a tour on a day the recurrence pattern excludes. Previously a special date could only re-time a departure that already existed, so one saved on an off day returned its time slot but never produced a bookable date.
+
+**Front End**
+
+* New: Travello theme — a complete single-tour page design with its own hero, gallery, itinerary, and booking sidebar, plus a matching grid layout for listings.
+* New: Tour list filtering rebuilt — AJAX top search with same-page results, date range picker, active filter chips above both columns, sortable results (Recommended, Highest Rated, Duration), and price/rating filters. The search form still posts to `/find/` as a plain-GET fallback for visitors without JavaScript.
+* New: Optional per-tour rating display (Display settings → Rating & Reviews). Off by default; the star row stays hidden unless both the average and the review count are filled in.
+* New: Smart theme styling with skeleton loaders on the booking interface.
+* Improved: Tour list and grid cards always show a price — ticket and sale prices are used when the start-price field is empty, and card prices are no longer hidden behind the details-page display toggle.
+* Improved: Refreshed FAQ, day-wise schedule, related tours, tour guide, tags, and "Ask a question" layouts.
+* Fixed: "Next Tour" date rendered as the current date and time on repeated tours. `get_date()` returns `Y-m-d H:i` for repeated tours and a bare `Y-m-d` for the others; the hero appended a time regardless, producing a value `strtotime()` rejects — which renders as "now".
+
+**Admin Experience**
+
+* New (PRO): Newly shipped tour editor tabs carry a short-lived "new" marker so they are not missed in a long sidebar. The countdown starts the first time your own site renders the tab — not from a fixed release date — so a shop that updates later still gets the full window, and the marker retires itself after five days with nothing to dismiss. Adjustable via the `ttbm_pro_feature_badge_days` filter (return 0 to switch markers off).
+* New: Per-slot "Slot Stock" field on every time slot row (Default plus each weekday), revealed by the Time-wise Stock toggle. Values entered are kept when the toggle is switched off, so turning it back on restores them.
+* Improved: Bookings admin menu unified, and the Pro badge removed from the bookings submenu.
+* Improved: Dummy-data import reworked.
+* Fixed: Category and Destination sidebar filters matched nothing on many installs. They compared real taxonomy terms against the legacy post-meta mirrors, which are only written by the classic tour edit screen — so tours assigned by import, Quick Edit, or the taxonomy screens never matched. Both filters now query the taxonomies directly.
+* Fixed: The last Extra Service row could not be deleted. The shared row-remove handler refused to act on a single remaining row, which is right for ticket types but wrong for extra services, where a blank starting row is rendered by default.
+* Fixed: Admin stylesheet changes did not reach browsers. `ttbm_admin_modern.css` was cache-busted by the plugin version rather than its own modification time, so edits stayed invisible until the next release.
+* Fixed: Local tour assets no longer go through URL stream wrappers.
+* Improved: The tour editor saves in a fraction of the time. Clicking Update used to spend about half a second in the browser before the request was even sent: the date fields announced a change event each time they were synced -- 16 events dispatched against every delegated handler on the page, and one of those listeners re-marked the form as unsaved mid-save -- while the save buttons ran their whole preparation pass twice and issued four blocking helper requests along the way. Saving now takes well under a fifth of that, and an Update pressed while a background auto-save is running no longer waits three seconds for its turn.
+* Improved: The tour edit screen loads far lighter. The icon picker wrote all ~4,800 of its tiles into every page load even though the popup is only shown on demand, which was 1.5MB of the 2MB page and left roughly ten thousand extra elements for every later form read to walk. The tiles are now fetched the first time the picker is opened; searching, category tabs, and selection are unchanged.
+
+**Developer**
+
+* New: `ttbm_timewise_slot_stock` filter to supply a slot's stock from elsewhere, and `ttbm_is_timewise_stock_enabled` to override the per-tour switch.
+* New: `ttbm_admin_booking_list_statuses` filter to restrict which order statuses the admin booking and attendee listings show (defaults to all).
+* New: `TTBM_Function::is_timewise_stock_enabled()`, `get_timewise_stock()`, `get_timewise_slot_availability()` and `get_timewise_sold()`.
+* Improved: The WooCommerce fallback shim degrades gracefully — an unknown method returns false and an unknown property null — so `function_exists('WC') && WC()->something()` guards short-circuit instead of fataling. Use `TTBM_Global_Function::has_woocommerce()` to branch on WooCommerce actually being active.
+* Improved: Slot meta holding a malformed row no longer takes the tour page down with a fatal on PHP 8.
+* New: `ttbm_lazy_icon_picker` filter — return false to render the icon picker inline again instead of loading it on first open.
+* New: `TTBM_Select_Icon_image::render_icon_picker_markup()` renders the picker body, and the `ttbm_icon_picker` admin-ajax action serves it to the browser (nonce plus `edit_posts`).
+* New: `window.ttbmAutosaveHandlesSave` is set by the tour editor auto-save module when it owns the save. Anything hooking the save buttons should stand down while it is true, rather than preparing or persisting the form a second time.
+
 = 2.2.0 – 28 July 2026 =
 
 **Booking & Payments**
@@ -326,6 +374,9 @@ Use the [WordPress.org support forum](https://wordpress.org/support/plugin/tour-
 [View the full changelog](https://plugins.trac.wordpress.org/log/tour-booking-manager/)
 
 == Upgrade Notice ==
+
+= 2.3.0 =
+Adds per-time-slot seat counts (Time-wise Stock), the new Travello theme, and a rebuilt tour list filter. Also fixes bookings taken through Custom checkout not appearing in Bookings & Guests, and a blank Bookings page on sites without WooCommerce. Recommended for all users.
 
 = 2.2.0 =
 Major update. Travelly can now take bookings without WooCommerce using its own checkout and free Offline Payment method, adds a unified booking manager for both engines, a redesigned admin and tour details page, a customer wishlist, and large performance gains. Back up your site before updating.
