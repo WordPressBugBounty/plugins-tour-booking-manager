@@ -9,7 +9,6 @@
 			public function __construct() {
 				add_action('init', array($this, 'language_load'));
 				$this->load_file();
-				$this->appsero_init_tracker_ttbm();
 				add_action('wp_enqueue_scripts', array($this, 'frontend_script'), 90);
 				// Safety net: if a TTBM shortcode actually renders on a page the gate
 				// above did not predict (page builders that store content outside
@@ -96,13 +95,6 @@
 					$is_active = $is_active || is_plugin_active_for_network('tour-booking-manager-pro/tour-booking-manager-pro.php');
 				}
 				return $is_active && file_exists(WP_PLUGIN_DIR . '/tour-booking-manager-pro/tour-booking-manager-pro.php');
-			}
-			public function appsero_init_tracker_ttbm() {
-				if (!class_exists('Appsero\Client')) {
-					require_once TTBM_PLUGIN_DIR . '/lib/appsero/src/Client.php';
-				}
-				$client = new Appsero\Client('5e44d3f4-ddea-4784-8c15-4502ad6e7426', 'Tour Booking Manager For Woocommerce', __FILE__);
-				$client->insights()->init();
 			}
 			public function global_enqueue() {
 				wp_enqueue_script('jquery');
@@ -423,15 +415,15 @@
 				wp_enqueue_script( 'moment' );
 				wp_enqueue_style('ttbm_date_range_picker', TTBM_PLUGIN_URL . '/assets/date_range_picker/date_range_picker.min.css', array(), '1');
 				wp_enqueue_script('ttbm_date_range_picker_js', TTBM_PLUGIN_URL . '/assets/date_range_picker/date_range_picker.js', array('jquery', 'moment'), '1', true);
-				wp_enqueue_style('ttbm_registration', TTBM_PLUGIN_URL . '/assets/frontend/ttbm_registration.css', array(), TTBM_PLUGIN_VERSION);
-				wp_register_style('ttbm_hotel_lists', TTBM_PLUGIN_URL . '/assets/frontend/ttbm_hotel_lists.css', array('ttbm_registration'), TTBM_PLUGIN_VERSION);
+				wp_enqueue_style('ttbm_registration', TTBM_PLUGIN_URL . '/assets/frontend/ttbm_registration.css', array(), filemtime(TTBM_PLUGIN_DIR . '/assets/frontend/ttbm_registration.css'));
+				wp_register_style('ttbm_hotel_lists', TTBM_PLUGIN_URL . '/assets/frontend/ttbm_hotel_lists.css', array('ttbm_registration'), filemtime(TTBM_PLUGIN_DIR . '/assets/frontend/ttbm_hotel_lists.css'));
 				wp_register_style('ttbm_details', TTBM_PLUGIN_URL . '/assets/frontend/ttbm_details.css', array('ttbm_hotel_lists'), filemtime(TTBM_PLUGIN_DIR . '/assets/frontend/ttbm_details.css'));
 				wp_enqueue_style('ttbm_smart_booking', TTBM_PLUGIN_URL . '/assets/frontend/ttbm_smart_booking.css', array('ttbm_registration'), filemtime(TTBM_PLUGIN_DIR . '/assets/frontend/ttbm_smart_booking.css'));
 				/* [ttbm-tour-list]'s own modern visual system — loads after ttbm_registration
 				   so normal cascade order (not !important) is enough to win. Scoped entirely
 				   under .ttbm-tour-list-shortcode / .ttbm-top-search-form, so it can't affect
 				   hotel listings or any other shortcode's output. */
-				wp_enqueue_style('ttbm_tour_list_modern', TTBM_PLUGIN_URL . '/assets/frontend/ttbm_tour_list_modern.css', array('ttbm_registration'), TTBM_PLUGIN_VERSION);
+				wp_enqueue_style('ttbm_tour_list_modern', TTBM_PLUGIN_URL . '/assets/frontend/ttbm_tour_list_modern.css', array('ttbm_registration'), filemtime(TTBM_PLUGIN_DIR . '/assets/frontend/ttbm_tour_list_modern.css'));
 				/* templates/themes/travello.php's own visual system — a brand-new,
 				   fully isolated single-tour template, scoped entirely under
 				   .ttbm_travello_theme so it can't affect default.php/smart.php/
