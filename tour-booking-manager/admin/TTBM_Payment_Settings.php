@@ -240,8 +240,12 @@
 				$pm_type_label = self::get_booking_mode_label();
 				$pm_gateway_names = self::get_active_gateway_names();
 				?>
-				<div class="ttbm-sb-card ttbm-sb-payment-card">
+				<div class="ttbm-sb-card ttbm-sb-payment-card <?php echo $pm_active ? 'is-ready' : 'is-missing'; ?>">
 					<p class="ttbm-sb-card-title"><?php esc_html_e('Payment Method', 'tour-booking-manager'); ?></p>
+					<p class="ttbm-sb-payment-status" data-ready-text="<?php esc_attr_e('Ready to accept bookings', 'tour-booking-manager'); ?>" data-missing-text="<?php esc_attr_e('Setup required: no payment method', 'tour-booking-manager'); ?>">
+						<span class="ttbm-sb-payment-status__icon" aria-hidden="true"></span>
+						<span class="ttbm-sb-payment-status__text"><?php echo $pm_active ? esc_html__('Ready to accept bookings', 'tour-booking-manager') : esc_html__('Setup required: no payment method', 'tour-booking-manager'); ?></span>
+					</p>
 					<div class="ttbm-sb-payment-info-list">
 						<div class="ttbm-sb-payment-info-row">
 							<span><?php esc_html_e('Active Method', 'tour-booking-manager'); ?></span>
@@ -1379,7 +1383,11 @@ JS;
 				if (!in_array($template, self::login_gate_templates(), true)) {
 					$template = 'book_now';
 				}
-				if (!$tour_id || get_post_type($tour_id) !== TTBM_Function::get_cpt_name() || get_post_status($tour_id) !== 'publish') {
+				$tour_status = $tour_id ? get_post_status($tour_id) : '';
+				// A private tour is bookable by whoever may read it (administrators, or
+				// any logged-in user under "Private Tours for Logged-in Users").
+				$tour_readable = 'publish' === $tour_status || ('private' === $tour_status && current_user_can('read_post', $tour_id));
+				if (!$tour_id || get_post_type($tour_id) !== TTBM_Function::get_cpt_name() || !$tour_readable) {
 					wp_send_json_error('', 404);
 				}
 				$file = TTBM_Function::template_path('ticket/' . $template . '.php');

@@ -95,11 +95,19 @@ function ttbm_load_sortable_datepicker(parent, item) {
         let current_parent = $(this).closest(".ttbm_multi_image_item");
         let img_id = current_parent.data("image-id");
         current_parent.remove();
-        let all_img_ids = parent.find(".ttbm_multi_image_value").val();
-        all_img_ids = all_img_ids.replace("," + img_id, "");
-        all_img_ids = all_img_ids.replace(img_id + ",", "");
-        all_img_ids = all_img_ids.replace(img_id, "");
-        parent.find(".ttbm_multi_image_value").val(all_img_ids);
+        // Drop exactly one matching id. The old substring replace() also matched
+        // inside longer ids (removing 120 from "7,1203,120" left "73,").
+        let all_img_ids = String(parent.find(".ttbm_multi_image_value").val() || "")
+            .split(",")
+            .filter(function (id) {
+                return id !== "";
+            });
+        let remove_at = all_img_ids.indexOf(String(img_id));
+        if (remove_at > -1) {
+            all_img_ids.splice(remove_at, 1);
+        }
+        // .val() fires no event; the editor auto-save listens for this change.
+        parent.find(".ttbm_multi_image_value").val(all_img_ids.join(",")).trigger("change");
     });
     $(document).on("click", ".ttbm_add_multi_image", function () {
         let parent = $(this).closest(".ttbm_multi_image_area");
@@ -115,7 +123,8 @@ function ttbm_load_sortable_datepicker(parent, item) {
             parent.find(".ttbm_multi_image").append(html);
             let value = parent.find(".ttbm_multi_image_value").val();
             value = value ? value + "," + attachment_id : attachment_id;
-            parent.find(".ttbm_multi_image_value").val(value);
+            // .val() fires no event; the editor auto-save listens for this change.
+            parent.find(".ttbm_multi_image_value").val(value).trigger("change");
         };
         wp.media.editor.open($(this));
         return false;
@@ -1669,4 +1678,147 @@ function ttbm_load_sortable_datepicker(parent, item) {
         ttbmSyncTimewiseStockState();
     });
 
+})(jQuery);
+
+/* ── Date/time order: an end date can't be before its start date, and on the same day an end time
+ * must be after the start time. Applied to Fixed, Particular (each row) and Repeated tours. ── */
+(function ($) {
+    "use strict";
+
+    var DATE_PAIRS = {
+        'ttbm_travel_end_date': 'ttbm_travel_start_date',
+        'ttbm_travel_repeated_end_date': 'ttbm_travel_repeated_start_date',
+        'ttbm_particular_end_date[]': 'ttbm_particular_start_date[]'
+    };
+
+    function ttbmToastError(msg) {
+        if (typeof window.ttbmToast === 'function') {
+            window.ttbmToast(msg, 'error');
+        }
+    }
+
+    // Nearest ancestor of $el that also holds the sibling field: the row for repeated rows, the pane otherwise.
+    function pairScope($el, otherName) {
+        var $scope = $el.parent();
+        while ($scope.length && $scope.find('input[name="' + otherName + '"]').length === 0) {
+            $scope = $scope.parent();
+        }
+        return $scope;
+    }
+
+    function startHiddenFor($endVisible) {
+        var $endHidden = ttbm_find_linked_date_hidden($endVisible);
+        if (!DATE_PAIRS[$endHidden.attr('name')] && $endVisible.hasClass('ttbm-repeated-end-date')) {
+            // The repeated end date shares its label with the "repeat" radio's hidden fields.
+            $endHidden = pairScope($endVisible, 'ttbm_travel_repeated_end_date').find('input[name="ttbm_travel_repeated_end_date"]').first();
+        }
+        var startName = DATE_PAIRS[$endHidden.attr('name')];
+        if (!startName) {
+            return {$endHidden: $endHidden, $startHidden: $()};
+        }
+        var $scope = pairScope($endHidden, startName);
+        return {$endHidden: $endHidden, $startHidden: $scope.find('input[name="' + startName + '"]').first()};
+    }
+
+    function parseYmd(v) {
+        var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || '');
+        return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
+    }
+
+    // Before the end picker opens, only offer days on/after the start date.
+    $(document).on('focusin click', '.ttbm_settings_dates .date_type', function () {
+        var $vis = $(this);
+        var pair = startHiddenFor($vis);
+        if (!pair.$startHidden.length || !$vis.hasClass('hasDatepicker')) {
+            return;
+        }
+        var min = parseYmd(pair.$startHidden.val());
+        if (String($vis.datepicker('option', 'minDate') || '') !== String(min || '')) {
+            $vis.datepicker('option', 'minDate', min);
+        }
+    });
+
+    // Start date moved past the end date: the end date is no longer valid, clear it.
+    function onStartDateChange($startHidden) {
+        var startName = $startHidden.attr('name');
+        var endName = null;
+        $.each(DATE_PAIRS, function (end, start) {
+            if (start === startName) {
+                endName = end;
+            }
+        });
+        if (!endName) {
+            return;
+        }
+        var $endHidden = pairScope($startHidden, endName).find('input[name="' + endName + '"]').first();
+        var s = parseYmd($startHidden.val());
+        var e = parseYmd($endHidden.val());
+        if (s && e && e < s) {
+            $endHidden.val('').trigger('change');
+            var $v = $endHidden.closest('label').find('.date_type');
+            $v.val('');
+            ttbmToastError('End date was cleared because it is before the new start date.');
+        }
+        syncEndTimeMin();
+    }
+
+    $(document).on('change', '.ttbm_settings_dates input[type="hidden"]', function () {
+        var name = this.name;
+        if (name === 'ttbm_travel_start_date' || name === 'ttbm_travel_repeated_start_date' || name === 'ttbm_particular_start_date[]') {
+            onStartDateChange($(this));
+        } else if (name === 'ttbm_travel_end_date') {
+            syncEndTimeMin();
+        }
+    });
+
+    // ---- Times: same-day fixed tours need end time after start time ----
+    function fixedTimes() {
+        return {
+            $sd: $('input[name="ttbm_travel_start_date"]').first(),
+            $ed: $('input[name="ttbm_travel_end_date"]').first(),
+            $st: $('input[name="ttbm_travel_start_time"]').first(),
+            $et: $('input[name="ttbm_travel_end_time"]').first()
+        };
+    }
+    function sameDay(t) {
+        return !!t.$sd.val() && t.$sd.val() === t.$ed.val();
+    }
+    function syncEndTimeMin() {
+        var t = fixedTimes();
+        if (!t.$et.length) {
+            return;
+        }
+        if (sameDay(t) && t.$st.val()) {
+            t.$et.attr('min', t.$st.val());
+        } else {
+            t.$et.removeAttr('min');
+        }
+    }
+    function checkTimeOrder(changed) {
+        var t = fixedTimes();
+        if (!sameDay(t) || !t.$st.val() || !t.$et.val()) {
+            return;
+        }
+        if (t.$et.val() <= t.$st.val()) {
+            if (changed === 'start') {
+                t.$et.val('');
+                ttbmToastError('End time was cleared because it must be after the start time.');
+            } else {
+                t.$et.val('');
+                ttbmToastError('End time must be after the start time on the same day.');
+            }
+        }
+    }
+    $(document).on('change input', 'input[name="ttbm_travel_start_time"]', function () {
+        syncEndTimeMin();
+        if (this.value) {
+            checkTimeOrder('start');
+        }
+    });
+    $(document).on('change', 'input[name="ttbm_travel_end_time"]', function () {
+        checkTimeOrder('end');
+    });
+    $(function () {
+        syncEndTimeMin();
+    });
 })(jQuery);
