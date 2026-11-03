@@ -31,14 +31,15 @@ jQuery(function ($) {
 		if (isReady) {
 			$('#ttbm-edit-payment-notice').stop(true, true).fadeOut(150, function () { $(this).remove(); });
 			$('.ttbm-pay-gateway-notice').stop(true, true).fadeOut(150, function () { $(this).remove(); });
-		} else if ($('#ttbm-edit-payment-modal').length && !$('#ttbm-edit-payment-notice').length && $('#poststuff').length) {
-			var $editNotice = $('<div class="ttbm-edit-payment-notice" id="ttbm-edit-payment-notice"></div>');
-			$editNotice.text(ttbmPaymentSettings.edit_notice_text + ' ');
+		} else if ($('#ttbm-edit-payment-modal').length && !$('#ttbm-edit-payment-notice').length && ($('#post-body').length || $('#poststuff').length)) {
+			var $editNotice = $('<div class="ttbm-edit-payment-notice" id="ttbm-edit-payment-notice"><div class="ttbm-edit-payment-notice-main"><span class="ttbm-edit-payment-notice-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><path d="M2 10h20"></path></svg></span><div class="ttbm-edit-payment-notice-text"><strong></strong><span></span></div></div></div>');
+			$editNotice.find('strong').text(ttbmPaymentSettings.edit_notice_text);
+			$editNotice.find('.ttbm-edit-payment-notice-text span').text(ttbmPaymentSettings.edit_notice_action);
 			$editNotice.append(
 				$('<a href="#" class="ttbm-edit-payment-notice-link" data-ttbm-payment-modal-open></a>')
-					.text(ttbmPaymentSettings.edit_notice_action)
+					.text(ttbmPaymentSettings.edit_notice_button || ttbmPaymentSettings.edit_notice_action)
 			);
-			$('#poststuff').prepend($editNotice);
+			($('#post-body').length ? $('#post-body') : $('#poststuff')).prepend($editNotice);
 		}
 
 		var $sidebar = $('.ttbm-sb-payment-card');
@@ -498,4 +499,51 @@ jQuery(function ($) {
 			$btn.prop('disabled', false);
 		});
 	});
+});
+
+/* Payment settings: tile open state + the setup checklist on the left. */
+jQuery(function ($) {
+	'use strict';
+	var L = window.ttbmPaymentSettings || {};
+
+	// A tile whose configuration form is open spans the whole row.
+	$(document).on('click', '.ttbm-pm-configure-btn', function () {
+		var $card = $(this).closest('.ttbm-pm-card');
+		setTimeout(function () {
+			$card.toggleClass('is-open', $card.find('.ttbm-pm-body').first().is(':visible'));
+		}, 200);
+	});
+
+	function refreshRail() {
+		var $rail = $('.ttbm-pay-rail');
+		if (!$rail.length) {
+			return;
+		}
+		var mode = $.trim($('.ttbm-booking-mode-card.is-active .ttbm-booking-mode-card-title').first().text());
+		if (mode) {
+			$rail.find('[data-rail="mode"]').text(mode);
+		}
+		var names = [];
+		$('.ttbm-pay-mode-panel:visible .ttbm-pm-card.is-enabled .ttbm-pm-title').each(function () {
+			names.push($.trim($(this).text()));
+		});
+		var ready = names.length > 0;
+		$rail.find('[data-rail="methods"]').text(ready ? names.join(', ') : (L.rail_nothing || 'Nothing turned on yet'));
+		$rail.find('[data-rail="method-step"]').toggleClass('is-done', ready).toggleClass('is-todo', !ready);
+		$rail.find('[data-rail="mark"]').text(ready ? '✓' : '2');
+		var $note = $rail.find('[data-rail="note"]').toggleClass('is-ready', ready).toggleClass('is-warn', !ready).empty();
+		$note.append($('<b></b>').text(ready ? (L.rail_ready_title || 'Ready for bookings.') : (L.rail_warn_title || 'Guests cannot pay yet.')))
+			.append(document.createTextNode(' ' + (ready ? (L.rail_ready_text || '') : (L.rail_warn_text || ''))));
+	}
+
+	var root = document.querySelector('.ttbm-payment-settings-content');
+	if (root && window.MutationObserver) {
+		var timer = null;
+		new MutationObserver(function () {
+			clearTimeout(timer);
+			timer = setTimeout(refreshRail, 80);
+		}).observe(root, {subtree: true, childList: true, attributes: true, attributeFilter: ['class', 'style']});
+	}
+	$(document).on('change', '.ttbm-pm-toggle-input', function () { setTimeout(refreshRail, 600); });
+	refreshRail();
 });

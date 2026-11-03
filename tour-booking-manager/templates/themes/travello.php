@@ -87,8 +87,8 @@
 	$ttbm_travello_max_people = $ttbm_booking_tour_type === 'general' && TTBM_Global_Function::get_post_info( $tour_id, 'ttbm_display_max_people', 'on' ) !== 'off'
 		? TTBM_Global_Function::get_post_info( $tour_id, 'ttbm_travel_max_people_allow' )
 		: '';
-	$ttbm_travello_language_raw = TTBM_Global_Function::get_post_info( $tour_id, 'ttbm_travel_language' );
-	$ttbm_travello_languages    = is_array( $ttbm_travello_language_raw ) ? array_filter( $ttbm_travello_language_raw ) : ( $ttbm_travello_language_raw ? array( $ttbm_travello_language_raw ) : array() );
+	// Readable names ("English, Japanese"), not the saved locale codes; empty when the Language switch is off.
+	$ttbm_travello_languages = TTBM_Function::get_language_labels( $tour_id );
 
 	// --- Price (real, same helper the archive cards + hero price use) ---
 	$ttbm_travello_start_price = TTBM_Function::show_start_price( $ttbm_post_id ) ? TTBM_Function::get_tour_start_price( $tour_id ) : '';
@@ -186,16 +186,16 @@
 					<?php if ( $ttbm_travello_location || $ttbm_travello_duration_label || $ttbm_travello_max_people || ! empty( $ttbm_travello_languages ) ) : ?>
 						<div class="ttbm-travello-meta-row">
 							<?php if ( $ttbm_travello_location ) : ?>
-								<span class="ttbm-travello-meta-item"><span class="mi mi-marker" aria-hidden="true"></span><strong><?php echo esc_html( $ttbm_travello_location ); ?></strong></span>
+								<span class="ttbm-travello-meta-item"><span class="mi mi-marker" aria-hidden="true"></span><span class="ttbm-travello-meta-text"><span class="ttbm-travello-meta-label"><?php esc_html_e( 'Location', 'tour-booking-manager' ); ?></span><strong><?php echo esc_html( $ttbm_travello_location ); ?></strong></span></span>
 							<?php endif; ?>
 							<?php if ( $ttbm_travello_duration_label ) : ?>
-								<span class="ttbm-travello-meta-item"><span class="mi mi-clock-three" aria-hidden="true"></span><strong><?php echo esc_html( $ttbm_travello_duration_label ); ?></strong></span>
+								<span class="ttbm-travello-meta-item"><span class="mi mi-clock-three" aria-hidden="true"></span><span class="ttbm-travello-meta-text"><span class="ttbm-travello-meta-label"><?php esc_html_e( 'Duration', 'tour-booking-manager' ); ?></span><strong><?php echo esc_html( $ttbm_travello_duration_label ); ?></strong></span></span>
 							<?php endif; ?>
 							<?php if ( $ttbm_travello_max_people ) : ?>
-								<span class="ttbm-travello-meta-item"><span class="mi mi-people" aria-hidden="true"></span><?php esc_html_e( 'Max', 'tour-booking-manager' ); ?> <strong><?php echo esc_html( $ttbm_travello_max_people ); ?></strong></span>
+								<span class="ttbm-travello-meta-item"><span class="mi mi-people" aria-hidden="true"></span><span class="ttbm-travello-meta-text"><span class="ttbm-travello-meta-label"><?php esc_html_e( 'Max guests', 'tour-booking-manager' ); ?></span><strong><?php echo esc_html( $ttbm_travello_max_people ); ?></strong></span></span>
 							<?php endif; ?>
 							<?php if ( ! empty( $ttbm_travello_languages ) ) : ?>
-								<span class="ttbm-travello-meta-item"><span class="mi mi-language" aria-hidden="true"></span><strong><?php echo esc_html( implode( ', ', $ttbm_travello_languages ) ); ?></strong></span>
+								<span class="ttbm-travello-meta-item"><span class="mi mi-language" aria-hidden="true"></span><span class="ttbm-travello-meta-text"><span class="ttbm-travello-meta-label"><?php esc_html_e( 'Language', 'tour-booking-manager' ); ?></span><strong><?php echo esc_html( implode( ', ', $ttbm_travello_languages ) ); ?></strong></span></span>
 							<?php endif; ?>
 						</div>
 					<?php endif; ?>
@@ -446,7 +446,10 @@
 					<?php if ( $ttbm_travello_organizer_name ) : ?>
 						<div class="ttbm-travello-organizer">
 							<span class="ttbm-travello-organizer-avatar" aria-hidden="true"><?php echo esc_html( $ttbm_travello_organizer_initials ); ?></span>
-							<span class="ttbm-travello-organizer-name"><?php echo esc_html( $ttbm_travello_organizer_name ); ?></span>
+							<span class="ttbm-travello-organizer-text">
+								<span class="ttbm-travello-organizer-label"><?php esc_html_e( 'Organized by', 'tour-booking-manager' ); ?></span>
+								<span class="ttbm-travello-organizer-name"><?php echo esc_html( $ttbm_travello_organizer_name ); ?></span>
+							</span>
 						</div>
 					<?php endif; ?>
 				</div>
